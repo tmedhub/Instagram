@@ -16,8 +16,6 @@
     --muted:#8e8e8e;
     --blue:#0095f6;
     --red:#ed4956;
-    --green:#29cc74;
-    --yellow:#ffd54d;
     --font:'DM Sans',sans-serif;
     --grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
     --navH:62px;
@@ -50,7 +48,6 @@
     z-index:300;
     background:#000;
   }
-  .hidden{display:none!important}
 
   .toast{
     position:fixed;
@@ -174,8 +171,7 @@
     text-align:center;
     box-shadow:0 20px 60px rgba(0,0,0,.45);
   }
-  .birthday-title{font-size:1.55rem;font-weight:700;line-height:1.18}
-  .birthday-sub{font-size:.88rem;color:var(--muted);margin-top:.55rem}
+  .birthday-title{font-size:1.65rem;font-weight:700;line-height:1.18}
   .birthday-btn{
     border:none;background:var(--blue);color:#fff;border-radius:999px;
     padding:.8rem 1.2rem;margin-top:1rem;font-weight:700;cursor:pointer;
@@ -190,6 +186,7 @@
     padding:0 1rem;
     flex-shrink:0;
     background:#000;
+    z-index:10;
   }
   .topbar-logo{
     font-family:'Dancing Script',cursive;
@@ -507,6 +504,62 @@
     display:block;
   }
 
+  /* miss overlay */
+  .drink-overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.35);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  .drink-overlay.show{
+    opacity:1;
+  }
+  .drink-card{
+    width:min(88vw,300px);
+    background:#111;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:1rem;
+    text-align:center;
+    box-shadow:0 16px 40px rgba(0,0,0,.45);
+  }
+  .drink-shot{
+    width:86px;height:110px;margin:0 auto .7rem;
+    position:relative;
+  }
+  .drink-hand{
+    position:absolute;left:6px;top:28px;
+    width:74px;height:44px;
+    background:#d6b193;
+    border-radius:24px;
+    transform:rotate(-18deg);
+    box-shadow:inset 0 -4px 0 rgba(0,0,0,.08);
+  }
+  .drink-glass{
+    position:absolute;left:26px;top:8px;
+    width:40px;height:56px;
+    border:3px solid rgba(255,255,255,.9);
+    border-top:none;
+    border-radius:0 0 12px 12px;
+    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    overflow:hidden;
+  }
+  .drink-liquid{
+    position:absolute;left:0;right:0;bottom:0;height:68%;
+    background:linear-gradient(180deg,#a26a35,#6e421d);
+  }
+  .drink-title{
+    font-size:1rem;font-weight:700;
+  }
+  .drink-sub{
+    font-size:.82rem;color:var(--muted);margin-top:.3rem;
+  }
+
   /* cig */
   #cig-stage{
     width:min(94vw,360px);
@@ -522,28 +575,10 @@
     font-size:1.2rem;
   }
 
-  /* badminton local */
-  #bad-stage{
-    width:min(94vw,380px);
-    height:440px;
-    background:linear-gradient(180deg,#183d7a,#0f2d5f 26%,#146a61 27%,#18a082 100%);
-    border-radius:14px;
-    border:1px solid #225f76;
-    display:block;
+  /* badminton */
+  .bad-card-title{
+    font-size:1.5rem;font-weight:700;text-align:center;
   }
-  .bad-controls{
-    width:min(94vw,380px);
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:.6rem;
-  }
-  .bad-btn{
-    border:none;border-radius:12px;background:#181818;color:#fff;
-    border:1px solid var(--border);
-    padding:.85rem .5rem;
-    font-family:var(--font);font-weight:700;cursor:pointer;
-  }
-  .bad-btn.primary{background:var(--blue);border-color:transparent}
 </style>
 </head>
 <body>
@@ -554,7 +589,6 @@
 <div id="birthday-overlay" class="birthday-overlay hidden">
   <div class="birthday-card">
     <div class="birthday-title">happy birthday mf 🎉</div>
-    <div class="birthday-sub">welcome to InstaRaj</div>
     <button id="birthday-close" class="birthday-btn">enter</button>
   </div>
 </div>
@@ -602,16 +636,28 @@
 </section>
 
 <!-- BEER -->
-<section class="screen" id="beer-game">
+<section class="screen" id="beer-game" style="position:absolute">
   <div class="topbar">
     <div class="topbar-title">🍺 Beer Pong</div>
     <div style="font-size:.78rem;color:var(--muted)">one player</div>
   </div>
   <div class="game-screen">
     <canvas id="beer-stage" width="380" height="500"></canvas>
-    <div class="game-msg" id="beer-msg">drag and release to aim</div>
+    <div class="game-msg" id="beer-msg">tap to bounce the ball</div>
     <button class="game-btn" id="beer-start-btn">Start Game</button>
   </div>
+
+  <div class="drink-overlay" id="drink-overlay">
+    <div class="drink-card">
+      <div class="drink-shot">
+        <div class="drink-glass"><div class="drink-liquid"></div></div>
+        <div class="drink-hand"></div>
+      </div>
+      <div class="drink-title">missed. bottoms up 🍺</div>
+      <div class="drink-sub">as if he’s taking the shot himself</div>
+    </div>
+  </div>
+
   <div class="bottom-nav" id="bottom-nav-beer"></div>
 </section>
 
@@ -647,18 +693,13 @@
 <section class="screen" id="badminton-game">
   <div class="topbar">
     <div class="topbar-title">🏸 BadminRaj</div>
-    <div style="font-size:.78rem;color:var(--muted)">tom morning badminton?</div>
+    <div style="font-size:.78rem;color:var(--muted)">tom morning?</div>
   </div>
   <div class="game-screen">
-    <canvas id="bad-stage" width="380" height="440"></canvas>
-    <div class="game-msg" id="bad-msg">keep the rally alive</div>
-    <div class="bad-controls">
-      <button class="bad-btn" id="bad-left">← Move</button>
-      <button class="bad-btn primary" id="bad-hit">HIT</button>
-      <button class="bad-btn" id="bad-right">Move →</button>
+    <div class="game-card">
+      <div class="bad-card-title">Badminton tom morning?</div>
+      <button class="game-btn" id="bad-external-btn" style="margin-top:1rem">in</button>
     </div>
-    <button class="game-btn" id="bad-start-btn">Start Local Game</button>
-    <button class="game-btn" id="bad-external-btn" style="background:#1b1b1b;border:1px solid var(--border)">In that case → badminton site</button>
   </div>
   <div class="bottom-nav" id="bottom-nav-bad"></div>
 </section>
@@ -755,7 +796,6 @@ last sober sighting: unavailable</div>
 </section>
 
 <script>
-/* ===== util ===== */
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
@@ -778,7 +818,7 @@ function updateNavs(activeId){
   $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.id === activeId));
 }
 
-/* ===== login ===== */
+/* login */
 let loginAttempts = 0;
 const loginErrors = [
   'Incorrect password. Try again.',
@@ -801,7 +841,7 @@ $('#login-btn').addEventListener('click', () => {
 
 $('#secret-link').addEventListener('click', launchApp);
 
-/* ===== confetti ===== */
+/* confetti */
 function startConfetti(){
   const canvas = $('#confetti-canvas');
   const ctx = canvas.getContext('2d');
@@ -848,7 +888,6 @@ function launchApp(){
   buildProfile();
   initBeerPong();
   initCigGame();
-  initBadminton();
   activateScreen('home');
   $('#birthday-overlay').classList.remove('hidden');
   startConfetti();
@@ -856,10 +895,9 @@ function launchApp(){
 
 $('#birthday-close').addEventListener('click', () => {
   $('#birthday-overlay').classList.add('hidden');
-  showToast('Welcome to InstaRaj 🎉');
 });
 
-/* ===== nav ===== */
+/* nav */
 const navItems = [
   {id:'home', type:'home'},
   {id:'beer-game', type:'beer'},
@@ -896,7 +934,7 @@ function buildAllNavs(){
   ['bottom-nav','bottom-nav-beer','bottom-nav-reels','bottom-nav-cig','bottom-nav-bad','bottom-nav-profile'].forEach(buildNav);
 }
 
-/* ===== stories ===== */
+/* stories */
 const stories = [
   {name:'nightmode', emoji:'🌙', bg:'#1a1a2e', msg:'still awake?'},
   {name:'badminton…', emoji:'🏸', bg:'#0d1b0d', msg:'court soon?'},
@@ -950,28 +988,31 @@ function openStory(i){
   ctx.fillText(s.msg, W/2, H/2 + 68);
 
   $('#story-viewer').classList.add('active');
-  clearTimeout(storyTimer);
+  clearTimeout(window.storyTimer);
   const fill = document.getElementById(`spf-${i}`);
   requestAnimationFrame(() => {
     fill.style.transition = 'width 5s linear';
     fill.style.width = '100%';
   });
-  storyTimer = setTimeout(closeStory, 5000);
+  window.storyTimer = setTimeout(closeStory, 5000);
 }
 
 function closeStory(){
-  clearTimeout(storyTimer);
+  clearTimeout(window.storyTimer);
   $('#story-viewer').classList.remove('active');
 }
 $('#story-close').addEventListener('click', closeStory);
 
-/* ===== posts ===== */
+/* posts */
 const posts = [
   { user:'nightmode', avatar:'🌙', loc:'3:41 AM · Still awake', color:'#1a1a2e', likes:'weball and 4 others', caption:'nightmode: 2:41 AM and somehow still not sleeping 🌙', comments:3, time:'1d', art:'night' },
   { user:'badmintonking', avatar:'🏸', loc:'The Court · Daily', color:'#0d1b0d', likes:'insomnia and 7 others', caption:'rajath.weball: you said you play daily bro 😂', comments:12, time:'2d', art:'court' },
   { user:'f1strategy', avatar:'🏎️', loc:'Monaco · Paddock Access', color:'#1a0d0d', likes:'gridlock and 22 others', caption:'f1brain: strategy so strong he explained F1 for 40 mins 💀', comments:8, time:'3d', art:'f1' },
   { user:'rajath.weball', avatar:'🍺', loc:'Somewhere · Last seen: unknown', color:'#0d0d1a', likes:'said last one 4 drinks ago', caption:'rajath.weball: said "last one" 4 drinks ago. still going. fuck it we ball 🍺', comments:19, time:'5d', art:'beer' }
 ];
+
+let currentOpenedPost = null;
+const likedPosts = {};
 
 function buildPosts(){
   const c = $('#posts-container');
@@ -1018,6 +1059,7 @@ function buildPosts(){
     drawPostArt(d.querySelector('canvas'), p.art, p.color, 400, 400);
 
     const postImg = d.querySelector('.post-img');
+
     let lastTap = 0;
     let singleTapTimer = null;
     let startX = 0;
@@ -1164,12 +1206,14 @@ function drawPostArt(canvas, type, color, W = 400, H = 400){
     ctx.beginPath();
     ctx.moveTo(W*.35,H*.2); ctx.lineTo(W*.65,H*.2); ctx.lineTo(W*.7,H*.88); ctx.lineTo(W*.3,H*.88); ctx.closePath();
     ctx.fill();
+
     const grad = ctx.createLinearGradient(0,H*.38,0,H*.88);
     grad.addColorStop(0,'#f5c842'); grad.addColorStop(1,'#c8860a');
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.moveTo(W*.37,H*.39); ctx.lineTo(W*.63,H*.39); ctx.lineTo(W*.69,H*.86); ctx.lineTo(W*.31,H*.86); ctx.closePath();
     ctx.fill();
+
     ctx.fillStyle = '#fffde7';
     for (let i=0;i<8;i++) {
       ctx.beginPath();
@@ -1179,7 +1223,7 @@ function drawPostArt(canvas, type, color, W = 400, H = 400){
   }
 }
 
-/* ===== reels ===== */
+/* reels */
 const reels = [
   { user:'nightmode', caption:'2:41 AM and still no sleep. classic pattern 🌙', emoji:'🌙', bg:'#0a0a1e', glow:'#4a90d9' },
   { user:'rajath.weball', caption:'"last one" he said. 45 mins ago. 🍺', emoji:'🍺', bg:'#1a0d00', glow:'#f5c842' },
@@ -1226,8 +1270,8 @@ function buildReels(){
   wrap.addEventListener('touchend', e => {
     const dy = startY - e.changedTouches[0].clientY;
     if (Math.abs(dy) > 50) {
-      currentReel = Math.max(0, Math.min(reels.length - 1, currentReel + (dy > 0 ? 1 : -1)));
-      $$('.reel').forEach((el, i) => el.style.transform = `translateY(${(i-currentReel)*100}%)`);
+      window.currentReel = Math.max(0, Math.min(reels.length - 1, (window.currentReel || 0) + (dy > 0 ? 1 : -1)));
+      $$('.reel').forEach((el, i) => el.style.transform = `translateY(${(i-(window.currentReel||0))*100}%)`);
     }
   }, { passive:true });
 }
@@ -1251,36 +1295,40 @@ function drawReel(canvas, reel){
   }
 }
 
-/* ===== beer pong local ===== */
-let beerCtx, beerCanvasEl;
-let pongBall, pongDragging = false, pongAim = {x:0,y:0}, pongCups = [], pongShots = 6, pongRunning = false;
+/* beer pong bounce */
+let beerCanvas, beerCtx;
+let beerBall, beerShots = 6, beerRunning = false, beerDrinkTimer = null;
+let beerCups = [];
+let beerBounces = 0;
 
 function initBeerPong(){
-  beerCanvasEl = $('#beer-stage');
-  beerCtx = beerCanvasEl.getContext('2d');
+  beerCanvas = $('#beer-stage');
+  beerCtx = beerCanvas.getContext('2d');
   resetBeerPong();
   drawBeerPong();
 }
 
 function resetBeerPong(){
-  const W = beerCanvasEl.width, H = beerCanvasEl.height;
-  pongBall = { x:W/2, y:H-50, vx:0, vy:0, r:10, active:false };
-  pongShots = 6;
-  pongDragging = false;
-  pongCups = [
-    {x:W*.50, y:108, hit:false},
-    {x:W*.44, y:140, hit:false},
-    {x:W*.56, y:140, hit:false},
-    {x:W*.38, y:172, hit:false},
-    {x:W*.50, y:172, hit:false},
-    {x:W*.62, y:172, hit:false}
+  const W = beerCanvas.width, H = beerCanvas.height;
+  beerBall = { x: W/2, y: H-48, vx: 0, vy: 0, r: 10, active: false };
+  beerShots = 6;
+  beerBounces = 0;
+  beerRunning = false;
+  beerCups = [
+    {x:W*.50, y:115, hit:false},
+    {x:W*.44, y:148, hit:false},
+    {x:W*.56, y:148, hit:false},
+    {x:W*.38, y:181, hit:false},
+    {x:W*.50, y:181, hit:false},
+    {x:W*.62, y:181, hit:false}
   ];
+  $('#drink-overlay').classList.remove('show');
 }
 
 function drawCup(ctx, x, y, hit){
   ctx.save();
   ctx.translate(x, y);
-  ctx.fillStyle = hit ? 'rgba(150,150,150,.35)' : '#df473f';
+  ctx.fillStyle = hit ? 'rgba(140,140,140,.35)' : '#df473f';
   ctx.beginPath();
   ctx.moveTo(-18,-8); ctx.lineTo(18,-8); ctx.lineTo(11,26); ctx.lineTo(-11,26); ctx.closePath();
   ctx.fill();
@@ -1292,146 +1340,164 @@ function drawCup(ctx, x, y, hit){
 }
 
 function drawBeerPong(){
-  const ctx = beerCtx, W = beerCanvasEl.width, H = beerCanvasEl.height;
+  const ctx = beerCtx, W = beerCanvas.width, H = beerCanvas.height;
   ctx.clearRect(0,0,W,H);
 
-  // table wood
   const wood = ctx.createLinearGradient(0,0,0,H);
-  wood.addColorStop(0,'#6f3b20');
-  wood.addColorStop(.32,'#9b5d2d');
-  wood.addColorStop(.33,'#c08142');
-  wood.addColorStop(1,'#8f5628');
+  wood.addColorStop(0,'#5f341d');
+  wood.addColorStop(.25,'#8f5428');
+  wood.addColorStop(.26,'#b06f38');
+  wood.addColorStop(1,'#7b4724');
   ctx.fillStyle = wood;
   ctx.fillRect(0,0,W,H);
 
-  // lane
-  ctx.fillStyle = 'rgba(255,225,170,.14)';
-  ctx.fillRect(W*.16, 36, W*.68, H-72);
-  ctx.strokeStyle = 'rgba(255,220,150,.28)';
+  ctx.fillStyle = 'rgba(255,224,160,.12)';
+  ctx.fillRect(W*.16, 34, W*.68, H-68);
+  ctx.strokeStyle = 'rgba(255,220,150,.26)';
   ctx.lineWidth = 3;
-  ctx.strokeRect(W*.16, 36, W*.68, H-72);
+  ctx.strokeRect(W*.16, 34, W*.68, H-68);
 
-  // decorative bottles
+  // side bottles
   ctx.fillStyle = '#a87c2d';
-  for (const x of [30,52,W-52,W-30]) {
-    ctx.fillRect(x-6, 66, 12, 70);
+  for (const x of [28,50,W-50,W-28]) {
+    ctx.fillRect(x-6, 78, 12, 70);
     ctx.beginPath();
-    ctx.arc(x, 60, 9, 0, Math.PI*2);
+    ctx.arc(x, 72, 9, 0, Math.PI*2);
     ctx.fill();
   }
 
-  pongCups.forEach(c => drawCup(ctx, c.x, c.y, c.hit));
+  beerCups.forEach(c => drawCup(ctx, c.x, c.y, c.hit));
 
-  if (pongDragging && !pongBall.active) {
-    ctx.strokeStyle = 'rgba(255,255,255,.45)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(pongBall.x, pongBall.y);
-    ctx.lineTo(pongAim.x, pongAim.y);
-    ctx.stroke();
-  }
-
+  // ball
   ctx.fillStyle = '#fff';
   ctx.beginPath();
-  ctx.arc(pongBall.x, pongBall.y, pongBall.r, 0, Math.PI*2);
+  ctx.arc(beerBall.x, beerBall.y, beerBall.r, 0, Math.PI*2);
   ctx.fill();
 
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 16px sans-serif';
-  ctx.fillText(`Shots: ${pongShots}`, 16, 24);
-
-  const left = pongCups.filter(c => !c.hit).length;
-  ctx.fillText(`Cups: ${left}`, W - 80, 24);
+  ctx.fillText(`Shots: ${beerShots}`, 16, 24);
+  ctx.fillText(`Cups: ${beerCups.filter(c => !c.hit).length}`, W - 82, 24);
 }
 
-function runBeerPongLoop(){
-  if (!pongRunning) return;
+function resetBeerBall(){
+  beerBall.x = beerCanvas.width/2;
+  beerBall.y = beerCanvas.height-48;
+  beerBall.vx = 0;
+  beerBall.vy = 0;
+  beerBall.active = false;
+  beerBounces = 0;
+}
 
-  if (pongBall.active) {
-    pongBall.x += pongBall.vx;
-    pongBall.y += pongBall.vy;
-    pongBall.vy += 0.16;
+function showDrinkShot(){
+  $('#drink-overlay').classList.add('show');
+  clearTimeout(beerDrinkTimer);
+  beerDrinkTimer = setTimeout(() => {
+    $('#drink-overlay').classList.remove('show');
+  }, 1300);
+}
 
-    for (const cup of pongCups) {
+function startBeerShot(targetX){
+  if (!beerRunning || beerBall.active) return;
+  const dx = targetX - beerBall.x;
+  beerBall.vx = dx * 0.03;
+  beerBall.vy = -8.2;
+  beerBall.active = true;
+  beerBounces = 0;
+}
+
+function beerLoop(){
+  if (!beerRunning) return;
+
+  if (beerBall.active) {
+    beerBall.x += beerBall.vx;
+    beerBall.y += beerBall.vy;
+    beerBall.vy += 0.26;
+
+    const floorY = beerCanvas.height - 38;
+
+    // bounce on table
+    if (beerBall.y >= floorY && beerBall.vy > 0) {
+      beerBall.y = floorY;
+      beerBall.vy *= -0.58;
+      beerBall.vx *= 0.92;
+      beerBounces++;
+      if (Math.abs(beerBall.vy) < 1.7) {
+        beerBall.active = false;
+        beerShots--;
+        $('#beer-msg').textContent = 'missed. bottoms up';
+        showDrinkShot();
+        if (beerShots <= 0) {
+          beerRunning = false;
+          $('#beer-msg').textContent = 'game over bro 🍺';
+        } else {
+          setTimeout(resetBeerBall, 600);
+        }
+      }
+    }
+
+    // cup hit
+    for (const cup of beerCups) {
       if (cup.hit) continue;
-      const dx = pongBall.x - cup.x;
-      const dy = pongBall.y - (cup.y + 4);
+      const dx = beerBall.x - cup.x;
+      const dy = beerBall.y - (cup.y + 4);
       const dist = Math.sqrt(dx*dx + dy*dy);
       if (dist < 13) {
         cup.hit = true;
-        pongBall.active = false;
-        showToast('bottoms up rajath!!');
+        beerBall.active = false;
         $('#beer-msg').textContent = 'bottoms up rajath!!';
-        setTimeout(() => resetBeerBall(), 450);
+        showToast('bottoms up rajath!!');
+        setTimeout(resetBeerBall, 500);
       }
     }
 
-    if (pongBall.y > beerCanvasEl.height + 30 || pongBall.x < -30 || pongBall.x > beerCanvasEl.width + 30) {
-      pongBall.active = false;
-      pongShots--;
-      if (pongShots <= 0) {
-        pongRunning = false;
+    // wall miss
+    if (beerBall.x < -24 || beerBall.x > beerCanvas.width + 24 || beerBall.y > beerCanvas.height + 60) {
+      beerBall.active = false;
+      beerShots--;
+      $('#beer-msg').textContent = 'missed. bottoms up';
+      showDrinkShot();
+      if (beerShots <= 0) {
+        beerRunning = false;
         $('#beer-msg').textContent = 'game over bro 🍺';
       } else {
-        $('#beer-msg').textContent = 'missed. run it back';
-        resetBeerBall();
+        setTimeout(resetBeerBall, 600);
       }
     }
 
-    if (pongCups.every(c => c.hit)) {
-      pongRunning = false;
+    if (beerCups.every(c => c.hit)) {
+      beerRunning = false;
       $('#beer-msg').textContent = 'clean sweep 🍺';
       showToast('all cups down');
     }
   }
 
   drawBeerPong();
-  requestAnimationFrame(runBeerPongLoop);
+  requestAnimationFrame(beerLoop);
 }
 
-function resetBeerBall(){
-  pongBall.x = beerCanvasEl.width/2;
-  pongBall.y = beerCanvasEl.height-50;
-  pongBall.vx = 0;
-  pongBall.vy = 0;
-  pongBall.active = false;
-}
+$('#beer-stage').addEventListener('click', (e) => {
+  const r = beerCanvas.getBoundingClientRect();
+  const x = e.clientX - r.left;
+  startBeerShot(x);
+});
 
-$('#beer-stage').addEventListener('touchstart', e => {
-  if (!pongRunning || pongBall.active) return;
-  pongDragging = true;
-  const r = beerCanvasEl.getBoundingClientRect();
-  pongAim.x = e.touches[0].clientX - r.left;
-  pongAim.y = e.touches[0].clientY - r.top;
-}, { passive:true });
-
-$('#beer-stage').addEventListener('touchmove', e => {
-  if (!pongDragging || pongBall.active) return;
-  const r = beerCanvasEl.getBoundingClientRect();
-  pongAim.x = e.touches[0].clientX - r.left;
-  pongAim.y = e.touches[0].clientY - r.top;
-}, { passive:true });
-
-$('#beer-stage').addEventListener('touchend', () => {
-  if (!pongDragging || pongBall.active) return;
-  pongDragging = false;
-  const dx = pongBall.x - pongAim.x;
-  const dy = pongBall.y - pongAim.y;
-  pongBall.vx = dx * 0.06;
-  pongBall.vy = dy * 0.06;
-  pongBall.active = true;
+$('#beer-stage').addEventListener('touchstart', (e) => {
+  const r = beerCanvas.getBoundingClientRect();
+  const x = e.touches[0].clientX - r.left;
+  startBeerShot(x);
 }, { passive:true });
 
 $('#beer-start-btn').addEventListener('click', () => {
   resetBeerPong();
-  pongRunning = true;
-  $('#beer-msg').textContent = 'drag and release to aim';
+  beerRunning = true;
+  $('#beer-msg').textContent = 'tap to bounce the ball';
   drawBeerPong();
-  requestAnimationFrame(runBeerPongLoop);
+  requestAnimationFrame(beerLoop);
 });
 
-/* ===== cig game ===== */
-let cigCanvasEl, cigCtx, cigX = 180, cigLives = 3, cigDrops = [], cigRunning = false;
+/* cig */
+let cigCanvasEl, cigCtx, cigX = 180, cigLives = 3, cigDrops = [], cigRunning = false, cigFrame = 0;
 
 function initCigGame(){
   cigCanvasEl = $('#cig-stage');
@@ -1449,18 +1515,19 @@ function resetCigGame(){
   cigLives = 3;
   cigDrops = [];
   cigRunning = false;
+  cigFrame = 0;
   updateCigLives();
   $('#cig-msg').textContent = 'protect the priority';
 }
 
 function drawSmallCig(x, y){
   cigCtx.fillStyle = '#fff';
-  cigCtx.fillRect(x - 20, y, 34, 9);
+  cigCtx.fillRect(x - 14, y, 24, 6);
   cigCtx.fillStyle = '#d28a2f';
-  cigCtx.fillRect(x + 14, y, 13, 9);
+  cigCtx.fillRect(x + 10, y, 9, 6);
   cigCtx.fillStyle = '#ff6a2f';
   cigCtx.beginPath();
-  cigCtx.arc(x - 23, y + 4.5, 3, 0, Math.PI * 2);
+  cigCtx.arc(x - 16, y + 3, 2.2, 0, Math.PI * 2);
   cigCtx.fill();
 }
 
@@ -1480,31 +1547,39 @@ function drawCigGame(){
 
   cigDrops.forEach(d => {
     cigCtx.strokeStyle = '#7fc8ff';
-    cigCtx.lineWidth = 2;
+    cigCtx.lineWidth = 1.8;
     cigCtx.beginPath();
     cigCtx.moveTo(d.x,d.y);
-    cigCtx.lineTo(d.x,d.y+12);
+    cigCtx.lineTo(d.x,d.y+10);
     cigCtx.stroke();
   });
 
-  drawSmallCig(cigX, H - 70);
+  drawSmallCig(cigX, H - 64);
 }
 
 function cigLoop(){
   if (!cigRunning) return;
 
-  if (Math.random() < 0.22) {
-    cigDrops.push({ x: Math.random()*cigCanvasEl.width, y:-10, speed:4 + Math.random()*3 });
+  cigFrame++;
+
+  const intensity = Math.min(0.12 + cigFrame / 1800, 0.48);
+
+  if (Math.random() < intensity) {
+    cigDrops.push({
+      x: Math.random() * cigCanvasEl.width,
+      y: -10,
+      speed: 3 + Math.random() * (2 + intensity * 7)
+    });
   }
 
   cigDrops.forEach(d => d.y += d.speed);
 
   cigDrops = cigDrops.filter(d => {
     const hit =
-      d.y > cigCanvasEl.height - 80 &&
-      d.y < cigCanvasEl.height - 60 &&
-      d.x > cigX - 24 &&
-      d.x < cigX + 28;
+      d.y > cigCanvasEl.height - 74 &&
+      d.y < cigCanvasEl.height - 58 &&
+      d.x > cigX - 16 &&
+      d.x < cigX + 18;
 
     if (hit) {
       cigLives--;
@@ -1534,167 +1609,18 @@ $('#cig-stage').addEventListener('touchmove', e => {
   cigX = e.touches[0].clientX - r.left;
 }, { passive:true });
 
-/* ===== badminton local ===== */
-let badCanvas, badCtx;
-let badRunning = false;
-let player = { x: 95, y: 330, w: 28, h: 56, vx: 0 };
-let opponent = { x: 285, y: 190, w: 28, h: 56 };
-let shuttle = { x: 280, y: 150, vx: -4.2, vy: 1.2, angle: -0.5 };
-let rally = 0;
-
-function initBadminton(){
-  badCanvas = $('#bad-stage');
-  badCtx = badCanvas.getContext('2d');
-  resetBadminton();
-  drawBadminton();
-}
-
-function resetBadminton(){
-  player.x = 95;
-  player.vx = 0;
-  shuttle.x = badCanvas.width - 90;
-  shuttle.y = 150;
-  shuttle.vx = -4.2;
-  shuttle.vy = 1.2;
-  shuttle.angle = -0.5;
-  rally = 0;
-  badRunning = false;
-  $('#bad-msg').textContent = 'keep the rally alive';
-}
-
-function drawPlayer(x, y, color, flip = false){
-  badCtx.fillStyle = color;
-  badCtx.fillRect(x, y, 26, 56);
-  badCtx.fillStyle = '#fff';
-  badCtx.beginPath();
-  if (!flip) {
-    badCtx.ellipse(x + 28, y + 20, 12, 8, .5, 0, Math.PI*2);
-  } else {
-    badCtx.ellipse(x - 2, y + 20, 12, 8, -.5, 0, Math.PI*2);
-  }
-  badCtx.fill();
-}
-
-function drawShuttle(){
-  badCtx.save();
-  badCtx.translate(shuttle.x, shuttle.y);
-  badCtx.rotate(shuttle.angle);
-
-  badCtx.fillStyle = '#f4f1e8';
-  badCtx.beginPath();
-  badCtx.ellipse(0, 6, 8, 6, 0, 0, Math.PI*2);
-  badCtx.fill();
-
-  badCtx.strokeStyle = '#fff';
-  badCtx.lineWidth = 2;
-  for (let i = -3; i <= 3; i++) {
-    badCtx.beginPath();
-    badCtx.moveTo(0,0);
-    badCtx.lineTo(i * 4, -14);
-    badCtx.stroke();
-  }
-
-  badCtx.fillStyle = '#fff';
-  badCtx.beginPath();
-  badCtx.arc(0,0,4,0,Math.PI*2);
-  badCtx.fill();
-  badCtx.restore();
-}
-
-function drawBadminton(){
-  const W = badCanvas.width, H = badCanvas.height;
-  badCtx.clearRect(0,0,W,H);
-
-  // background
-  badCtx.fillStyle = '#0f2d5f';
-  badCtx.fillRect(0,0,W,H);
-  badCtx.fillStyle = '#18a082';
-  badCtx.fillRect(20,120,W-40,260);
-
-  badCtx.strokeStyle = '#fff';
-  badCtx.lineWidth = 2;
-  badCtx.strokeRect(20,120,W-40,260);
-  badCtx.beginPath(); badCtx.moveTo(W/2,120); badCtx.lineTo(W/2,380); badCtx.stroke();
-  badCtx.beginPath(); badCtx.moveTo(20,250); badCtx.lineTo(W-20,250); badCtx.stroke();
-
-  // net
-  badCtx.fillStyle = '#fff';
-  badCtx.fillRect(20,250,W-40,4);
-
-  // players
-  drawPlayer(player.x, player.y, '#e8eefb', false);
-  drawPlayer(opponent.x, opponent.y, '#344f7d', true);
-
-  // shuttle
-  drawShuttle();
-
-  // score
-  badCtx.fillStyle = '#fff';
-  badCtx.font = 'bold 20px sans-serif';
-  badCtx.fillText('Rally: ' + rally, 18, 30);
-}
-
-function badLoop(){
-  if (!badRunning) return;
-
-  player.x += player.vx;
-  player.x = Math.max(34, Math.min(badCanvas.width/2 - 50, player.x));
-
-  shuttle.x += shuttle.vx;
-  shuttle.y += shuttle.vy;
-  shuttle.vy += 0.045;
-  shuttle.angle = Math.atan2(shuttle.vy, shuttle.vx);
-
-  // opponent auto return
-  if (shuttle.x > badCanvas.width - 86 && shuttle.vx > 0) {
-    shuttle.vx = -(4.6 + rally * 0.08);
-    shuttle.vy = -2.35;
-  }
-
-  if (shuttle.y > 368) {
-    badRunning = false;
-    $('#bad-msg').textContent = rally >= 4 ? 'okay wait that was clean' : 'you said you play daily';
-    drawBadminton();
-    return;
-  }
-
-  drawBadminton();
-  requestAnimationFrame(badLoop);
-}
-
-function tryHitShuttle(){
-  if (!badRunning) return;
-  const racketX = player.x + 28;
-  const hitWindow = Math.abs(shuttle.x - racketX) < 44 && shuttle.y > 230;
-  if (hitWindow && shuttle.vx < 0) {
-    shuttle.vx = 4.8 + rally * 0.08;
-    shuttle.vy = -2.9;
-    rally++;
-    $('#bad-msg').textContent = rally > 5 ? 'you’re locked in' : 'nice';
-  } else {
-    $('#bad-msg').textContent = 'too early / too late';
-  }
-}
-
-$('#bad-start-btn').addEventListener('click', () => {
-  resetBadminton();
-  badRunning = true;
-  $('#bad-msg').textContent = 'tom morning badminton?';
-  requestAnimationFrame(badLoop);
+$('#cig-stage').addEventListener('mousemove', e => {
+  if (!cigRunning) return;
+  const r = cigCanvasEl.getBoundingClientRect();
+  cigX = e.clientX - r.left;
 });
 
-$('#bad-left').addEventListener('touchstart', () => player.vx = -4.5, { passive:true });
-$('#bad-left').addEventListener('touchend', () => player.vx = 0, { passive:true });
-$('#bad-right').addEventListener('touchstart', () => player.vx = 4.5, { passive:true });
-$('#bad-right').addEventListener('touchend', () => player.vx = 0, { passive:true });
-$('#bad-hit').addEventListener('click', tryHitShuttle);
-$('#bad-stage').addEventListener('click', tryHitShuttle);
-
+/* badminton */
 $('#bad-external-btn').addEventListener('click', () => {
   window.open('https://poki.com/en/g/power-badminton', '_blank', 'noopener,noreferrer');
 });
 
-/* ===== profile ===== */
+/* profile */
 function buildProfile(){
   const highlights = [
     {name:'NightMode', e:'🌙'},

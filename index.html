@@ -1,165 +1,1728 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>InstaRaj</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:sans-serif; background:#000; color:#fff; }
-.screen { display:none; height:100vh; flex-direction:column; }
-.screen.active { display:flex; }
-.topbar { padding:10px; border-bottom:1px solid #222; }
-.game-screen { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-button { padding:10px 20px; border:none; border-radius:10px; background:#0095f6; color:#fff; font-weight:bold; }
-canvas { background:#111; border-radius:12px; }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  :root{
+    --bg:#000;
+    --surface:#121212;
+    --surface-2:#171717;
+    --border:#2a2a2a;
+    --text:#fff;
+    --muted:#8e8e8e;
+    --blue:#0095f6;
+    --red:#ed4956;
+    --green:#29cc74;
+    --yellow:#ffd54d;
+    --font:'DM Sans',sans-serif;
+    --grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+    --navH:62px;
+  }
+
+  html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    color:var(--text);
+    font-family:var(--font);
+  }
+
+  .screen{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column;
+    background:var(--bg);
+    transform:translateX(100%);
+    opacity:0;
+    pointer-events:none;
+    transition:transform .32s cubic-bezier(.2,.7,.2,1), opacity .25s ease;
+  }
+  .screen.active{
+    transform:translateX(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+  .screen.overlay{
+    z-index:300;
+    background:#000;
+  }
+  .hidden{display:none!important}
+
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:calc(var(--navH) + 18px);
+    transform:translateX(-50%) translateY(12px);
+    background:#171717;
+    border:1px solid var(--border);
+    color:#fff;
+    font-size:.83rem;
+    padding:.65rem 1rem;
+    border-radius:999px;
+    opacity:0;
+    pointer-events:none;
+    transition:.22s ease;
+    z-index:1200;
+    white-space:nowrap;
+    max-width:90vw;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  /* LOGIN */
+  #login{
+    align-items:center;
+    justify-content:center;
+    padding:2rem;
+  }
+  .logo-wrap{text-align:center;margin-bottom:2.25rem}
+  .logo-text{
+    font-family:'Dancing Script',cursive;
+    font-size:3rem;
+    letter-spacing:-1px;
+  }
+  .login-card{
+    width:100%;
+    max-width:360px;
+  }
+  .inp-wrap{position:relative;margin-bottom:.75rem}
+  .inp-wrap input{
+    width:100%;
+    background:#121212;
+    border:1px solid var(--border);
+    color:#fff;
+    padding:.95rem 3rem .95rem 1rem;
+    border-radius:8px;
+    font-size:.92rem;
+    font-family:var(--font);
+    outline:none;
+  }
+  .inp-wrap .eye{
+    position:absolute;right:1rem;top:50%;transform:translateY(-50%);
+    color:var(--muted);cursor:pointer;user-select:none;
+  }
+  .err-msg{
+    min-height:1.2rem;
+    text-align:center;
+    color:var(--red);
+    font-size:.82rem;
+    opacity:0;
+    transition:.2s;
+    margin:.3rem 0;
+  }
+  .err-msg.show{opacity:1}
+  .btn-primary{
+    width:100%;
+    border:none;
+    background:var(--blue);
+    color:#fff;
+    padding:.92rem 1rem;
+    border-radius:10px;
+    font-weight:700;
+    font-size:.95rem;
+    cursor:pointer;
+    font-family:var(--font);
+  }
+  .divider{
+    display:flex;align-items:center;gap:1rem;
+    margin:1.1rem 0;
+    color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;
+  }
+  .divider:before,.divider:after{
+    content:"";flex:1;height:1px;background:var(--border);
+  }
+  .forgot{text-align:center;color:var(--blue);font-size:.85rem;font-weight:600;cursor:pointer}
+  .secret-link{
+    display:none;
+    text-align:center;
+    margin-top:.8rem;
+    font-size:.9rem;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .secret-link span{color:var(--blue);font-weight:700}
+  .login-footer{
+    position:absolute;bottom:2rem;left:0;right:0;
+    text-align:center;color:var(--muted);font-size:.82rem;
+  }
+  .login-footer b{color:#fff}
+
+  /* birthday */
+  #confetti-canvas{
+    position:fixed; inset:0; z-index:1201; pointer-events:none; display:none;
+  }
+  .birthday-overlay{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.72);
+    display:flex; align-items:center; justify-content:center;
+    z-index:1200;
+  }
+  .birthday-card{
+    width:min(88vw,340px);
+    background:#111;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:1.25rem 1rem;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+  }
+  .birthday-title{font-size:1.55rem;font-weight:700;line-height:1.18}
+  .birthday-sub{font-size:.88rem;color:var(--muted);margin-top:.55rem}
+  .birthday-btn{
+    border:none;background:var(--blue);color:#fff;border-radius:999px;
+    padding:.8rem 1.2rem;margin-top:1rem;font-weight:700;cursor:pointer;
+    font-family:var(--font);
+  }
+
+  /* app */
+  .topbar{
+    height:52px;
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 1rem;
+    flex-shrink:0;
+    background:#000;
+  }
+  .topbar-logo{
+    font-family:'Dancing Script',cursive;
+    font-size:1.8rem;
+  }
+  .topbar-title{
+    font-size:1rem;font-weight:700;
+  }
+  .top-icons{
+    display:flex;align-items:center;gap:1rem;
+  }
+  .icon{
+    width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;
+  }
+  .icon svg{
+    width:24px;height:24px;
+    fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  }
+
+  .bottom-nav{
+    position:fixed;left:0;right:0;bottom:0;height:var(--navH);
+    display:flex;align-items:center;
+    background:#000;border-top:1px solid var(--border);
+    z-index:90;
+  }
+  .nav-item{
+    flex:1;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;cursor:pointer;
+  }
+  .nav-item svg{
+    width:26px;height:26px;
+    fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+    transition:transform .15s ease;
+  }
+  .nav-item.active svg{transform:scale(1.08)}
+  .nav-dot{
+    width:4px;height:4px;border-radius:50%;background:#fff;
+    position:absolute;bottom:6px;opacity:0;
+  }
+  .nav-item.active .nav-dot{opacity:1}
+
+  /* home */
+  .feed{
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:calc(var(--navH) + 8px);
+  }
+  .feed::-webkit-scrollbar,.stories::-webkit-scrollbar,.profile-scroll::-webkit-scrollbar,.post-view-wrap::-webkit-scrollbar,.highlights-row::-webkit-scrollbar{display:none}
+
+  .stories{
+    display:flex;gap:.85rem;
+    padding:.95rem 1rem;
+    overflow-x:auto;
+    border-bottom:1px solid var(--border);
+  }
+  .story{
+    flex-shrink:0;
+    width:72px;
+    text-align:center;
+    cursor:pointer;
+  }
+  .story-ring{
+    width:68px;height:68px;border-radius:50%;
+    padding:2px;
+    background:var(--grad);
+    margin:0 auto .35rem;
+  }
+  .story-inner{
+    width:100%;height:100%;
+    border-radius:50%;
+    background:var(--surface);
+    border:2px solid #000;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.25rem;
+  }
+  .story-name{
+    font-size:.68rem;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  .post{
+    border-bottom:1px solid var(--border);
+    margin-bottom:.2rem;
+  }
+  .post-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:.8rem 1rem;
+  }
+  .post-user{
+    display:flex;align-items:center;gap:.7rem;
+  }
+  .post-avatar{
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.9rem;flex-shrink:0;
+  }
+  .post-user-meta{display:flex;flex-direction:column}
+  .post-username{font-size:.88rem;font-weight:700}
+  .post-location{font-size:.72rem;color:var(--muted)}
+  .post-img{
+    width:100%;
+    aspect-ratio:1;
+    background:#111;
+    position:relative;
+    overflow:hidden;
+  }
+  .post-img canvas{
+    width:100%;height:100%;display:block;
+  }
+  .sticker-anim{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;transform:scale(.45);
+    pointer-events:none;
+    transition:opacity .16s ease, transform .16s ease;
+  }
+  .sticker-anim.show{
+    opacity:1;transform:scale(1);
+  }
+  .sticker-anim.hide{
+    opacity:0;transform:scale(1.45);
+    transition:opacity .28s ease, transform .28s ease;
+  }
+  .sticker-anim img{
+    width:150px;height:150px;object-fit:contain;
+    filter:drop-shadow(0 14px 32px rgba(0,0,0,.45));
+  }
+
+  .post-actions{
+    display:flex;align-items:center;gap:1rem;
+    padding:.75rem 1rem .45rem;
+  }
+  .post-actions .save{margin-left:auto}
+  .post-actions svg,#pv-like-btn svg,.post-view-actions svg{
+    width:26px;height:26px;
+    fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  }
+  .like-btn.liked svg,#pv-like-btn.liked svg{stroke:var(--red);fill:var(--red)}
+  .post-likes,.post-caption,.post-comments,.post-time{padding:0 1rem}
+  .post-likes{font-size:.84rem;font-weight:700;margin-bottom:.3rem}
+  .post-caption{font-size:.84rem;line-height:1.52;margin-bottom:.3rem}
+  .post-caption b{margin-right:.3rem}
+  .post-comments{font-size:.78rem;color:var(--muted);margin-bottom:.3rem}
+  .post-time{font-size:.72rem;color:var(--muted);padding-bottom:.8rem;text-transform:uppercase;letter-spacing:.04em}
+
+  /* story viewer */
+  #story-viewer{z-index:300;background:#000}
+  .story-progress{
+    display:flex;gap:3px;padding:.75rem 1rem .4rem;
+  }
+  .story-prog-bar{flex:1;height:2px;background:rgba(255,255,255,.25);border-radius:1px;overflow:hidden}
+  .story-prog-fill{height:100%;width:0;background:#fff}
+  .story-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:.35rem 1rem .6rem;
+  }
+  .story-user{
+    display:flex;align-items:center;gap:.65rem;
+  }
+  .story-close{
+    font-size:1.55rem;cursor:pointer;line-height:1;
+  }
+  #story-canvas{flex:1;width:100%;display:block}
+
+  /* post viewer */
+  #post-viewer{z-index:320;background:#000}
+  .post-view-top{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:.8rem 1rem;border-bottom:1px solid var(--border);
+  }
+  .post-view-close{font-size:1.55rem;cursor:pointer;line-height:1}
+  .post-view-wrap{
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding-bottom:calc(var(--navH) + 12px);
+  }
+  .post-view-image{width:100%;aspect-ratio:1;background:#111}
+  .post-view-image canvas{width:100%;height:100%;display:block}
+  .post-view-meta{padding:1rem}
+  .post-view-user{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
+  .post-view-avatar{
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-weight:700;
+  }
+  .post-view-username{font-size:.92rem;font-weight:700}
+  .post-view-location{font-size:.75rem;color:var(--muted)}
+  .post-view-actions{display:flex;align-items:center;gap:1rem;margin-bottom:.8rem}
+  .post-view-actions .save{margin-left:auto}
+  .post-view-likes{font-size:.86rem;font-weight:700;margin-bottom:.45rem}
+  .post-view-caption{font-size:.86rem;line-height:1.58;margin-bottom:.45rem}
+  .post-view-caption b{margin-right:.35rem}
+  .post-view-comments{font-size:.8rem;color:var(--muted);margin-bottom:.45rem}
+  .post-view-time{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+
+  /* reels */
+  .reels-wrap{
+    flex:1;position:relative;overflow:hidden;
+  }
+  .reel{
+    position:absolute;inset:0;
+    transition:transform .28s cubic-bezier(.2,.7,.2,1);
+  }
+  .reel canvas{
+    width:100%;height:100%;display:block;
+  }
+  .reel-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(to top, rgba(0,0,0,.72) 22%, transparent 60%);
+  }
+  .reel-info{
+    position:absolute;left:1rem;right:72px;bottom:1rem;
+  }
+  .reel-user{font-size:.95rem;font-weight:700;margin-bottom:.3rem}
+  .reel-caption{font-size:.83rem;line-height:1.45;color:rgba(255,255,255,.95)}
+  .reel-side{
+    position:absolute;right:12px;bottom:1rem;
+    display:flex;flex-direction:column;gap:1.2rem;align-items:center;
+  }
+  .reel-side .item{display:flex;flex-direction:column;align-items:center;gap:.25rem}
+  .reel-side svg{
+    width:28px;height:28px;
+    fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  }
+  .reel-side span{font-size:.72rem}
+
+  /* profile */
+  .profile-scroll{
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding-bottom:calc(var(--navH) + 12px);
+  }
+  .profile-header{padding:1rem}
+  .profile-top{display:flex;align-items:center;gap:1.4rem;margin-bottom:1rem}
+  .profile-pic{
+    width:86px;height:86px;border-radius:50%;
+    background:var(--grad);padding:2px;flex-shrink:0;
+  }
+  .profile-pic-inner{
+    width:100%;height:100%;
+    border-radius:50%;background:var(--surface);
+    display:flex;align-items:center;justify-content:center;
+    font-size:2rem;border:2px solid #000;
+  }
+  .profile-stats{flex:1;display:flex;justify-content:space-around}
+  .stat{text-align:center}
+  .stat-num{display:block;font-size:1.1rem;font-weight:700}
+  .stat-label{font-size:.75rem;color:var(--muted)}
+  .profile-name{font-size:.96rem;font-weight:700;margin-bottom:.25rem}
+  .profile-bio{font-size:.83rem;line-height:1.5;white-space:pre-line;margin-bottom:.45rem}
+  .profile-link{font-size:.82rem;color:var(--blue);font-weight:700}
+  .profile-actions{display:flex;gap:.5rem;margin-top:.75rem}
+  .profile-btn{
+    flex:1;background:var(--surface);color:#fff;border:none;
+    padding:.58rem;border-radius:8px;font-weight:700;font-family:var(--font);cursor:pointer;
+  }
+  .profile-btn.follow{background:var(--blue)}
+  .highlights{
+    padding:.8rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  }
+  .highlights-row{
+    display:flex;gap:1rem;overflow-x:auto;padding:0 1rem;
+  }
+  .highlight{flex-shrink:0;text-align:center}
+  .hl-ring{
+    width:62px;height:62px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--border);
+    background:var(--surface);
+    margin:0 auto .35rem;
+    font-size:1.4rem;
+  }
+  .hl-name{font-size:.7rem}
+  .posts-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;padding-top:1px;
+  }
+  .grid-post{
+    aspect-ratio:1;background:#111;overflow:hidden;cursor:pointer;
+  }
+  .grid-post canvas{width:100%;height:100%;display:block}
+
+  /* game cards */
+  .game-screen{
+    flex:1;
+    padding:1.2rem 1rem calc(var(--navH) + 10px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:.85rem;
+  }
+  .game-card{
+    width:min(92vw,360px);
+    background:#111;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:1.15rem;
+    text-align:center;
+    box-shadow:0 16px 40px rgba(0,0,0,.35);
+  }
+  .game-title{font-size:1.45rem;font-weight:700;margin-bottom:.35rem}
+  .game-sub{font-size:.88rem;color:var(--muted);line-height:1.55}
+  .game-btn{
+    border:none;background:var(--blue);color:#fff;border-radius:999px;
+    padding:.8rem 1.2rem;font-weight:700;font-family:var(--font);cursor:pointer;
+  }
+  .game-msg{
+    min-height:2rem;font-size:1rem;font-weight:700;text-align:center;
+  }
+
+  /* beer pong local */
+  #beer-stage{
+    width:min(94vw,380px);
+    height:500px;
+    background:linear-gradient(180deg,#2f180f,#6a391f 32%,#ad6f38 33%,#8c5428 100%);
+    border-radius:16px;
+    border:1px solid #4b2d18;
+    box-shadow:inset 0 0 0 3px rgba(255,218,150,.08);
+    display:block;
+  }
+
+  /* cig */
+  #cig-stage{
+    width:min(94vw,360px);
+    height:460px;
+    background:#08131f;
+    border-radius:14px;
+    border:1px solid #1f2e3a;
+    display:block;
+  }
+  .lives-row{
+    display:flex;align-items:center;justify-content:center;gap:.3rem;
+    min-height:1.4rem;
+    font-size:1.2rem;
+  }
+
+  /* badminton local */
+  #bad-stage{
+    width:min(94vw,380px);
+    height:440px;
+    background:linear-gradient(180deg,#183d7a,#0f2d5f 26%,#146a61 27%,#18a082 100%);
+    border-radius:14px;
+    border:1px solid #225f76;
+    display:block;
+  }
+  .bad-controls{
+    width:min(94vw,380px);
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:.6rem;
+  }
+  .bad-btn{
+    border:none;border-radius:12px;background:#181818;color:#fff;
+    border:1px solid var(--border);
+    padding:.85rem .5rem;
+    font-family:var(--font);font-weight:700;cursor:pointer;
+  }
+  .bad-btn.primary{background:var(--blue);border-color:transparent}
 </style>
 </head>
-
 <body>
 
-<!-- HOME -->
-<div id="home" class="screen active">
-  <div class="topbar">InstaRaj</div>
-  <div class="game-screen">
-    <button onclick="go('beer')">🍺 Beer Pong</button><br><br>
-    <button onclick="go('cig')">🚬 Save the Cig</button><br><br>
-    <button onclick="go('bad')">🏸 Badminton</button>
+<canvas id="confetti-canvas"></canvas>
+<div class="toast" id="toast"></div>
+
+<div id="birthday-overlay" class="birthday-overlay hidden">
+  <div class="birthday-card">
+    <div class="birthday-title">happy birthday mf 🎉</div>
+    <div class="birthday-sub">welcome to InstaRaj</div>
+    <button id="birthday-close" class="birthday-btn">enter</button>
   </div>
 </div>
+
+<!-- LOGIN -->
+<section class="screen active" id="login">
+  <div class="logo-wrap">
+    <div class="logo-text">Instagram</div>
+  </div>
+  <div class="login-card">
+    <div class="inp-wrap">
+      <input id="username-inp" type="text" placeholder="Username, phone or email" />
+    </div>
+    <div class="inp-wrap">
+      <input id="password-inp" type="password" placeholder="Password" />
+      <span class="eye" id="eye-toggle">👁</span>
+    </div>
+    <div class="err-msg" id="err-msg">Incorrect password.</div>
+    <button class="btn-primary" id="login-btn">Log in</button>
+    <div class="divider">or</div>
+    <div class="forgot">Forgot password?</div>
+    <div class="secret-link" id="secret-link">Continue with <span>InstaRaj</span> →</div>
+  </div>
+  <div class="login-footer">Don't have an account? <b>Sign up</b></div>
+</section>
+
+<!-- HOME -->
+<section class="screen" id="home">
+  <div class="topbar">
+    <div class="topbar-logo">InstaRaj</div>
+    <div class="top-icons">
+      <span class="icon">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </span>
+      <span class="icon">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </span>
+    </div>
+  </div>
+  <div class="feed">
+    <div class="stories" id="stories-row"></div>
+    <div id="posts-container"></div>
+  </div>
+  <div class="bottom-nav" id="bottom-nav"></div>
+</section>
 
 <!-- BEER -->
-<div id="beer" class="screen">
-  <div class="topbar">Beer Pong</div>
-  <div class="game-screen">
-    <button id="openBeer">Open Beer Pong</button>
-    <p>bottoms up rajath!!</p>
-    <button onclick="go('home')">Back</button>
+<section class="screen" id="beer-game">
+  <div class="topbar">
+    <div class="topbar-title">🍺 Beer Pong</div>
+    <div style="font-size:.78rem;color:var(--muted)">one player</div>
   </div>
-</div>
+  <div class="game-screen">
+    <canvas id="beer-stage" width="380" height="500"></canvas>
+    <div class="game-msg" id="beer-msg">drag and release to aim</div>
+    <button class="game-btn" id="beer-start-btn">Start Game</button>
+  </div>
+  <div class="bottom-nav" id="bottom-nav-beer"></div>
+</section>
 
-<!-- BADMINTON -->
-<div id="bad" class="screen">
-  <div class="topbar">BadminRaj</div>
-  <div class="game-screen">
-    <h2>tom morning badminton?</h2>
-    <button id="yesBtn">Yes obviously</button>
-    <p>in that case</p>
-    <button id="badLink">Take me to badminton site</button>
-    <button onclick="go('home')">Back</button>
+<!-- REELS -->
+<section class="screen" id="reels">
+  <div class="topbar">
+    <div class="topbar-title">Reels</div>
+    <span class="icon">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
   </div>
-</div>
+  <div class="reels-wrap" id="reels-wrap"></div>
+  <div class="bottom-nav" id="bottom-nav-reels"></div>
+</section>
 
 <!-- CIG -->
-<div id="cig" class="screen">
-  <div class="topbar">Save The Cig</div>
-  <div class="game-screen">
-    <canvas id="cigCanvas" width="320" height="400"></canvas>
-    <p id="cigMsg">protect the priority</p>
-    <p id="lives">🔥🔥🔥</p>
-    <button onclick="startCig()">Start</button>
-    <button onclick="go('home')">Back</button>
+<section class="screen" id="cig-game">
+  <div class="topbar">
+    <div class="topbar-title">🚬 Save The Cig</div>
+    <div style="font-size:.78rem;color:var(--muted)">protect the priority</div>
   </div>
-</div>
+  <div class="game-screen">
+    <canvas id="cig-stage" width="360" height="460"></canvas>
+    <div class="lives-row" id="cig-lives">🔥🔥🔥</div>
+    <div class="game-msg" id="cig-msg">protect the priority</div>
+    <div style="font-size:.85rem;color:var(--muted);margin-top:-.2rem">what plans bro</div>
+    <button class="game-btn" id="cig-start-btn">Start Game</button>
+  </div>
+  <div class="bottom-nav" id="bottom-nav-cig"></div>
+</section>
+
+<!-- BAD -->
+<section class="screen" id="badminton-game">
+  <div class="topbar">
+    <div class="topbar-title">🏸 BadminRaj</div>
+    <div style="font-size:.78rem;color:var(--muted)">tom morning badminton?</div>
+  </div>
+  <div class="game-screen">
+    <canvas id="bad-stage" width="380" height="440"></canvas>
+    <div class="game-msg" id="bad-msg">keep the rally alive</div>
+    <div class="bad-controls">
+      <button class="bad-btn" id="bad-left">← Move</button>
+      <button class="bad-btn primary" id="bad-hit">HIT</button>
+      <button class="bad-btn" id="bad-right">Move →</button>
+    </div>
+    <button class="game-btn" id="bad-start-btn">Start Local Game</button>
+    <button class="game-btn" id="bad-external-btn" style="background:#1b1b1b;border:1px solid var(--border)">In that case → badminton site</button>
+  </div>
+  <div class="bottom-nav" id="bottom-nav-bad"></div>
+</section>
+
+<!-- PROFILE -->
+<section class="screen" id="profile">
+  <div class="topbar">
+    <div class="topbar-title">rajath_weball</div>
+    <span class="icon">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </span>
+  </div>
+  <div class="profile-scroll">
+    <div class="profile-header">
+      <div class="profile-top">
+        <div class="profile-pic">
+          <div class="profile-pic-inner">🎂</div>
+        </div>
+        <div class="profile-stats">
+          <div class="stat"><span class="stat-num">21</span><span class="stat-label">posts</span></div>
+          <div class="stat"><span class="stat-num">365</span><span class="stat-label">nights up</span></div>
+          <div class="stat"><span class="stat-num">∞</span><span class="stat-label">takes</span></div>
+        </div>
+      </div>
+      <div class="profile-name">Rajath 🎉</div>
+      <div class="profile-bio">professional bad decisions consultant 🍺
+strategy expert. sleep hater.
+badminton god (self-declared)
+last sober sighting: unavailable</div>
+      <div class="profile-link">🏎️ f1 enthusiast · 🏸 "plays daily" · 🌙 insomniac</div>
+      <div class="profile-actions">
+        <button class="profile-btn follow">Follow</button>
+        <button class="profile-btn">Message</button>
+        <button class="profile-btn" style="flex:0;padding:.58rem .8rem">👤</button>
+      </div>
+    </div>
+    <div class="highlights">
+      <div class="highlights-row" id="hl-row"></div>
+    </div>
+    <div class="posts-grid" id="posts-grid"></div>
+    <div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem">happy birthday you menace</div>
+  </div>
+  <div class="bottom-nav" id="bottom-nav-profile"></div>
+</section>
+
+<!-- STORY VIEWER -->
+<section class="screen overlay" id="story-viewer">
+  <div class="story-progress" id="story-progress"></div>
+  <div class="story-header">
+    <div class="story-user">
+      <div class="post-avatar" id="sv-avatar" style="width:34px;height:34px">🌙</div>
+      <div>
+        <div style="font-size:.84rem;font-weight:700" id="sv-username">nightmode</div>
+        <div style="font-size:.72rem;color:var(--muted)" id="sv-time">3:17 AM</div>
+      </div>
+    </div>
+    <div class="story-close" id="story-close">✕</div>
+  </div>
+  <canvas id="story-canvas"></canvas>
+</section>
+
+<!-- POST VIEWER -->
+<section class="screen overlay" id="post-viewer">
+  <div class="post-view-top">
+    <div style="font-size:.95rem;font-weight:700">Post</div>
+    <div class="post-view-close" id="post-view-close">✕</div>
+  </div>
+  <div class="post-view-wrap">
+    <div class="post-view-image">
+      <canvas id="post-view-canvas" width="600" height="600"></canvas>
+    </div>
+    <div class="post-view-meta">
+      <div class="post-view-user">
+        <div class="post-view-avatar" id="pv-avatar">🌙</div>
+        <div>
+          <div class="post-view-username" id="pv-username">nightmode</div>
+          <div class="post-view-location" id="pv-location">3:41 AM · Still awake</div>
+        </div>
+      </div>
+      <div class="post-view-actions">
+        <div id="pv-like-btn">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <div class="save"><svg viewBox="0 0 24 24"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg></div>
+      </div>
+      <div class="post-view-likes" id="pv-likes"></div>
+      <div class="post-view-caption" id="pv-caption"></div>
+      <div class="post-view-comments" id="pv-comments"></div>
+      <div class="post-view-time" id="pv-time"></div>
+    </div>
+  </div>
+</section>
 
 <script>
+/* ===== util ===== */
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
 
-/* ---------- NAV ---------- */
-function go(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+function showToast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function activateScreen(id){
+  $$('.screen').forEach(s => {
+    if (!s.classList.contains('overlay')) s.classList.remove('active');
+  });
   document.getElementById(id).classList.add('active');
+  updateNavs(id);
 }
 
-/* ---------- BEER ---------- */
-document.getElementById("openBeer").onclick = () => {
-  window.open("https://6games.eu/games/718-beer-pong.html", "_blank");
-};
-
-/* ---------- BAD ---------- */
-document.getElementById("yesBtn").onclick = () => {
-  alert("proof tomorrow 7am 🏸");
-};
-document.getElementById("badLink").onclick = () => {
-  window.open("https://poki.com/en/g/power-badminton", "_blank");
-};
-
-/* ---------- CIG GAME ---------- */
-let canvas = document.getElementById("cigCanvas");
-let ctx = canvas.getContext("2d");
-
-let cigX = 160;
-let drops = [];
-let lives = 3;
-let running = false;
-
-function drawCig(){
-  ctx.fillStyle="white";
-  ctx.fillRect(cigX-15,350,30,8);
-
-  ctx.fillStyle="orange";
-  ctx.fillRect(cigX+15,350,10,8);
-
-  ctx.fillStyle="red";
-  ctx.beginPath();
-  ctx.arc(cigX-18,354,3,0,Math.PI*2);
-  ctx.fill();
+function updateNavs(activeId){
+  $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.id === activeId));
 }
 
-function updateLives(){
-  document.getElementById("lives").textContent = "🔥".repeat(lives);
-}
+/* ===== login ===== */
+let loginAttempts = 0;
+const loginErrors = [
+  'Incorrect password. Try again.',
+  'User not found. Check your details.',
+  'Too many failed attempts. Try again later.'
+];
 
-function startCig(){
-  lives=3;
-  drops=[];
-  running=true;
-  updateLives();
+$('#eye-toggle').addEventListener('click', () => {
+  const p = $('#password-inp');
+  p.type = p.type === 'password' ? 'text' : 'password';
+});
+
+$('#login-btn').addEventListener('click', () => {
+  $('#err-msg').textContent = loginErrors[Math.min(loginAttempts, loginErrors.length - 1)];
+  $('#err-msg').classList.add('show');
+  loginAttempts++;
+  if (loginAttempts >= 2) $('#secret-link').style.display = 'block';
+  setTimeout(() => $('#err-msg').classList.remove('show'), 2400);
+});
+
+$('#secret-link').addEventListener('click', launchApp);
+
+/* ===== confetti ===== */
+function startConfetti(){
+  const canvas = $('#confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.style.display = 'block';
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+
+  const pieces = Array.from({length:130}, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * canvas.height * .6,
+    w: 6 + Math.random() * 6,
+    h: 8 + Math.random() * 10,
+    dx: -2 + Math.random() * 4,
+    dy: 2 + Math.random() * 4,
+    r: Math.random() * Math.PI,
+    dr: -0.15 + Math.random() * .3,
+    c: ['#ff4d6d','#ffd54d','#4d96ff','#6bcb77','#ffffff'][Math.floor(Math.random()*5)]
+  }));
+
+  let frame = 0;
+  function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      p.x += p.dx; p.y += p.dy; p.r += p.dr;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.r);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 170) requestAnimationFrame(loop);
+    else canvas.style.display = 'none';
+  }
   loop();
 }
 
-function loop(){
-  if(!running) return;
-
-  ctx.clearRect(0,0,320,400);
-
-  // rain
-  if(Math.random()<0.2){
-    drops.push({x:Math.random()*320,y:0});
-  }
-
-  drops.forEach(d=>d.y+=5);
-
-  drops = drops.filter(d=>{
-    let hit = d.y>340 && d.x>cigX-20 && d.x<cigX+20;
-    if(hit){
-      lives--;
-      updateLives();
-      if(lives<=0){
-        running=false;
-        document.getElementById("cigMsg").textContent="gone. like your sleep schedule";
-      }
-    }
-    return d.y<400 && !hit;
-  });
-
-  ctx.fillStyle="#7fc8ff";
-  drops.forEach(d=>{
-    ctx.fillRect(d.x,d.y,2,10);
-  });
-
-  drawCig();
-
-  requestAnimationFrame(loop);
+function launchApp(){
+  buildAllNavs();
+  buildStories();
+  buildPosts();
+  buildReels();
+  buildProfile();
+  initBeerPong();
+  initCigGame();
+  initBadminton();
+  activateScreen('home');
+  $('#birthday-overlay').classList.remove('hidden');
+  startConfetti();
 }
 
-canvas.addEventListener("touchmove", e=>{
-  cigX = e.touches[0].clientX;
+$('#birthday-close').addEventListener('click', () => {
+  $('#birthday-overlay').classList.add('hidden');
+  showToast('Welcome to InstaRaj 🎉');
 });
 
-/* ---------- CONFETTI ---------- */
-window.onload = () => {
-  alert("happy birthday mf 🎉");
-};
+/* ===== nav ===== */
+const navItems = [
+  {id:'home', type:'home'},
+  {id:'beer-game', type:'beer'},
+  {id:'reels', type:'reels'},
+  {id:'cig-game', type:'cig'},
+  {id:'badminton-game', type:'bad'},
+  {id:'profile', type:'profile'}
+];
 
+function navIcon(type){
+  if (type === 'beer') return `<svg viewBox="0 0 24 24"><path d="M5 8h14l-1.5 9a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 8z"/><path d="M5 8V6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2"/><path d="M19 11h2a2 2 0 0 1 0 4h-2"/></svg>`;
+  if (type === 'reels') return `<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M2 7h20M2 17h20M7 2v20M17 2v20"/></svg>`;
+  if (type === 'cig') return `<svg viewBox="0 0 24 24"><path d="M2 15h16M18 15h4M18 9c0 0 2 1 2 3"/><path d="M15 9c0 0 2 1 2 3"/></svg>`;
+  if (type === 'bad') return `<svg viewBox="0 0 24 24"><path d="M8 3c4 0 7 3 7 7 0 1.8-.6 3.4-1.7 4.7"/><path d="M15 15 9 21"/><path d="M10.2 10.2 14 14"/><path d="M4 20l5-5"/></svg>`;
+  if (type === 'profile') return `<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  return `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+}
+
+function buildNav(containerId){
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  navItems.forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'nav-item';
+    d.dataset.id = item.id;
+    d.innerHTML = navIcon(item.type) + `<div class="nav-dot"></div>`;
+    d.addEventListener('click', () => activateScreen(item.id));
+    el.appendChild(d);
+  });
+}
+
+function buildAllNavs(){
+  ['bottom-nav','bottom-nav-beer','bottom-nav-reels','bottom-nav-cig','bottom-nav-bad','bottom-nav-profile'].forEach(buildNav);
+}
+
+/* ===== stories ===== */
+const stories = [
+  {name:'nightmode', emoji:'🌙', bg:'#1a1a2e', msg:'still awake?'},
+  {name:'badminton…', emoji:'🏸', bg:'#0d1b0d', msg:'court soon?'},
+  {name:'f1brain', emoji:'🏎️', bg:'#1a0d0d', msg:'grid position 1'},
+  {name:'insomnia', emoji:'😴', bg:'#1a1a0d', msg:'sleep missing'},
+  {name:'weball', emoji:'🍺', bg:'#0d0d1a', msg:'fuck it we ball'},
+  {name:'3amvibes', emoji:'🌃', bg:'#0d1a1a', msg:'3am again huh'}
+];
+
+function buildStories(){
+  const row = $('#stories-row');
+  row.innerHTML = '';
+  stories.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'story';
+    d.innerHTML = `
+      <div class="story-ring">
+        <div class="story-inner" style="background:${s.bg}">${s.emoji}</div>
+      </div>
+      <div class="story-name">${s.name}</div>
+    `;
+    d.addEventListener('click', () => openStory(i));
+    row.appendChild(d);
+  });
+}
+
+function openStory(i){
+  const s = stories[i];
+  $('#sv-avatar').textContent = s.emoji;
+  $('#sv-avatar').style.background = s.bg;
+  $('#sv-username').textContent = s.name;
+  $('#sv-time').textContent = ['11:23 PM','2:47 AM','12:01 AM','3:17 AM','9:45 PM','4:02 AM'][i];
+
+  const p = $('#story-progress');
+  p.innerHTML = stories.map((_, idx) => `<div class="story-prog-bar"><div class="story-prog-fill" id="spf-${idx}"></div></div>`).join('');
+
+  const canvas = $('#story-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = innerWidth;
+  canvas.height = Math.max(innerHeight - 110, 520);
+  const W = canvas.width, H = canvas.height;
+
+  ctx.fillStyle = s.bg;
+  ctx.fillRect(0,0,W,H);
+  ctx.font = '92px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(s.emoji, W/2, H/2 - 40);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 24px sans-serif';
+  ctx.fillText(s.msg, W/2, H/2 + 68);
+
+  $('#story-viewer').classList.add('active');
+  clearTimeout(storyTimer);
+  const fill = document.getElementById(`spf-${i}`);
+  requestAnimationFrame(() => {
+    fill.style.transition = 'width 5s linear';
+    fill.style.width = '100%';
+  });
+  storyTimer = setTimeout(closeStory, 5000);
+}
+
+function closeStory(){
+  clearTimeout(storyTimer);
+  $('#story-viewer').classList.remove('active');
+}
+$('#story-close').addEventListener('click', closeStory);
+
+/* ===== posts ===== */
+const posts = [
+  { user:'nightmode', avatar:'🌙', loc:'3:41 AM · Still awake', color:'#1a1a2e', likes:'weball and 4 others', caption:'nightmode: 2:41 AM and somehow still not sleeping 🌙', comments:3, time:'1d', art:'night' },
+  { user:'badmintonking', avatar:'🏸', loc:'The Court · Daily', color:'#0d1b0d', likes:'insomnia and 7 others', caption:'rajath.weball: you said you play daily bro 😂', comments:12, time:'2d', art:'court' },
+  { user:'f1strategy', avatar:'🏎️', loc:'Monaco · Paddock Access', color:'#1a0d0d', likes:'gridlock and 22 others', caption:'f1brain: strategy so strong he explained F1 for 40 mins 💀', comments:8, time:'3d', art:'f1' },
+  { user:'rajath.weball', avatar:'🍺', loc:'Somewhere · Last seen: unknown', color:'#0d0d1a', likes:'said last one 4 drinks ago', caption:'rajath.weball: said "last one" 4 drinks ago. still going. fuck it we ball 🍺', comments:19, time:'5d', art:'beer' }
+];
+
+function buildPosts(){
+  const c = $('#posts-container');
+  c.innerHTML = '';
+
+  posts.forEach((p, i) => {
+    const d = document.createElement('div');
+    d.className = 'post';
+    d.innerHTML = `
+      <div class="post-header">
+        <div class="post-user">
+          <div class="post-avatar" style="background:${p.color}">${p.avatar}</div>
+          <div class="post-user-meta">
+            <div class="post-username">${p.user}</div>
+            <div class="post-location">${p.loc}</div>
+          </div>
+        </div>
+        <span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+      </div>
+
+      <div class="post-img" data-idx="${i}">
+        <canvas width="400" height="400"></canvas>
+        <div class="sticker-anim" id="sticker-${i}">
+          <img src="sticker.png" alt="sticker">
+        </div>
+      </div>
+
+      <div class="post-actions">
+        <div class="like-btn" data-idx="${i}">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <div class="save"><svg viewBox="0 0 24 24"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg></div>
+      </div>
+
+      <div class="post-likes">Liked by ${p.likes}</div>
+      <div class="post-caption"><b>${p.caption.split(':')[0]}:</b>${p.caption.split(':').slice(1).join(':')}</div>
+      <div class="post-comments">View all ${p.comments} comments</div>
+      <div class="post-time">${p.time} ago</div>
+    `;
+    c.appendChild(d);
+
+    drawPostArt(d.querySelector('canvas'), p.art, p.color, 400, 400);
+
+    const postImg = d.querySelector('.post-img');
+    let lastTap = 0;
+    let singleTapTimer = null;
+    let startX = 0;
+    let startY = 0;
+    let moved = false;
+
+    postImg.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+      moved = false;
+    }, { passive:true });
+
+    postImg.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      const dx = Math.abs(t.clientX - startX);
+      const dy = Math.abs(t.clientY - startY);
+      if (dx > 12 || dy > 12) moved = true;
+    }, { passive:true });
+
+    postImg.addEventListener('touchend', () => {
+      if (moved) return;
+      const now = Date.now();
+      if (now - lastTap < 260) {
+        clearTimeout(singleTapTimer);
+        singleTapTimer = null;
+        triggerLike(i);
+      } else {
+        singleTapTimer = setTimeout(() => openPost(i), 220);
+      }
+      lastTap = now;
+    }, { passive:true });
+
+    postImg.addEventListener('click', (e) => e.preventDefault());
+    d.querySelector('.like-btn').addEventListener('click', () => triggerLike(i));
+  });
+}
+
+function triggerLike(i){
+  const btn = document.querySelector(`.like-btn[data-idx="${i}"]`);
+  const sticker = document.getElementById(`sticker-${i}`);
+
+  if (!likedPosts[i]) {
+    likedPosts[i] = true;
+    btn.classList.add('liked');
+    sticker.classList.add('show');
+    setTimeout(() => {
+      sticker.classList.remove('show');
+      sticker.classList.add('hide');
+    }, 700);
+    setTimeout(() => sticker.classList.remove('hide'), 1200);
+  } else {
+    likedPosts[i] = false;
+    btn.classList.remove('liked');
+  }
+
+  if (currentOpenedPost === i) {
+    $('#pv-like-btn').classList.toggle('liked', likedPosts[i]);
+  }
+}
+
+function openPost(i){
+  const p = posts[i];
+  currentOpenedPost = i;
+  $('#pv-avatar').textContent = p.avatar;
+  $('#pv-avatar').style.background = p.color;
+  $('#pv-username').textContent = p.user;
+  $('#pv-location').textContent = p.loc;
+  $('#pv-likes').textContent = 'Liked by ' + p.likes;
+  $('#pv-caption').innerHTML = `<b>${p.caption.split(':')[0]}:</b>${p.caption.split(':').slice(1).join(':')}`;
+  $('#pv-comments').textContent = `View all ${p.comments} comments`;
+  $('#pv-time').textContent = `${p.time} ago`;
+  $('#pv-like-btn').classList.toggle('liked', !!likedPosts[i]);
+  drawPostArt($('#post-view-canvas'), p.art, p.color, 600, 600);
+  $('#post-viewer').classList.add('active');
+}
+
+function closePost(){
+  $('#post-viewer').classList.remove('active');
+  currentOpenedPost = null;
+}
+$('#post-view-close').addEventListener('click', closePost);
+$('#pv-like-btn').addEventListener('click', () => {
+  if (currentOpenedPost !== null) triggerLike(currentOpenedPost);
+});
+
+function drawPostArt(canvas, type, color, W = 400, H = 400){
+  const ctx = canvas.getContext('2d');
+  canvas.width = W; canvas.height = H;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = color;
+  ctx.fillRect(0,0,W,H);
+
+  if (type === 'night') {
+    ctx.fillStyle = '#0a0a1e';
+    ctx.fillRect(0,0,W,H);
+    for (let i=0;i<80;i++){
+      ctx.fillStyle = `rgba(255,255,255,${Math.random()*.8+.2})`;
+      ctx.beginPath();
+      ctx.arc(Math.random()*W, Math.random()*H*.8, Math.random()*2+.5, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.fillStyle = '#fffde7';
+    ctx.beginPath();
+    ctx.arc(W*.75,H*.2,W*.1,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#0a0a1e';
+    ctx.beginPath();
+    ctx.arc(W*.79,H*.18,W*.085,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.55)';
+    ctx.font = `bold ${Math.round(W*.12)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('3:17 AM', W/2, H/2 + 30);
+  } else if (type === 'court') {
+    ctx.fillStyle = '#1a5c1a';
+    ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(W*.1,H*.1,W*.8,H*.8);
+    ctx.beginPath(); ctx.moveTo(W*.1,H*.5); ctx.lineTo(W*.9,H*.5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W*.5,H*.1); ctx.lineTo(W*.5,H*.9); ctx.stroke();
+    ctx.strokeRect(W*.2,H*.2,W*.6,H*.6);
+    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    ctx.font = `bold ${Math.round(W*.055)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('you said daily bro', W/2, H - 18);
+  } else if (type === 'f1') {
+    ctx.fillStyle = '#1a0d0d';
+    ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle = '#ff3333';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(W*.12,H*.5);
+    ctx.bezierCurveTo(W*.12,H*.12,W*.88,H*.12,W*.88,H*.5);
+    ctx.bezierCurveTo(W*.88,H*.88,W*.12,H*.88,W*.12,H*.5);
+    ctx.stroke();
+    ctx.fillStyle = '#ff3333';
+    ctx.font = `bold ${Math.round(W*.09)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('FORMULA 1', W/2, H/2);
+  } else if (type === 'beer') {
+    ctx.fillStyle = '#0d0d1a';
+    ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = 'rgba(255,255,255,.08)';
+    ctx.beginPath();
+    ctx.moveTo(W*.35,H*.2); ctx.lineTo(W*.65,H*.2); ctx.lineTo(W*.7,H*.88); ctx.lineTo(W*.3,H*.88); ctx.closePath();
+    ctx.fill();
+    const grad = ctx.createLinearGradient(0,H*.38,0,H*.88);
+    grad.addColorStop(0,'#f5c842'); grad.addColorStop(1,'#c8860a');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(W*.37,H*.39); ctx.lineTo(W*.63,H*.39); ctx.lineTo(W*.69,H*.86); ctx.lineTo(W*.31,H*.86); ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#fffde7';
+    for (let i=0;i<8;i++) {
+      ctx.beginPath();
+      ctx.arc(W*.37 + i*(W*.04), H*.39, W*.03, Math.PI, 0);
+      ctx.fill();
+    }
+  }
+}
+
+/* ===== reels ===== */
+const reels = [
+  { user:'nightmode', caption:'2:41 AM and still no sleep. classic pattern 🌙', emoji:'🌙', bg:'#0a0a1e', glow:'#4a90d9' },
+  { user:'rajath.weball', caption:'"last one" he said. 45 mins ago. 🍺', emoji:'🍺', bg:'#1a0d00', glow:'#f5c842' },
+  { user:'f1strategy', caption:'spent 40 mins explaining DRS 😭🏎️', emoji:'🏎️', bg:'#1a0000', glow:'#ff4444' },
+  { user:'badmintonking', caption:'plays everyday. loses to a 50 year old uncle 🏸', emoji:'🏸', bg:'#001a00', glow:'#44ff44' },
+  { user:'3amcrisis', caption:'last seen sleeping: unknown 😴', emoji:'😴', bg:'#0a0a0a', glow:'#aaaaaa' }
+];
+
+function buildReels(){
+  const wrap = $('#reels-wrap');
+  wrap.innerHTML = '';
+  reels.forEach((r, i) => {
+    const d = document.createElement('div');
+    d.className = 'reel';
+    d.style.transform = `translateY(${i*100}%)`;
+    d.innerHTML = `
+      <canvas width="400" height="700"></canvas>
+      <div class="reel-overlay"></div>
+      <div class="reel-info">
+        <div class="reel-user">@${r.user}</div>
+        <div class="reel-caption">${r.caption}</div>
+      </div>
+      <div class="reel-side">
+        <div class="item">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span>${Math.floor(Math.random()*900+100)}</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>${Math.floor(Math.random()*40+6)}</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span>Share</span>
+        </div>
+      </div>
+    `;
+    wrap.appendChild(d);
+    drawReel(d.querySelector('canvas'), r);
+  });
+
+  let startY = 0;
+  wrap.addEventListener('touchstart', e => startY = e.touches[0].clientY, { passive:true });
+  wrap.addEventListener('touchend', e => {
+    const dy = startY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 50) {
+      currentReel = Math.max(0, Math.min(reels.length - 1, currentReel + (dy > 0 ? 1 : -1)));
+      $$('.reel').forEach((el, i) => el.style.transform = `translateY(${(i-currentReel)*100}%)`);
+    }
+  }, { passive:true });
+}
+
+function drawReel(canvas, reel){
+  const ctx = canvas.getContext('2d');
+  const W = 400, H = 700;
+  canvas.width = W; canvas.height = H;
+  ctx.fillStyle = reel.bg;
+  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = reel.glow + '33';
+  ctx.beginPath(); ctx.arc(W/2,H*.38,100,0,Math.PI*2); ctx.fill();
+  ctx.font = '120px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#fff';
+  ctx.fillText(reel.emoji, W/2, H*.38);
+  for (let i=0;i<12;i++) {
+    ctx.strokeStyle = reel.glow + '22';
+    ctx.beginPath(); ctx.moveTo(0,i*60); ctx.lineTo(W,i*60); ctx.stroke();
+  }
+}
+
+/* ===== beer pong local ===== */
+let beerCtx, beerCanvasEl;
+let pongBall, pongDragging = false, pongAim = {x:0,y:0}, pongCups = [], pongShots = 6, pongRunning = false;
+
+function initBeerPong(){
+  beerCanvasEl = $('#beer-stage');
+  beerCtx = beerCanvasEl.getContext('2d');
+  resetBeerPong();
+  drawBeerPong();
+}
+
+function resetBeerPong(){
+  const W = beerCanvasEl.width, H = beerCanvasEl.height;
+  pongBall = { x:W/2, y:H-50, vx:0, vy:0, r:10, active:false };
+  pongShots = 6;
+  pongDragging = false;
+  pongCups = [
+    {x:W*.50, y:108, hit:false},
+    {x:W*.44, y:140, hit:false},
+    {x:W*.56, y:140, hit:false},
+    {x:W*.38, y:172, hit:false},
+    {x:W*.50, y:172, hit:false},
+    {x:W*.62, y:172, hit:false}
+  ];
+}
+
+function drawCup(ctx, x, y, hit){
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = hit ? 'rgba(150,150,150,.35)' : '#df473f';
+  ctx.beginPath();
+  ctx.moveTo(-18,-8); ctx.lineTo(18,-8); ctx.lineTo(11,26); ctx.lineTo(-11,26); ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = hit ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.18)';
+  ctx.beginPath();
+  ctx.ellipse(0,-8,18,5,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawBeerPong(){
+  const ctx = beerCtx, W = beerCanvasEl.width, H = beerCanvasEl.height;
+  ctx.clearRect(0,0,W,H);
+
+  // table wood
+  const wood = ctx.createLinearGradient(0,0,0,H);
+  wood.addColorStop(0,'#6f3b20');
+  wood.addColorStop(.32,'#9b5d2d');
+  wood.addColorStop(.33,'#c08142');
+  wood.addColorStop(1,'#8f5628');
+  ctx.fillStyle = wood;
+  ctx.fillRect(0,0,W,H);
+
+  // lane
+  ctx.fillStyle = 'rgba(255,225,170,.14)';
+  ctx.fillRect(W*.16, 36, W*.68, H-72);
+  ctx.strokeStyle = 'rgba(255,220,150,.28)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(W*.16, 36, W*.68, H-72);
+
+  // decorative bottles
+  ctx.fillStyle = '#a87c2d';
+  for (const x of [30,52,W-52,W-30]) {
+    ctx.fillRect(x-6, 66, 12, 70);
+    ctx.beginPath();
+    ctx.arc(x, 60, 9, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  pongCups.forEach(c => drawCup(ctx, c.x, c.y, c.hit));
+
+  if (pongDragging && !pongBall.active) {
+    ctx.strokeStyle = 'rgba(255,255,255,.45)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(pongBall.x, pongBall.y);
+    ctx.lineTo(pongAim.x, pongAim.y);
+    ctx.stroke();
+  }
+
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(pongBall.x, pongBall.y, pongBall.r, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.fillText(`Shots: ${pongShots}`, 16, 24);
+
+  const left = pongCups.filter(c => !c.hit).length;
+  ctx.fillText(`Cups: ${left}`, W - 80, 24);
+}
+
+function runBeerPongLoop(){
+  if (!pongRunning) return;
+
+  if (pongBall.active) {
+    pongBall.x += pongBall.vx;
+    pongBall.y += pongBall.vy;
+    pongBall.vy += 0.16;
+
+    for (const cup of pongCups) {
+      if (cup.hit) continue;
+      const dx = pongBall.x - cup.x;
+      const dy = pongBall.y - (cup.y + 4);
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 13) {
+        cup.hit = true;
+        pongBall.active = false;
+        showToast('bottoms up rajath!!');
+        $('#beer-msg').textContent = 'bottoms up rajath!!';
+        setTimeout(() => resetBeerBall(), 450);
+      }
+    }
+
+    if (pongBall.y > beerCanvasEl.height + 30 || pongBall.x < -30 || pongBall.x > beerCanvasEl.width + 30) {
+      pongBall.active = false;
+      pongShots--;
+      if (pongShots <= 0) {
+        pongRunning = false;
+        $('#beer-msg').textContent = 'game over bro 🍺';
+      } else {
+        $('#beer-msg').textContent = 'missed. run it back';
+        resetBeerBall();
+      }
+    }
+
+    if (pongCups.every(c => c.hit)) {
+      pongRunning = false;
+      $('#beer-msg').textContent = 'clean sweep 🍺';
+      showToast('all cups down');
+    }
+  }
+
+  drawBeerPong();
+  requestAnimationFrame(runBeerPongLoop);
+}
+
+function resetBeerBall(){
+  pongBall.x = beerCanvasEl.width/2;
+  pongBall.y = beerCanvasEl.height-50;
+  pongBall.vx = 0;
+  pongBall.vy = 0;
+  pongBall.active = false;
+}
+
+$('#beer-stage').addEventListener('touchstart', e => {
+  if (!pongRunning || pongBall.active) return;
+  pongDragging = true;
+  const r = beerCanvasEl.getBoundingClientRect();
+  pongAim.x = e.touches[0].clientX - r.left;
+  pongAim.y = e.touches[0].clientY - r.top;
+}, { passive:true });
+
+$('#beer-stage').addEventListener('touchmove', e => {
+  if (!pongDragging || pongBall.active) return;
+  const r = beerCanvasEl.getBoundingClientRect();
+  pongAim.x = e.touches[0].clientX - r.left;
+  pongAim.y = e.touches[0].clientY - r.top;
+}, { passive:true });
+
+$('#beer-stage').addEventListener('touchend', () => {
+  if (!pongDragging || pongBall.active) return;
+  pongDragging = false;
+  const dx = pongBall.x - pongAim.x;
+  const dy = pongBall.y - pongAim.y;
+  pongBall.vx = dx * 0.06;
+  pongBall.vy = dy * 0.06;
+  pongBall.active = true;
+}, { passive:true });
+
+$('#beer-start-btn').addEventListener('click', () => {
+  resetBeerPong();
+  pongRunning = true;
+  $('#beer-msg').textContent = 'drag and release to aim';
+  drawBeerPong();
+  requestAnimationFrame(runBeerPongLoop);
+});
+
+/* ===== cig game ===== */
+let cigCanvasEl, cigCtx, cigX = 180, cigLives = 3, cigDrops = [], cigRunning = false;
+
+function initCigGame(){
+  cigCanvasEl = $('#cig-stage');
+  cigCtx = cigCanvasEl.getContext('2d');
+  resetCigGame();
+  drawCigGame();
+}
+
+function updateCigLives(){
+  $('#cig-lives').textContent = '🔥'.repeat(Math.max(cigLives, 0));
+}
+
+function resetCigGame(){
+  cigX = cigCanvasEl.width/2;
+  cigLives = 3;
+  cigDrops = [];
+  cigRunning = false;
+  updateCigLives();
+  $('#cig-msg').textContent = 'protect the priority';
+}
+
+function drawSmallCig(x, y){
+  cigCtx.fillStyle = '#fff';
+  cigCtx.fillRect(x - 20, y, 34, 9);
+  cigCtx.fillStyle = '#d28a2f';
+  cigCtx.fillRect(x + 14, y, 13, 9);
+  cigCtx.fillStyle = '#ff6a2f';
+  cigCtx.beginPath();
+  cigCtx.arc(x - 23, y + 4.5, 3, 0, Math.PI * 2);
+  cigCtx.fill();
+}
+
+function drawCigGame(){
+  const W = cigCanvasEl.width, H = cigCanvasEl.height;
+  cigCtx.clearRect(0,0,W,H);
+  cigCtx.fillStyle = '#08131f';
+  cigCtx.fillRect(0,0,W,H);
+
+  cigCtx.fillStyle = 'rgba(255,255,255,.08)';
+  cigCtx.beginPath();
+  cigCtx.arc(70,50,36,0,Math.PI*2);
+  cigCtx.arc(110,52,28,0,Math.PI*2);
+  cigCtx.arc(250,70,32,0,Math.PI*2);
+  cigCtx.arc(285,72,24,0,Math.PI*2);
+  cigCtx.fill();
+
+  cigDrops.forEach(d => {
+    cigCtx.strokeStyle = '#7fc8ff';
+    cigCtx.lineWidth = 2;
+    cigCtx.beginPath();
+    cigCtx.moveTo(d.x,d.y);
+    cigCtx.lineTo(d.x,d.y+12);
+    cigCtx.stroke();
+  });
+
+  drawSmallCig(cigX, H - 70);
+}
+
+function cigLoop(){
+  if (!cigRunning) return;
+
+  if (Math.random() < 0.22) {
+    cigDrops.push({ x: Math.random()*cigCanvasEl.width, y:-10, speed:4 + Math.random()*3 });
+  }
+
+  cigDrops.forEach(d => d.y += d.speed);
+
+  cigDrops = cigDrops.filter(d => {
+    const hit =
+      d.y > cigCanvasEl.height - 80 &&
+      d.y < cigCanvasEl.height - 60 &&
+      d.x > cigX - 24 &&
+      d.x < cigX + 28;
+
+    if (hit) {
+      cigLives--;
+      updateCigLives();
+      if (cigLives <= 0) {
+        cigRunning = false;
+        $('#cig-msg').textContent = 'gone. like your sleep schedule';
+      }
+    }
+    return d.y < cigCanvasEl.height && !hit;
+  });
+
+  drawCigGame();
+  requestAnimationFrame(cigLoop);
+}
+
+$('#cig-start-btn').addEventListener('click', () => {
+  resetCigGame();
+  cigRunning = true;
+  $('#cig-msg').textContent = 'protect the priority';
+  requestAnimationFrame(cigLoop);
+});
+
+$('#cig-stage').addEventListener('touchmove', e => {
+  if (!cigRunning) return;
+  const r = cigCanvasEl.getBoundingClientRect();
+  cigX = e.touches[0].clientX - r.left;
+}, { passive:true });
+
+/* ===== badminton local ===== */
+let badCanvas, badCtx;
+let badRunning = false;
+let player = { x: 95, y: 330, w: 28, h: 56, vx: 0 };
+let opponent = { x: 285, y: 190, w: 28, h: 56 };
+let shuttle = { x: 280, y: 150, vx: -4.2, vy: 1.2, angle: -0.5 };
+let rally = 0;
+
+function initBadminton(){
+  badCanvas = $('#bad-stage');
+  badCtx = badCanvas.getContext('2d');
+  resetBadminton();
+  drawBadminton();
+}
+
+function resetBadminton(){
+  player.x = 95;
+  player.vx = 0;
+  shuttle.x = badCanvas.width - 90;
+  shuttle.y = 150;
+  shuttle.vx = -4.2;
+  shuttle.vy = 1.2;
+  shuttle.angle = -0.5;
+  rally = 0;
+  badRunning = false;
+  $('#bad-msg').textContent = 'keep the rally alive';
+}
+
+function drawPlayer(x, y, color, flip = false){
+  badCtx.fillStyle = color;
+  badCtx.fillRect(x, y, 26, 56);
+  badCtx.fillStyle = '#fff';
+  badCtx.beginPath();
+  if (!flip) {
+    badCtx.ellipse(x + 28, y + 20, 12, 8, .5, 0, Math.PI*2);
+  } else {
+    badCtx.ellipse(x - 2, y + 20, 12, 8, -.5, 0, Math.PI*2);
+  }
+  badCtx.fill();
+}
+
+function drawShuttle(){
+  badCtx.save();
+  badCtx.translate(shuttle.x, shuttle.y);
+  badCtx.rotate(shuttle.angle);
+
+  badCtx.fillStyle = '#f4f1e8';
+  badCtx.beginPath();
+  badCtx.ellipse(0, 6, 8, 6, 0, 0, Math.PI*2);
+  badCtx.fill();
+
+  badCtx.strokeStyle = '#fff';
+  badCtx.lineWidth = 2;
+  for (let i = -3; i <= 3; i++) {
+    badCtx.beginPath();
+    badCtx.moveTo(0,0);
+    badCtx.lineTo(i * 4, -14);
+    badCtx.stroke();
+  }
+
+  badCtx.fillStyle = '#fff';
+  badCtx.beginPath();
+  badCtx.arc(0,0,4,0,Math.PI*2);
+  badCtx.fill();
+  badCtx.restore();
+}
+
+function drawBadminton(){
+  const W = badCanvas.width, H = badCanvas.height;
+  badCtx.clearRect(0,0,W,H);
+
+  // background
+  badCtx.fillStyle = '#0f2d5f';
+  badCtx.fillRect(0,0,W,H);
+  badCtx.fillStyle = '#18a082';
+  badCtx.fillRect(20,120,W-40,260);
+
+  badCtx.strokeStyle = '#fff';
+  badCtx.lineWidth = 2;
+  badCtx.strokeRect(20,120,W-40,260);
+  badCtx.beginPath(); badCtx.moveTo(W/2,120); badCtx.lineTo(W/2,380); badCtx.stroke();
+  badCtx.beginPath(); badCtx.moveTo(20,250); badCtx.lineTo(W-20,250); badCtx.stroke();
+
+  // net
+  badCtx.fillStyle = '#fff';
+  badCtx.fillRect(20,250,W-40,4);
+
+  // players
+  drawPlayer(player.x, player.y, '#e8eefb', false);
+  drawPlayer(opponent.x, opponent.y, '#344f7d', true);
+
+  // shuttle
+  drawShuttle();
+
+  // score
+  badCtx.fillStyle = '#fff';
+  badCtx.font = 'bold 20px sans-serif';
+  badCtx.fillText('Rally: ' + rally, 18, 30);
+}
+
+function badLoop(){
+  if (!badRunning) return;
+
+  player.x += player.vx;
+  player.x = Math.max(34, Math.min(badCanvas.width/2 - 50, player.x));
+
+  shuttle.x += shuttle.vx;
+  shuttle.y += shuttle.vy;
+  shuttle.vy += 0.045;
+  shuttle.angle = Math.atan2(shuttle.vy, shuttle.vx);
+
+  // opponent auto return
+  if (shuttle.x > badCanvas.width - 86 && shuttle.vx > 0) {
+    shuttle.vx = -(4.6 + rally * 0.08);
+    shuttle.vy = -2.35;
+  }
+
+  if (shuttle.y > 368) {
+    badRunning = false;
+    $('#bad-msg').textContent = rally >= 4 ? 'okay wait that was clean' : 'you said you play daily';
+    drawBadminton();
+    return;
+  }
+
+  drawBadminton();
+  requestAnimationFrame(badLoop);
+}
+
+function tryHitShuttle(){
+  if (!badRunning) return;
+  const racketX = player.x + 28;
+  const hitWindow = Math.abs(shuttle.x - racketX) < 44 && shuttle.y > 230;
+  if (hitWindow && shuttle.vx < 0) {
+    shuttle.vx = 4.8 + rally * 0.08;
+    shuttle.vy = -2.9;
+    rally++;
+    $('#bad-msg').textContent = rally > 5 ? 'you’re locked in' : 'nice';
+  } else {
+    $('#bad-msg').textContent = 'too early / too late';
+  }
+}
+
+$('#bad-start-btn').addEventListener('click', () => {
+  resetBadminton();
+  badRunning = true;
+  $('#bad-msg').textContent = 'tom morning badminton?';
+  requestAnimationFrame(badLoop);
+});
+
+$('#bad-left').addEventListener('touchstart', () => player.vx = -4.5, { passive:true });
+$('#bad-left').addEventListener('touchend', () => player.vx = 0, { passive:true });
+$('#bad-right').addEventListener('touchstart', () => player.vx = 4.5, { passive:true });
+$('#bad-right').addEventListener('touchend', () => player.vx = 0, { passive:true });
+$('#bad-hit').addEventListener('click', tryHitShuttle);
+$('#bad-stage').addEventListener('click', tryHitShuttle);
+
+$('#bad-external-btn').addEventListener('click', () => {
+  window.open('https://poki.com/en/g/power-badminton', '_blank', 'noopener,noreferrer');
+});
+
+/* ===== profile ===== */
+function buildProfile(){
+  const highlights = [
+    {name:'NightMode', e:'🌙'},
+    {name:'Gridlock', e:'🏎️'},
+    {name:'WeBall', e:'🍺'},
+    {name:'Badminton', e:'🏸'},
+    {name:'Paddock', e:'🔧'},
+    {name:'3AM', e:'😴'}
+  ];
+  $('#hl-row').innerHTML = highlights.map(h => `
+    <div class="highlight">
+      <div class="hl-ring">${h.e}</div>
+      <div class="hl-name">${h.name}</div>
+    </div>
+  `).join('');
+
+  const gridPosts = [0,1,2,3,0,1,2,3,0];
+  const grid = $('#posts-grid');
+  grid.innerHTML = '';
+  gridPosts.forEach(idx => {
+    const d = document.createElement('div');
+    d.className = 'grid-post';
+    d.innerHTML = `<canvas width="120" height="120"></canvas>`;
+    grid.appendChild(d);
+    drawPostArt(d.querySelector('canvas'), posts[idx].art, posts[idx].color, 120, 120);
+    d.addEventListener('click', () => openPost(idx));
+  });
+}
 </script>
 
 </body>

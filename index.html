@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>Instaraj</title>
+<title>InstaRaj</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   :root{
     --bg:#000;
     --surface:#121212;
-    --surface-2:#171717;
     --border:#2a2a2a;
     --text:#fff;
     --muted:#8e8e8e;
@@ -20,312 +19,157 @@
     --grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
     --navH:62px;
   }
-
   html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#000;
-    color:var(--text);
-    font-family:var(--font);
+    width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:var(--font);
   }
-
+  .hidden{display:none!important}
   .screen{
-    position:absolute; inset:0;
-    display:flex; flex-direction:column;
-    background:var(--bg);
-    transform:translateX(100%);
-    opacity:0;
-    pointer-events:none;
+    position:absolute;inset:0;display:flex;flex-direction:column;background:#000;
+    transform:translateX(100%);opacity:0;pointer-events:none;
     transition:transform .32s cubic-bezier(.2,.7,.2,1), opacity .25s ease;
   }
-  .screen.active{
-    transform:translateX(0);
-    opacity:1;
-    pointer-events:auto;
-  }
-  .screen.overlay{
-    z-index:300;
-    background:#000;
-  }
+  .screen.active{transform:translateX(0);opacity:1;pointer-events:auto}
+  .screen.overlay{z-index:300;background:#000}
 
   .toast{
-    position:fixed;
-    left:50%;
-    bottom:calc(var(--navH) + 18px);
+    position:fixed;left:50%;bottom:calc(var(--navH) + 18px);
     transform:translateX(-50%) translateY(12px);
-    background:#171717;
-    border:1px solid var(--border);
-    color:#fff;
-    font-size:.83rem;
-    padding:.65rem 1rem;
-    border-radius:999px;
-    opacity:0;
-    pointer-events:none;
-    transition:.22s ease;
-    z-index:1200;
-    white-space:nowrap;
-    max-width:90vw;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    background:#171717;border:1px solid var(--border);color:#fff;
+    font-size:.83rem;padding:.65rem 1rem;border-radius:999px;opacity:0;
+    pointer-events:none;transition:.22s ease;z-index:1200;white-space:nowrap;
+    max-width:90vw;overflow:hidden;text-overflow:ellipsis;
   }
-  .toast.show{
-    opacity:1;
-    transform:translateX(-50%) translateY(0);
-  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  /* LOGIN */
-  #login{
-    align-items:center;
-    justify-content:center;
-    padding:2rem;
-  }
+  /* login */
+  #login{align-items:center;justify-content:center;padding:2rem}
   .logo-wrap{text-align:center;margin-bottom:2.25rem}
-  .logo-text{
-    font-family:'Dancing Script',cursive;
-    font-size:3rem;
-    letter-spacing:-1px;
-  }
-  .login-card{
-    width:100%;
-    max-width:360px;
-  }
+  .logo-text{font-family:'Dancing Script',cursive;font-size:3rem;letter-spacing:-1px}
+  .login-card{width:100%;max-width:360px}
   .inp-wrap{position:relative;margin-bottom:.75rem}
   .inp-wrap input{
-    width:100%;
-    background:#121212;
-    border:1px solid var(--border);
-    color:#fff;
-    padding:.95rem 3rem .95rem 1rem;
-    border-radius:8px;
-    font-size:.92rem;
-    font-family:var(--font);
-    outline:none;
+    width:100%;background:#121212;border:1px solid var(--border);color:#fff;
+    padding:.95rem 3rem .95rem 1rem;border-radius:8px;font-size:.92rem;
+    font-family:var(--font);outline:none;
   }
   .inp-wrap .eye{
     position:absolute;right:1rem;top:50%;transform:translateY(-50%);
     color:var(--muted);cursor:pointer;user-select:none;
   }
   .err-msg{
-    min-height:1.2rem;
-    text-align:center;
-    color:var(--red);
-    font-size:.82rem;
-    opacity:0;
-    transition:.2s;
-    margin:.3rem 0;
+    min-height:1.2rem;text-align:center;color:var(--red);font-size:.82rem;
+    opacity:0;transition:.2s;margin:.3rem 0;
   }
   .err-msg.show{opacity:1}
   .btn-primary{
-    width:100%;
-    border:none;
-    background:var(--blue);
-    color:#fff;
-    padding:.92rem 1rem;
-    border-radius:10px;
-    font-weight:700;
-    font-size:.95rem;
-    cursor:pointer;
-    font-family:var(--font);
+    width:100%;border:none;background:var(--blue);color:#fff;padding:.92rem 1rem;
+    border-radius:10px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:var(--font);
   }
   .divider{
-    display:flex;align-items:center;gap:1rem;
-    margin:1.1rem 0;
-    color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;
+    display:flex;align-items:center;gap:1rem;margin:1.1rem 0;color:var(--muted);
+    font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;
   }
-  .divider:before,.divider:after{
-    content:"";flex:1;height:1px;background:var(--border);
-  }
+  .divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--border)}
   .forgot{text-align:center;color:var(--blue);font-size:.85rem;font-weight:600;cursor:pointer}
   .secret-link{
-    display:none;
-    text-align:center;
-    margin-top:.8rem;
-    font-size:.9rem;
-    color:var(--muted);
-    cursor:pointer;
+    display:none;text-align:center;margin-top:.8rem;font-size:.9rem;color:var(--muted);cursor:pointer;
   }
   .secret-link span{color:var(--blue);font-weight:700}
   .login-footer{
-    position:absolute;bottom:2rem;left:0;right:0;
-    text-align:center;color:var(--muted);font-size:.82rem;
+    position:absolute;bottom:2rem;left:0;right:0;text-align:center;color:var(--muted);font-size:.82rem;
   }
   .login-footer b{color:#fff}
 
   /* birthday */
   #confetti-canvas{
-    position:fixed; inset:0; z-index:1201; pointer-events:none; display:none;
+    position:fixed;inset:0;z-index:1201;pointer-events:none;display:none;
   }
   .birthday-overlay{
-    position:fixed; inset:0;
-    background:rgba(0,0,0,.72);
-    display:flex; align-items:center; justify-content:center;
-    z-index:1200;
+    position:fixed;inset:0;background:rgba(0,0,0,.72);
+    display:flex;align-items:center;justify-content:center;z-index:1200;
   }
   .birthday-card{
-    width:min(88vw,340px);
-    background:#111;
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:1.25rem 1rem;
-    text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,.45);
+    width:min(88vw,340px);background:#111;border:1px solid var(--border);border-radius:18px;
+    padding:1.25rem 1rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45);
   }
   .birthday-title{font-size:1.65rem;font-weight:700;line-height:1.18}
   .birthday-btn{
     border:none;background:var(--blue);color:#fff;border-radius:999px;
-    padding:.8rem 1.2rem;margin-top:1rem;font-weight:700;cursor:pointer;
-    font-family:var(--font);
+    padding:.8rem 1.2rem;margin-top:1rem;font-weight:700;cursor:pointer;font-family:var(--font);
   }
 
-  /* app */
+  /* common */
   .topbar{
-    height:52px;
-    border-bottom:1px solid var(--border);
-    display:flex;align-items:center;justify-content:space-between;
-    padding:0 1rem;
-    flex-shrink:0;
-    background:#000;
-    z-index:10;
+    height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;
+    justify-content:space-between;padding:0 1rem;flex-shrink:0;background:#000;z-index:10;
   }
-  .topbar-logo{
-    font-family:'Dancing Script',cursive;
-    font-size:1.8rem;
-  }
-  .topbar-title{
-    font-size:1rem;font-weight:700;
-  }
-  .top-icons{
-    display:flex;align-items:center;gap:1rem;
-  }
-  .icon{
-    width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;
-  }
-  .icon svg{
-    width:24px;height:24px;
-    fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  .topbar-logo{font-family:'Dancing Script',cursive;font-size:1.8rem}
+  .topbar-title{font-size:1rem;font-weight:700}
+  .top-icons{display:flex;align-items:center;gap:1rem}
+  .icon{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center}
+  .icon svg,.post-actions svg,#pv-like-btn svg,.post-view-actions svg,.nav-item svg,.reel-side svg{
+    width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
   }
 
   .bottom-nav{
-    position:fixed;left:0;right:0;bottom:0;height:var(--navH);
-    display:flex;align-items:center;
-    background:#000;border-top:1px solid var(--border);
-    z-index:90;
+    position:fixed;left:0;right:0;bottom:0;height:var(--navH);display:flex;align-items:center;
+    background:#000;border-top:1px solid var(--border);z-index:90;
   }
   .nav-item{
-    flex:1;height:100%;
-    display:flex;align-items:center;justify-content:center;
-    position:relative;cursor:pointer;
+    flex:1;height:100%;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;
   }
-  .nav-item svg{
-    width:26px;height:26px;
-    fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
-    transition:transform .15s ease;
-  }
+  .nav-item svg{width:26px;height:26px;transition:transform .15s ease}
   .nav-item.active svg{transform:scale(1.08)}
   .nav-dot{
-    width:4px;height:4px;border-radius:50%;background:#fff;
-    position:absolute;bottom:6px;opacity:0;
+    width:4px;height:4px;border-radius:50%;background:#fff;position:absolute;bottom:6px;opacity:0;
   }
   .nav-item.active .nav-dot{opacity:1}
 
   /* home */
   .feed{
-    flex:1;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    padding-bottom:calc(var(--navH) + 8px);
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--navH) + 8px);
   }
   .feed::-webkit-scrollbar,.stories::-webkit-scrollbar,.profile-scroll::-webkit-scrollbar,.post-view-wrap::-webkit-scrollbar,.highlights-row::-webkit-scrollbar{display:none}
-
   .stories{
-    display:flex;gap:.85rem;
-    padding:.95rem 1rem;
-    overflow-x:auto;
-    border-bottom:1px solid var(--border);
+    display:flex;gap:.85rem;padding:.95rem 1rem;overflow-x:auto;border-bottom:1px solid var(--border);
   }
-  .story{
-    flex-shrink:0;
-    width:72px;
-    text-align:center;
-    cursor:pointer;
-  }
+  .story{flex-shrink:0;width:72px;text-align:center;cursor:pointer}
   .story-ring{
-    width:68px;height:68px;border-radius:50%;
-    padding:2px;
-    background:var(--grad);
-    margin:0 auto .35rem;
+    width:68px;height:68px;border-radius:50%;padding:2px;background:var(--grad);margin:0 auto .35rem;
   }
   .story-inner{
-    width:100%;height:100%;
-    border-radius:50%;
-    background:var(--surface);
-    border:2px solid #000;
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.25rem;
+    width:100%;height:100%;border-radius:50%;background:var(--surface);border:2px solid #000;
+    display:flex;align-items:center;justify-content:center;font-size:1.25rem;
   }
-  .story-name{
-    font-size:.68rem;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
+  .story-name{font-size:.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-  .post{
-    border-bottom:1px solid var(--border);
-    margin-bottom:.2rem;
-  }
+  .post{border-bottom:1px solid var(--border);margin-bottom:.2rem}
   .post-header{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:.8rem 1rem;
+    display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;
   }
-  .post-user{
-    display:flex;align-items:center;gap:.7rem;
-  }
+  .post-user{display:flex;align-items:center;gap:.7rem}
   .post-avatar{
-    width:34px;height:34px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
     font-weight:700;font-size:.9rem;flex-shrink:0;
   }
   .post-user-meta{display:flex;flex-direction:column}
   .post-username{font-size:.88rem;font-weight:700}
   .post-location{font-size:.72rem;color:var(--muted)}
-  .post-img{
-    width:100%;
-    aspect-ratio:1;
-    background:#111;
-    position:relative;
-    overflow:hidden;
-  }
-  .post-img canvas{
-    width:100%;height:100%;display:block;
-  }
+  .post-img{width:100%;aspect-ratio:1;background:#111;position:relative;overflow:hidden}
+  .post-img canvas{width:100%;height:100%;display:block}
   .sticker-anim{
-    position:absolute;inset:0;
-    display:flex;align-items:center;justify-content:center;
-    opacity:0;transform:scale(.45);
-    pointer-events:none;
-    transition:opacity .16s ease, transform .16s ease;
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;
+    transform:scale(.45);pointer-events:none;transition:opacity .16s ease, transform .16s ease;
   }
-  .sticker-anim.show{
-    opacity:1;transform:scale(1);
-  }
+  .sticker-anim.show{opacity:1;transform:scale(1)}
   .sticker-anim.hide{
-    opacity:0;transform:scale(1.45);
-    transition:opacity .28s ease, transform .28s ease;
+    opacity:0;transform:scale(1.45);transition:opacity .28s ease, transform .28s ease;
   }
   .sticker-anim img{
-    width:150px;height:150px;object-fit:contain;
-    filter:drop-shadow(0 14px 32px rgba(0,0,0,.45));
+    width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 14px 32px rgba(0,0,0,.45));
   }
-
-  .post-actions{
-    display:flex;align-items:center;gap:1rem;
-    padding:.75rem 1rem .45rem;
-  }
-  .post-actions .save{margin-left:auto}
-  .post-actions svg,#pv-like-btn svg,.post-view-actions svg{
-    width:26px;height:26px;
-    fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
-  }
+  .post-actions{display:flex;align-items:center;gap:1rem;padding:.75rem 1rem .45rem}
+  .post-actions .save,.post-view-actions .save{margin-left:auto}
   .like-btn.liked svg,#pv-like-btn.liked svg{stroke:var(--red);fill:var(--red)}
   .post-likes,.post-caption,.post-comments,.post-time{padding:0 1rem}
   .post-likes{font-size:.84rem;font-weight:700;margin-bottom:.3rem}
@@ -336,46 +180,35 @@
 
   /* story viewer */
   #story-viewer{z-index:300;background:#000}
-  .story-progress{
-    display:flex;gap:3px;padding:.75rem 1rem .4rem;
-  }
+  .story-progress{display:flex;gap:3px;padding:.75rem 1rem .4rem}
   .story-prog-bar{flex:1;height:2px;background:rgba(255,255,255,.25);border-radius:1px;overflow:hidden}
   .story-prog-fill{height:100%;width:0;background:#fff}
   .story-header{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:.35rem 1rem .6rem;
+    display:flex;align-items:center;justify-content:space-between;padding:.35rem 1rem .6rem;
   }
-  .story-user{
-    display:flex;align-items:center;gap:.65rem;
-  }
-  .story-close{
-    font-size:1.55rem;cursor:pointer;line-height:1;
-  }
+  .story-user{display:flex;align-items:center;gap:.65rem}
+  .story-close{font-size:1.55rem;cursor:pointer;line-height:1}
   #story-canvas{flex:1;width:100%;display:block}
 
   /* post viewer */
   #post-viewer{z-index:320;background:#000}
   .post-view-top{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:.8rem 1rem;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;border-bottom:1px solid var(--border);
   }
   .post-view-close{font-size:1.55rem;cursor:pointer;line-height:1}
   .post-view-wrap{
-    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-    padding-bottom:calc(var(--navH) + 12px);
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--navH) + 12px);
   }
   .post-view-image{width:100%;aspect-ratio:1;background:#111}
   .post-view-image canvas{width:100%;height:100%;display:block}
   .post-view-meta{padding:1rem}
   .post-view-user{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
   .post-view-avatar{
-    width:38px;height:38px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;font-weight:700;
+    width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;
   }
   .post-view-username{font-size:.92rem;font-weight:700}
   .post-view-location{font-size:.75rem;color:var(--muted)}
   .post-view-actions{display:flex;align-items:center;gap:1rem;margin-bottom:.8rem}
-  .post-view-actions .save{margin-left:auto}
   .post-view-likes{font-size:.86rem;font-weight:700;margin-bottom:.45rem}
   .post-view-caption{font-size:.86rem;line-height:1.58;margin-bottom:.45rem}
   .post-view-caption b{margin-right:.35rem}
@@ -383,52 +216,33 @@
   .post-view-time{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 
   /* reels */
-  .reels-wrap{
-    flex:1;position:relative;overflow:hidden;
-  }
-  .reel{
-    position:absolute;inset:0;
-    transition:transform .28s cubic-bezier(.2,.7,.2,1);
-  }
-  .reel canvas{
-    width:100%;height:100%;display:block;
-  }
+  .reels-wrap{flex:1;position:relative;overflow:hidden}
+  .reel{position:absolute;inset:0;transition:transform .28s cubic-bezier(.2,.7,.2,1)}
+  .reel canvas{width:100%;height:100%;display:block}
   .reel-overlay{
-    position:absolute;inset:0;
-    background:linear-gradient(to top, rgba(0,0,0,.72) 22%, transparent 60%);
+    position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.72) 22%, transparent 60%);
   }
-  .reel-info{
-    position:absolute;left:1rem;right:72px;bottom:1rem;
-  }
+  .reel-info{position:absolute;left:1rem;right:72px;bottom:1rem}
   .reel-user{font-size:.95rem;font-weight:700;margin-bottom:.3rem}
   .reel-caption{font-size:.83rem;line-height:1.45;color:rgba(255,255,255,.95)}
   .reel-side{
-    position:absolute;right:12px;bottom:1rem;
-    display:flex;flex-direction:column;gap:1.2rem;align-items:center;
+    position:absolute;right:12px;bottom:1rem;display:flex;flex-direction:column;gap:1.2rem;align-items:center;
   }
   .reel-side .item{display:flex;flex-direction:column;align-items:center;gap:.25rem}
-  .reel-side svg{
-    width:28px;height:28px;
-    fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
-  }
   .reel-side span{font-size:.72rem}
 
   /* profile */
   .profile-scroll{
-    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-    padding-bottom:calc(var(--navH) + 12px);
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--navH) + 12px);
   }
   .profile-header{padding:1rem}
   .profile-top{display:flex;align-items:center;gap:1.4rem;margin-bottom:1rem}
   .profile-pic{
-    width:86px;height:86px;border-radius:50%;
-    background:var(--grad);padding:2px;flex-shrink:0;
+    width:86px;height:86px;border-radius:50%;background:var(--grad);padding:2px;flex-shrink:0;
   }
   .profile-pic-inner{
-    width:100%;height:100%;
-    border-radius:50%;background:var(--surface);
-    display:flex;align-items:center;justify-content:center;
-    font-size:2rem;border:2px solid #000;
+    width:100%;height:100%;border-radius:50%;background:var(--surface);
+    display:flex;align-items:center;justify-content:center;font-size:2rem;border:2px solid #000;
   }
   .profile-stats{flex:1;display:flex;justify-content:space-around}
   .stat{text-align:center}
@@ -439,146 +253,78 @@
   .profile-link{font-size:.82rem;color:var(--blue);font-weight:700}
   .profile-actions{display:flex;gap:.5rem;margin-top:.75rem}
   .profile-btn{
-    flex:1;background:var(--surface);color:#fff;border:none;
-    padding:.58rem;border-radius:8px;font-weight:700;font-family:var(--font);cursor:pointer;
+    flex:1;background:var(--surface);color:#fff;border:none;padding:.58rem;border-radius:8px;
+    font-weight:700;font-family:var(--font);cursor:pointer;
   }
   .profile-btn.follow{background:var(--blue)}
   .highlights{
     padding:.8rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
   }
-  .highlights-row{
-    display:flex;gap:1rem;overflow-x:auto;padding:0 1rem;
-  }
+  .highlights-row{display:flex;gap:1rem;overflow-x:auto;padding:0 1rem}
   .highlight{flex-shrink:0;text-align:center}
   .hl-ring{
-    width:62px;height:62px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    border:1px solid var(--border);
-    background:var(--surface);
-    margin:0 auto .35rem;
-    font-size:1.4rem;
+    width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--border);background:var(--surface);margin:0 auto .35rem;font-size:1.4rem;
   }
   .hl-name{font-size:.7rem}
-  .posts-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;padding-top:1px;
-  }
-  .grid-post{
-    aspect-ratio:1;background:#111;overflow:hidden;cursor:pointer;
-  }
+  .posts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;padding-top:1px}
+  .grid-post{aspect-ratio:1;background:#111;overflow:hidden;cursor:pointer}
   .grid-post canvas{width:100%;height:100%;display:block}
 
-  /* game cards */
+  /* game */
   .game-screen{
-    flex:1;
-    padding:1.2rem 1rem calc(var(--navH) + 10px);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:.85rem;
+    flex:1;padding:1.2rem 1rem calc(var(--navH) + 10px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.85rem;
   }
   .game-card{
-    width:min(92vw,360px);
-    background:#111;
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:1.15rem;
-    text-align:center;
-    box-shadow:0 16px 40px rgba(0,0,0,.35);
+    width:min(92vw,360px);background:#111;border:1px solid var(--border);border-radius:18px;
+    padding:1.15rem;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.35);
   }
-  .game-title{font-size:1.45rem;font-weight:700;margin-bottom:.35rem}
-  .game-sub{font-size:.88rem;color:var(--muted);line-height:1.55}
   .game-btn{
     border:none;background:var(--blue);color:#fff;border-radius:999px;
     padding:.8rem 1.2rem;font-weight:700;font-family:var(--font);cursor:pointer;
   }
-  .game-msg{
-    min-height:2rem;font-size:1rem;font-weight:700;text-align:center;
-  }
+  .game-msg{min-height:2rem;font-size:1rem;font-weight:700;text-align:center}
 
-  /* beer pong local */
+  /* beer */
   #beer-stage{
-    width:min(94vw,380px);
-    height:500px;
+    width:min(94vw,380px);height:500px;
     background:linear-gradient(180deg,#2f180f,#6a391f 32%,#ad6f38 33%,#8c5428 100%);
-    border-radius:16px;
-    border:1px solid #4b2d18;
-    box-shadow:inset 0 0 0 3px rgba(255,218,150,.08);
+    border-radius:16px;border:1px solid #4b2d18;box-shadow:inset 0 0 0 3px rgba(255,218,150,.08);
     display:block;
   }
-
-  /* miss overlay */
   .drink-overlay{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(0,0,0,.35);
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .2s ease;
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s ease;
   }
-  .drink-overlay.show{
-    opacity:1;
-  }
+  .drink-overlay.show{opacity:1}
   .drink-card{
-    width:min(88vw,300px);
-    background:#111;
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:1rem;
-    text-align:center;
-    box-shadow:0 16px 40px rgba(0,0,0,.45);
+    width:min(88vw,300px);background:#111;border:1px solid var(--border);border-radius:18px;
+    padding:1rem;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.45);
   }
-  .drink-shot{
-    width:86px;height:110px;margin:0 auto .7rem;
-    position:relative;
-  }
+  .drink-shot{width:86px;height:110px;margin:0 auto .7rem;position:relative}
   .drink-hand{
-    position:absolute;left:6px;top:28px;
-    width:74px;height:44px;
-    background:#d6b193;
-    border-radius:24px;
-    transform:rotate(-18deg);
-    box-shadow:inset 0 -4px 0 rgba(0,0,0,.08);
+    position:absolute;left:6px;top:28px;width:74px;height:44px;background:#d6b193;border-radius:24px;
+    transform:rotate(-18deg);box-shadow:inset 0 -4px 0 rgba(0,0,0,.08);
   }
   .drink-glass{
-    position:absolute;left:26px;top:8px;
-    width:40px;height:56px;
-    border:3px solid rgba(255,255,255,.9);
-    border-top:none;
-    border-radius:0 0 12px 12px;
-    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-    overflow:hidden;
+    position:absolute;left:26px;top:8px;width:40px;height:56px;border:3px solid rgba(255,255,255,.9);
+    border-top:none;border-radius:0 0 12px 12px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));overflow:hidden;
   }
-  .drink-liquid{
-    position:absolute;left:0;right:0;bottom:0;height:68%;
-    background:linear-gradient(180deg,#a26a35,#6e421d);
-  }
-  .drink-title{
-    font-size:1rem;font-weight:700;
-  }
-  .drink-sub{
-    font-size:.82rem;color:var(--muted);margin-top:.3rem;
-  }
+  .drink-liquid{position:absolute;left:0;right:0;bottom:0;height:68%;background:linear-gradient(180deg,#a26a35,#6e421d)}
+  .drink-title{font-size:1rem;font-weight:700}
+  .drink-sub{font-size:.82rem;color:var(--muted);margin-top:.3rem}
 
   /* cig */
   #cig-stage{
-    width:min(94vw,360px);
-    height:460px;
-    background:#08131f;
-    border-radius:14px;
-    border:1px solid #1f2e3a;
-    display:block;
+    width:min(94vw,360px);height:460px;background:#08131f;border-radius:14px;border:1px solid #1f2e3a;display:block;
   }
   .lives-row{
-    display:flex;align-items:center;justify-content:center;gap:.3rem;
-    min-height:1.4rem;
-    font-size:1.2rem;
+    display:flex;align-items:center;justify-content:center;gap:.3rem;min-height:1.4rem;font-size:1.2rem;
   }
 
   /* badminton */
-  .bad-card-title{
-    font-size:1.5rem;font-weight:700;text-align:center;
-  }
+  .bad-card-title{font-size:1.5rem;font-weight:700;text-align:center}
 </style>
 </head>
 <body>
@@ -593,7 +339,6 @@
   </div>
 </div>
 
-<!-- LOGIN -->
 <section class="screen active" id="login">
   <div class="logo-wrap">
     <div class="logo-text">Instagram</div>
@@ -615,7 +360,6 @@
   <div class="login-footer">Don't have an account? <b>Sign up</b></div>
 </section>
 
-<!-- HOME -->
 <section class="screen" id="home">
   <div class="topbar">
     <div class="topbar-logo">InstaRaj</div>
@@ -635,7 +379,6 @@
   <div class="bottom-nav" id="bottom-nav"></div>
 </section>
 
-<!-- BEER -->
 <section class="screen" id="beer-game" style="position:absolute">
   <div class="topbar">
     <div class="topbar-title">🍺 Beer Pong</div>
@@ -646,7 +389,6 @@
     <div class="game-msg" id="beer-msg">tap to bounce the ball</div>
     <button class="game-btn" id="beer-start-btn">Start Game</button>
   </div>
-
   <div class="drink-overlay" id="drink-overlay">
     <div class="drink-card">
       <div class="drink-shot">
@@ -657,11 +399,9 @@
       <div class="drink-sub">as if he’s taking the shot himself</div>
     </div>
   </div>
-
   <div class="bottom-nav" id="bottom-nav-beer"></div>
 </section>
 
-<!-- REELS -->
 <section class="screen" id="reels">
   <div class="topbar">
     <div class="topbar-title">Reels</div>
@@ -673,7 +413,6 @@
   <div class="bottom-nav" id="bottom-nav-reels"></div>
 </section>
 
-<!-- CIG -->
 <section class="screen" id="cig-game">
   <div class="topbar">
     <div class="topbar-title">🚬 Save The Cig</div>
@@ -689,7 +428,6 @@
   <div class="bottom-nav" id="bottom-nav-cig"></div>
 </section>
 
-<!-- BAD -->
 <section class="screen" id="badminton-game">
   <div class="topbar">
     <div class="topbar-title">🏸 BadminRaj</div>
@@ -704,7 +442,6 @@
   <div class="bottom-nav" id="bottom-nav-bad"></div>
 </section>
 
-<!-- PROFILE -->
 <section class="screen" id="profile">
   <div class="topbar">
     <div class="topbar-title">rajath_weball</div>
@@ -715,9 +452,7 @@
   <div class="profile-scroll">
     <div class="profile-header">
       <div class="profile-top">
-        <div class="profile-pic">
-          <div class="profile-pic-inner">🎂</div>
-        </div>
+        <div class="profile-pic"><div class="profile-pic-inner">🎂</div></div>
         <div class="profile-stats">
           <div class="stat"><span class="stat-num">21</span><span class="stat-label">posts</span></div>
           <div class="stat"><span class="stat-num">365</span><span class="stat-label">nights up</span></div>
@@ -745,7 +480,6 @@ last sober sighting: unavailable</div>
   <div class="bottom-nav" id="bottom-nav-profile"></div>
 </section>
 
-<!-- STORY VIEWER -->
 <section class="screen overlay" id="story-viewer">
   <div class="story-progress" id="story-progress"></div>
   <div class="story-header">
@@ -761,7 +495,6 @@ last sober sighting: unavailable</div>
   <canvas id="story-canvas"></canvas>
 </section>
 
-<!-- POST VIEWER -->
 <section class="screen overlay" id="post-viewer">
   <div class="post-view-top">
     <div style="font-size:.95rem;font-weight:700">Post</div>
@@ -1059,7 +792,6 @@ function buildPosts(){
     drawPostArt(d.querySelector('canvas'), p.art, p.color, 400, 400);
 
     const postImg = d.querySelector('.post-img');
-
     let lastTap = 0;
     let singleTapTimer = null;
     let startX = 0;
@@ -1163,11 +895,9 @@ function drawPostArt(canvas, type, color, W = 400, H = 400){
       ctx.fill();
     }
     ctx.fillStyle = '#fffde7';
-    ctx.beginPath();
-    ctx.arc(W*.75,H*.2,W*.1,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(W*.75,H*.2,W*.1,0,Math.PI*2); ctx.fill();
     ctx.fillStyle = '#0a0a1e';
-    ctx.beginPath();
-    ctx.arc(W*.79,H*.18,W*.085,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(W*.79,H*.18,W*.085,0,Math.PI*2); ctx.fill();
     ctx.fillStyle = 'rgba(255,255,255,.55)';
     ctx.font = `bold ${Math.round(W*.12)}px sans-serif`;
     ctx.textAlign = 'center';
@@ -1206,14 +936,12 @@ function drawPostArt(canvas, type, color, W = 400, H = 400){
     ctx.beginPath();
     ctx.moveTo(W*.35,H*.2); ctx.lineTo(W*.65,H*.2); ctx.lineTo(W*.7,H*.88); ctx.lineTo(W*.3,H*.88); ctx.closePath();
     ctx.fill();
-
     const grad = ctx.createLinearGradient(0,H*.38,0,H*.88);
     grad.addColorStop(0,'#f5c842'); grad.addColorStop(1,'#c8860a');
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.moveTo(W*.37,H*.39); ctx.lineTo(W*.63,H*.39); ctx.lineTo(W*.69,H*.86); ctx.lineTo(W*.31,H*.86); ctx.closePath();
     ctx.fill();
-
     ctx.fillStyle = '#fffde7';
     for (let i=0;i<8;i++) {
       ctx.beginPath();
@@ -1295,7 +1023,7 @@ function drawReel(canvas, reel){
   }
 }
 
-/* beer pong bounce */
+/* beer */
 let beerCanvas, beerCtx;
 let beerBall, beerShots = 6, beerRunning = false, beerDrinkTimer = null;
 let beerCups = [];
@@ -1357,7 +1085,6 @@ function drawBeerPong(){
   ctx.lineWidth = 3;
   ctx.strokeRect(W*.16, 34, W*.68, H-68);
 
-  // side bottles
   ctx.fillStyle = '#a87c2d';
   for (const x of [28,50,W-50,W-28]) {
     ctx.fillRect(x-6, 78, 12, 70);
@@ -1368,7 +1095,6 @@ function drawBeerPong(){
 
   beerCups.forEach(c => drawCup(ctx, c.x, c.y, c.hit));
 
-  // ball
   ctx.fillStyle = '#fff';
   ctx.beginPath();
   ctx.arc(beerBall.x, beerBall.y, beerBall.r, 0, Math.PI*2);
@@ -1416,7 +1142,6 @@ function beerLoop(){
 
     const floorY = beerCanvas.height - 38;
 
-    // bounce on table
     if (beerBall.y >= floorY && beerBall.vy > 0) {
       beerBall.y = floorY;
       beerBall.vy *= -0.58;
@@ -1436,7 +1161,6 @@ function beerLoop(){
       }
     }
 
-    // cup hit
     for (const cup of beerCups) {
       if (cup.hit) continue;
       const dx = beerBall.x - cup.x;
@@ -1451,7 +1175,6 @@ function beerLoop(){
       }
     }
 
-    // wall miss
     if (beerBall.x < -24 || beerBall.x > beerCanvas.width + 24 || beerBall.y > beerCanvas.height + 60) {
       beerBall.active = false;
       beerShots--;
@@ -1561,7 +1284,6 @@ function cigLoop(){
   if (!cigRunning) return;
 
   cigFrame++;
-
   const intensity = Math.min(0.12 + cigFrame / 1800, 0.48);
 
   if (Math.random() < intensity) {

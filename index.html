@@ -1156,8 +1156,8 @@ function endReflexGame(){
   reflexRunning = false;
   clearTimeout(reflexTimer);
   reflexSlots.forEach(s => s.classList.remove('active'));
-  let verdict = 'you’re done bro';
-  if (reflexScore >= 25) verdict = 'okay wait you’re locked in';
+  let verdict = 'gosh you’re sloshed man';
+  if (reflexScore >= 25) verdict = 'damnnn you’re locked in';
   else if (reflexScore >= 12) verdict = 'either focused or too far gone';
   $('#reflex-msg').textContent = verdict;
 }
@@ -1350,7 +1350,7 @@ function cigLoop(){
       updateCigLives();
       if (cigLives <= 0) {
         cigRunning = false;
-        $('#cig-msg').textContent = 'goshh you're sloshed man';
+        $('#cig-msg').textContent = 'gone bro gone';
       }
     }
     return d.y < cigCanvasEl.height && !hit;

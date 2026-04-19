@@ -286,7 +286,7 @@
   }
   .game-msg{min-height:2rem;font-size:1rem;font-weight:700;text-align:center}
 
-  /* reflex game */
+  /* reflex game improved */
   .reflex-head{
     width:min(94vw,380px);
     display:flex;
@@ -294,21 +294,45 @@
     align-items:center;
     font-weight:700;
     font-size:.95rem;
+    gap:.6rem;
+  }
+  .reflex-stat{
+    flex:1;
+    text-align:center;
+    padding:.65rem .7rem;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:linear-gradient(180deg,#151515,#0d0d0d);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
   }
   .reflex-board{
     width:min(94vw,380px);
     height:420px;
     background:
-      radial-gradient(circle at center, rgba(255,214,99,.06), transparent 40%),
-      linear-gradient(180deg,#111,#0b0b0b);
+      radial-gradient(circle at 50% 18%, rgba(255,214,99,.10), transparent 35%),
+      linear-gradient(180deg,#15110c,#0b0b0b 28%, #111 100%);
     border:1px solid var(--border);
-    border-radius:20px;
+    border-radius:22px;
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:14px;
     padding:14px;
     position:relative;
     overflow:hidden;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .reflex-board::before{
+    content:"BOTTOMS UP";
+    position:absolute;
+    top:10px;
+    left:0;
+    right:0;
+    text-align:center;
+    font-size:.72rem;
+    letter-spacing:.18em;
+    color:rgba(255,255,255,.08);
+    font-weight:700;
+    pointer-events:none;
   }
   .reflex-slot{
     border-radius:18px;
@@ -321,19 +345,25 @@
     overflow:hidden;
     cursor:pointer;
     user-select:none;
+    transition:transform .08s ease, border-color .12s ease;
   }
+  .reflex-slot:active{transform:scale(.97)}
+  .reflex-slot.active{border-color:#3a2a15}
   .reflex-slot.active::after{
     content:"";
     position:absolute;
     inset:8px;
     border-radius:14px;
-    box-shadow:0 0 0 1px rgba(255,255,255,.05), inset 0 0 22px rgba(255,255,255,.03);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.05),
+      inset 0 0 26px rgba(255,214,99,.05);
   }
   .drink-item{
-    font-size:2rem;
+    font-size:2.15rem;
     transform:translateY(28px) scale(.7);
     opacity:0;
     transition:transform .16s ease, opacity .16s ease;
+    filter:drop-shadow(0 8px 14px rgba(0,0,0,.35));
   }
   .reflex-slot.active .drink-item{
     transform:translateY(0) scale(1);
@@ -427,8 +457,8 @@
   </div>
   <div class="game-screen">
     <div class="reflex-head">
-      <div id="reflex-score">Score: 0</div>
-      <div id="reflex-lives">Lives: 3</div>
+      <div class="reflex-stat" id="reflex-score">Score: 0</div>
+      <div class="reflex-stat" id="reflex-lives">Lives: 3</div>
     </div>
 
     <div class="reflex-board" id="reflex-board"></div>
@@ -1070,7 +1100,7 @@ function drawReel(canvas, reel){
 let reflexRunning = false;
 let reflexScore = 0;
 let reflexLives = 3;
-let reflexSpeed = 900;
+let reflexSpeed = 980;
 let reflexTimer = null;
 let reflexSlots = [];
 let reflexActiveIndex = -1;
@@ -1104,7 +1134,7 @@ function resetReflexGame(){
   reflexRunning = false;
   reflexScore = 0;
   reflexLives = 3;
-  reflexSpeed = 900;
+  reflexSpeed = 980;
   reflexActiveIndex = -1;
   reflexActiveType = null;
   clearTimeout(reflexTimer);
@@ -1157,7 +1187,13 @@ function spawnReflexItem(){
   slot.classList.add('active');
   slot.querySelector('.drink-item').textContent = type.emoji;
 
-  reflexSpeed = Math.max(320, 900 - reflexScore * 18);
+  if (reflexScore < 3) {
+    reflexSpeed = 980;
+  } else if (reflexScore < 5) {
+    reflexSpeed = 720;
+  } else {
+    reflexSpeed = 470;
+  }
 
   reflexTimer = setTimeout(spawnReflexItem, reflexSpeed);
 }
@@ -1172,11 +1208,17 @@ function handleReflexTap(i){
   if (reflexActiveType.good) {
     reflexScore++;
     updateReflexUI();
-    $('#reflex-msg').textContent =
-      reflexScore > 18 ? 'bottoms up rajath!!' :
-      reflexScore > 9 ? 'okay now you’re locked in' :
-      'good one';
-    if (reflexScore === 20) showToast('bottoms up rajath!!');
+
+    if (reflexScore < 3) {
+      $('#reflex-msg').textContent = 'nice. keep going';
+    } else if (reflexScore < 5) {
+      $('#reflex-msg').textContent = 'okay now speed up';
+    } else {
+      $('#reflex-msg').textContent = 'bottoms up rajath!!';
+    }
+
+    if (reflexScore === 5) showToast('bro locked in');
+    if (reflexScore === 8) showToast('bottoms up rajath!!');
   } else {
     reflexLives--;
     updateReflexUI();
@@ -1263,13 +1305,34 @@ function cigLoop(){
   if (!cigRunning) return;
 
   cigFrame++;
-  const intensity = Math.min(0.12 + cigFrame / 1800, 0.48);
 
-  if (Math.random() < intensity) {
+  let spawnChance;
+  let minSpeed;
+  let extraSpeed;
+
+  if (cigFrame < 300) {
+    spawnChance = 0.05;
+    minSpeed = 2.4;
+    extraSpeed = 1.2;
+  } else if (cigFrame < 700) {
+    spawnChance = 0.10;
+    minSpeed = 3.0;
+    extraSpeed = 1.8;
+  } else if (cigFrame < 1200) {
+    spawnChance = 0.18;
+    minSpeed = 3.7;
+    extraSpeed = 2.4;
+  } else {
+    spawnChance = 0.28;
+    minSpeed = 4.5;
+    extraSpeed = 3.2;
+  }
+
+  if (Math.random() < spawnChance) {
     cigDrops.push({
       x: Math.random() * cigCanvasEl.width,
       y: -10,
-      speed: 3 + Math.random() * (2 + intensity * 7)
+      speed: minSpeed + Math.random() * extraSpeed
     });
   }
 
@@ -1287,7 +1350,7 @@ function cigLoop(){
       updateCigLives();
       if (cigLives <= 0) {
         cigRunning = false;
-        $('#cig-msg').textContent = 'gone. like your sleep schedule';
+        $('#cig-msg').textContent = 'goshh you're sloshedd man';
       }
     }
     return d.y < cigCanvasEl.height && !hit;

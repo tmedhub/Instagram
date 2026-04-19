@@ -1,202 +1,995 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+/>
 <title>InstaRaj</title>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  :root{
-    --black:#000;--dark:#0a0a0a;--card:#111;--surface:#1a1a1a;--border:#2a2a2a;
-    --text:#fff;--muted:#8e8e8e;--blue:#0095f6;--grad:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
-    --font:'DM Sans',sans-serif;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
-  html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:var(--font);color:var(--text)}
-  .screen{position:absolute;inset:0;display:flex;flex-direction:column;background:#000;transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .35s;will-change:transform,opacity}
-  .screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
-  .screen.slide-up{transform:translateY(100%);opacity:0}
-  .screen.active{transform:none;opacity:1;pointer-events:all}
+
+  :root {
+    --black: #000;
+    --dark: #0a0a0a;
+    --card: #111;
+    --surface: #1a1a1a;
+    --border: #2a2a2a;
+    --text: #fff;
+    --muted: #8e8e8e;
+    --blue: #0095f6;
+    --red: #ed4956;
+    --grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    --font: "DM Sans", sans-serif;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    color: var(--text);
+    font-family: var(--font);
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: #000;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
+    will-change: transform, opacity;
+  }
+
+  .screen.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .screen.slide-up {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  .screen.active {
+    transform: none;
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    background: #000;
+    z-index: 10;
+  }
+
+  .topbar-logo {
+    font-family: "Dancing Script", cursive;
+    font-size: 1.7rem;
+    color: #fff;
+  }
+
+  .topbar-icons {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .topbar-icons svg,
+  .icon-plain {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    cursor: pointer;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #000;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    z-index: 100;
+  }
+
+  .nav-item {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .nav-item svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.15s;
+  }
+
+  .nav-item.active svg {
+    transform: scale(1.08);
+  }
+
+  .nav-dot {
+    position: absolute;
+    bottom: 5px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0;
+  }
+
+  .nav-item.active .nav-dot {
+    opacity: 1;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 78px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-size: 0.82rem;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1400;
+    transition: 0.25s;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 
   /* LOGIN */
-  #login{justify-content:center;align-items:center;padding:2rem}
-  .logo-wrap{text-align:center;margin-bottom:2.5rem}
-  .logo-text{font-family:'Dancing Script',cursive;font-size:3rem;color:#fff;letter-spacing:-1px}
-  .input-group{width:100%;max-width:360px;margin:0 auto}
-  .inp-wrap{position:relative;margin-bottom:.75rem}
-  .inp-wrap input{width:100%;background:#121212;border:1px solid var(--border);color:#fff;padding:.9rem 3rem .9rem 1rem;border-radius:6px;font-size:.9rem;font-family:var(--font);outline:none;transition:border-color .2s}
-  .inp-wrap input:focus{border-color:#555}
-  .inp-wrap .eye{position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:var(--muted);cursor:pointer;font-size:1.1rem;user-select:none}
-  .err-msg{color:#ed4956;font-size:.8rem;text-align:center;min-height:1.2rem;margin:.4rem 0;transition:opacity .3s;opacity:0}
-  .err-msg.show{opacity:1}
-  .btn-login{width:100%;background:var(--blue);color:#fff;border:none;padding:.9rem;border-radius:8px;font-size:.95rem;font-weight:600;font-family:var(--font);cursor:pointer;transition:opacity .15s,transform .1s;margin-top:.5rem}
-  .btn-login:active{transform:scale(.97);opacity:.85}
-  .divider{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;color:var(--muted);font-size:.8rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em}
-  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-  .secret-link{display:none;text-align:center;color:var(--muted);font-size:.85rem;margin-top:.5rem;cursor:pointer;transition:color .2s}
-  .secret-link span{color:var(--blue);font-weight:600}
-  .forgot{text-align:center;color:var(--blue);font-size:.85rem;font-weight:600;cursor:pointer;margin-top:.5rem}
-  .login-footer{position:absolute;bottom:2rem;left:0;right:0;text-align:center;color:var(--muted);font-size:.8rem}
-  .login-footer b{color:#fff}
+  #login {
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .logo-wrap {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo-text {
+    font-family: "Dancing Script", cursive;
+    font-size: 3rem;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+
+  .input-group {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .inp-wrap {
+    position: relative;
+    margin-bottom: 0.75rem;
+  }
+
+  .inp-wrap input {
+    width: 100%;
+    background: #121212;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 0.9rem 3rem 0.9rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-family: var(--font);
+    outline: none;
+  }
+
+  .inp-wrap .eye {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .err-msg {
+    color: var(--red);
+    font-size: 0.8rem;
+    text-align: center;
+    min-height: 1.2rem;
+    margin: 0.4rem 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .err-msg.show {
+    opacity: 1;
+  }
+
+  .btn-login,
+  .game-btn,
+  .profile-btn,
+  .birthday-btn {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-family: var(--font);
+    cursor: pointer;
+  }
+
+  .btn-login {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.2rem 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .forgot {
+    text-align: center;
+    color: var(--blue);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .secret-link {
+    display: none;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.86rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+  }
+
+  .secret-link span {
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  .login-footer {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .login-footer b {
+    color: #fff;
+  }
+
+  /* BDAY */
+  #confetti-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1500;
+    display: none;
+  }
+
+  .birthday-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1450;
+  }
+
+  .birthday-overlay.hidden {
+    display: none;
+  }
+
+  .birthday-card {
+    width: min(86vw, 340px);
+    background: #121212;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 1.4rem 1.2rem;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  }
+
+  .birthday-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .birthday-sub {
+    font-size: 0.92rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+
+  .birthday-btn {
+    margin-top: 1rem;
+    padding: 0.8rem 1.6rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
 
   /* HOME */
-  #home{display:flex;flex-direction:column}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0}
-  .topbar-logo{font-family:'Dancing Script',cursive;font-size:1.7rem;color:#fff}
-  .topbar-icons{display:flex;gap:1.2rem;align-items:center}
-  .topbar-icons svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;cursor:pointer}
-  .feed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
-  .feed::-webkit-scrollbar{display:none}
+  .feed {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 84px;
+  }
 
-  /* STORIES */
-  .stories{display:flex;gap:.8rem;padding:.9rem 1rem;overflow-x:auto;border-bottom:1px solid var(--border);flex-shrink:0}
-  .stories::-webkit-scrollbar{display:none}
-  .story-item{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex-shrink:0;cursor:pointer}
-  .story-ring{width:66px;height:66px;border-radius:50%;padding:2px;cursor:pointer}
-  .story-ring.grad{background:var(--grad)}
-  .story-ring.seen{background:var(--border)}
-  .story-inner{width:100%;height:100%;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;border:2px solid #000;font-size:1.3rem;font-weight:700;color:#fff;overflow:hidden}
-  .story-name{font-size:.68rem;color:var(--text);max-width:68px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .feed::-webkit-scrollbar,
+  .profile-scroll::-webkit-scrollbar,
+  .post-view-wrap::-webkit-scrollbar,
+  .stories::-webkit-scrollbar,
+  .highlights-row::-webkit-scrollbar {
+    display: none;
+  }
 
-  /* POSTS */
-  .post{border-bottom:1px solid var(--border);margin-bottom:.2rem}
-  .post-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem}
-  .post-user{display:flex;align-items:center;gap:.7rem}
-  .post-avatar{width:32px;height:32px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0}
-  .post-meta{display:flex;flex-direction:column}
-  .post-username{font-size:.88rem;font-weight:600}
-  .post-location{font-size:.72rem;color:var(--muted)}
-  .post-img{width:100%;aspect-ratio:1;background:var(--surface);position:relative;overflow:hidden;cursor:pointer}
-  .post-img canvas{width:100%;height:100%;object-fit:cover;display:block}
-  .heart-anim{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transform:scale(.5);transition:opacity .15s,transform .15s}
-  .heart-anim.show{opacity:1;transform:scale(1)}
-  .heart-anim.hide{opacity:0;transform:scale(1.5);transition:opacity .3s .2s,transform .3s .2s}
-  .sticker-anim img{width:92px;height:92px;object-fit:contain;display:block;filter:drop-shadow(0 8px 20px rgba(0,0,0,.35))}
-  .post-actions{display:flex;align-items:center;padding:.7rem 1rem .4rem;gap:1rem}
-  .post-actions svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;cursor:pointer;flex-shrink:0}
-  .post-actions .save{margin-left:auto}
-  .post-actions .liked svg{stroke:#ed4956;fill:#ed4956}
-  .post-likes{padding:0 1rem;font-size:.83rem;font-weight:600;margin-bottom:.3rem}
-  .post-caption{padding:0 1rem;font-size:.83rem;line-height:1.5;margin-bottom:.3rem}
-  .post-caption b{font-weight:600;margin-right:.3rem}
-  .post-comments{padding:0 1rem;font-size:.78rem;color:var(--muted);margin-bottom:.3rem;cursor:pointer}
-  .post-time{padding:0 1rem .75rem;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .stories {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+  }
 
-  /* BOTTOM NAV */
-  .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:#000;border-top:1px solid var(--border);display:flex;align-items:center;z-index:100}
-  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;cursor:pointer;position:relative;transition:opacity .2s}
-  .nav-item svg{width:26px;height:26px;transition:transform .15s}
-  .nav-item.active svg{transform:scale(1.1)}
-  .nav-dot{width:4px;height:4px;border-radius:50%;background:#fff;position:absolute;bottom:4px;opacity:0;transition:opacity .2s}
-  .nav-item.active .nav-dot{opacity:1}
+  .story-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
 
-  /* GAME SCREENS */
-  .game-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding-bottom:60px}
-  .game-title{font-size:1.4rem;font-weight:700;margin-bottom:.5rem;text-align:center}
-  .game-sub{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:1.5rem}
-  .score-display{font-size:2.5rem;font-weight:700;font-variant-numeric:tabular-nums}
-  canvas{display:block;touch-action:none}
-  .game-msg{font-size:1.1rem;font-weight:600;text-align:center;color:#fff;padding:1rem;min-height:2.5rem}
-  .game-btn{background:var(--blue);color:#fff;border:none;padding:.75rem 2.5rem;border-radius:24px;font-size:.95rem;font-weight:600;font-family:var(--font);cursor:pointer;transition:transform .1s,opacity .15s;margin-top:1rem}
-  .game-btn:active{transform:scale(.95);opacity:.85}
+  .story-ring {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    padding: 2px;
+    background: var(--grad);
+  }
 
-  /* BEER */
-  #beer-game{background:#000}
-  #beer-canvas{border-radius:12px;margin-bottom:.5rem}
+  .story-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #000;
+    font-size: 1.25rem;
+  }
 
-  /* CIG */
-  #cig-game{background:#0a0a0a}
+  .story-name {
+    font-size: 0.68rem;
+    color: #fff;
+    max-width: 68px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-  /* BADMINTON */
-  #badminton-game{background:#0d1a1a}
+  .post {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.2rem;
+  }
 
-  /* REELS */
-  #reels{background:#000;overflow:hidden}
-  .reels-container{flex:1;position:relative;overflow:hidden}
-  .reel{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.4,0,.2,1)}
-  .reel-bg{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-  .reel-canvas{width:100%;height:100%;object-fit:cover}
-  .reel-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7) 30%,transparent 70%)}
-  .reel-info{position:absolute;bottom:0;left:0;right:60px;padding:1rem}
-  .reel-username{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
-  .reel-caption{font-size:.82rem;color:rgba(255,255,255,.9);line-height:1.4}
-  .reel-actions{position:absolute;right:12px;bottom:0;display:flex;flex-direction:column;align-items:center;gap:1.5rem;padding-bottom:1.2rem}
-  .reel-action{display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer}
-  .reel-action svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .reel-action span{font-size:.72rem;color:#fff}
+  .post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+  }
 
-  /* PROFILE */
-  #profile{overflow:hidden}
-  .profile-scroll{flex:1;overflow-y:auto;padding-bottom:80px}
-  .profile-scroll::-webkit-scrollbar{display:none}
-  .profile-header{padding:1rem}
-  .profile-top{display:flex;align-items:center;gap:1.5rem;margin-bottom:1rem}
-  .profile-pic{width:86px;height:86px;border-radius:50%;background:var(--grad);padding:2px;flex-shrink:0}
-  .profile-pic-inner{width:100%;height:100%;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;border:2px solid #000}
-  .profile-stats{display:flex;gap:1.5rem;flex:1;justify-content:center}
-  .stat{text-align:center}
-  .stat-num{font-size:1.1rem;font-weight:700;display:block}
-  .stat-label{font-size:.75rem;color:var(--muted)}
-  .profile-name{font-weight:700;font-size:.95rem;margin-bottom:.25rem}
-  .profile-bio{font-size:.82rem;color:var(--text);line-height:1.5;white-space:pre-line;margin-bottom:.5rem}
-  .profile-link{color:var(--blue);font-size:.82rem;font-weight:600}
-  .profile-actions{display:flex;gap:.5rem;margin-top:.75rem}
-  .profile-btn{flex:1;background:var(--surface);color:#fff;border:none;padding:.55rem;border-radius:8px;font-size:.85rem;font-weight:600;font-family:var(--font);cursor:pointer}
-  .profile-btn.follow{background:var(--blue)}
-  .highlights{padding:.75rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-  .highlights-row{display:flex;gap:1rem;overflow-x:auto;padding:0 1rem}
-  .highlights-row::-webkit-scrollbar{display:none}
-  .highlight{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex-shrink:0}
-  .hl-ring{width:62px;height:62px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.4rem}
-  .hl-name{font-size:.7rem;color:var(--text)}
-  .posts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;padding:1px 0}
-  .grid-post{aspect-ratio:1;background:var(--surface);cursor:pointer;position:relative;overflow:hidden}
+  .post-user {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .post-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-username {
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .post-location {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .post-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .post-img canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .heart-anim {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  .heart-anim.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .heart-anim.hide {
+    opacity: 0;
+    transform: scale(1.45);
+    transition: opacity 0.3s 0.15s, transform 0.3s 0.15s;
+  }
+
+  .sticker-anim img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 12px 30px rgba(0,0,0,.45));
+  }
+
+  .post-actions {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 1rem 0.4rem;
+    gap: 1rem;
+  }
+
+  .post-actions svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .post-actions .save {
+    margin-left: auto;
+  }
+
+  .post-actions .liked svg,
+  #pv-like-btn.liked svg {
+    stroke: var(--red);
+    fill: var(--red);
+  }
+
+  .post-likes,
+  .post-caption,
+  .post-comments,
+  .post-time {
+    padding: 0 1rem;
+  }
+
+  .post-likes {
+    font-size: 0.83rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .post-caption {
+    font-size: 0.83rem;
+    line-height: 1.5;
+    margin-bottom: 0.3rem;
+  }
+
+  .post-caption b {
+    font-weight: 700;
+    margin-right: 0.3rem;
+  }
+
+  .post-comments {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .post-time {
+    padding-bottom: 0.75rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 
   /* STORY VIEWER */
-  #story-viewer{background:#000;z-index:200}
-  .story-view-bg{flex:1;position:relative;display:flex;align-items:center;justify-content:center;padding-bottom:60px}
-  .story-progress{display:flex;gap:3px;padding:.75rem 1rem .5rem;flex-shrink:0}
-  .story-prog-bar{flex:1;height:2px;background:rgba(255,255,255,.3);border-radius:1px;overflow:hidden}
-  .story-prog-fill{height:100%;background:#fff;width:0;transition:width linear}
-  .story-view-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem .5rem;flex-shrink:0}
-  .story-user-info{display:flex;align-items:center;gap:.7rem}
-  .story-close{color:#fff;font-size:1.5rem;cursor:pointer;line-height:1;padding:.5rem}
-  .story-canvas{width:100%;flex:1;object-fit:contain}
+  #story-viewer {
+    background: #000;
+    z-index: 300;
+  }
+
+  .story-progress {
+    display: flex;
+    gap: 3px;
+    padding: 0.75rem 1rem 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .story-prog-bar {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,.3);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .story-prog-fill {
+    height: 100%;
+    background: #fff;
+    width: 0;
+    transition: width linear;
+  }
+
+  .story-view-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+  }
+
+  .story-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .story-close {
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .story-canvas {
+    width: 100%;
+    flex: 1;
+    object-fit: contain;
+  }
 
   /* POST VIEWER */
-  #post-viewer{background:#000;z-index:220}
-  .post-view-top{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0}
-  .post-view-close{font-size:1.5rem;color:#fff;cursor:pointer;padding:.3rem .5rem;line-height:1}
-  .post-view-wrap{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding-bottom:80px;-webkit-overflow-scrolling:touch}
-  .post-view-image{width:100%;aspect-ratio:1;background:#111;position:relative}
-  .post-view-image canvas{width:100%;height:100%;display:block}
-  .post-view-meta{padding:1rem}
-  .post-view-user{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
-  .post-view-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;flex-shrink:0}
-  .post-view-username{font-size:.92rem;font-weight:700}
-  .post-view-location{font-size:.75rem;color:var(--muted);margin-top:.1rem}
-  .post-view-actions{display:flex;align-items:center;gap:1rem;margin-bottom:.8rem}
-  .post-view-actions svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-  .post-view-actions .save{margin-left:auto}
-  .post-view-likes{font-size:.86rem;font-weight:600;margin-bottom:.45rem}
-  .post-view-caption{font-size:.86rem;line-height:1.6;margin-bottom:.45rem}
-  .post-view-caption b{margin-right:.35rem}
-  .post-view-comments{font-size:.8rem;color:var(--muted);margin-bottom:.45rem}
-  .post-view-time{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  #post-viewer {
+    background: #000;
+    z-index: 350;
+  }
 
-  /* TOAST */
-  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);color:#fff;padding:.6rem 1.2rem;border-radius:20px;font-size:.82rem;font-weight:500;z-index:999;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;border:1px solid var(--border)}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .post-view-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
 
-  input:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #121212 inset;-webkit-text-fill-color:#fff}
-  ::placeholder{color:#555}
+  .post-view-close {
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .post-view-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-bottom: 84px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .post-view-image {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #111;
+  }
+
+  .post-view-image canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .post-view-meta {
+    padding: 1rem;
+  }
+
+  .post-view-user {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-view-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .post-view-username {
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .post-view-location {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+
+  .post-view-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .post-view-actions svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .post-view-actions .save {
+    margin-left: auto;
+  }
+
+  .post-view-likes {
+    font-size: 0.86rem;
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+  }
+
+  .post-view-caption {
+    font-size: 0.86rem;
+    line-height: 1.6;
+    margin-bottom: 0.45rem;
+  }
+
+  .post-view-caption b {
+    margin-right: 0.35rem;
+  }
+
+  .post-view-comments {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.45rem;
+  }
+
+  .post-view-time {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* GAMES */
+  .game-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 1rem 1rem 72px;
+  }
+
+  .game-msg {
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    padding: 1rem 0 0.4rem;
+    min-height: 2.4rem;
+  }
+
+  .game-btn {
+    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-top: 0.7rem;
+  }
+
+  #beer-canvas,
+  #cig-canvas,
+  #bad-canvas {
+    display: block;
+    border-radius: 14px;
+  }
+
+  /* PROFILE */
+  #profile {
+    overflow: hidden;
+  }
+
+  .profile-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 84px;
+  }
+
+  .profile-header {
+    padding: 1rem;
+  }
+
+  .profile-top {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .profile-pic {
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    background: var(--grad);
+    padding: 2px;
+    flex-shrink: 0;
+  }
+
+  .profile-pic-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    border: 2px solid #000;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .profile-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .profile-bio {
+    font-size: 0.82rem;
+    color: var(--text);
+    line-height: 1.5;
+    white-space: pre-line;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-link {
+    color: var(--blue);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .profile-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .profile-btn {
+    flex: 1;
+    background: var(--surface);
+    padding: 0.55rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .profile-btn.follow {
+    background: var(--blue);
+  }
+
+  .highlights {
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .highlights-row {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 0 1rem;
+  }
+
+  .highlight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .hl-ring {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+
+  .hl-name {
+    font-size: 0.7rem;
+    color: var(--text);
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    padding: 1px 0;
+  }
+
+  .grid-post {
+    aspect-ratio: 1;
+    background: var(--surface);
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .grid-post canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 </style>
 </head>
 <body>
 
+<canvas id="confetti-canvas"></canvas>
+
 <div class="toast" id="toast"></div>
 
-<!-- LOGIN SCREEN -->
+<div id="birthday-overlay" class="birthday-overlay hidden">
+  <div class="birthday-card">
+    <div class="birthday-title">happy birthday mf 🎉</div>
+    <div class="birthday-sub">welcome to InstaRaj</div>
+    <button id="birthday-close" class="birthday-btn">enter</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
 <div class="screen active" id="login">
   <div class="logo-wrap">
     <div class="logo-text">Instagram</div>
@@ -218,7 +1011,7 @@
   <div class="login-footer">Don't have an account? <b>Sign up</b></div>
 </div>
 
-<!-- HOME SCREEN -->
+<!-- HOME -->
 <div class="screen hidden" id="home">
   <div class="topbar">
     <div class="topbar-logo">InstaRaj</div>
@@ -234,64 +1027,68 @@
   <div class="bottom-nav" id="bottom-nav"></div>
 </div>
 
-<!-- BEER GAME SCREEN -->
+<!-- BEER PONG -->
 <div class="screen hidden" id="beer-game">
   <div class="topbar">
-    <div class="topbar-logo" style="font-size:1.2rem">🍺 BeerRaj</div>
-    <div style="color:var(--muted);font-size:.8rem">Survive the thirst</div>
+    <div class="topbar-logo" style="font-size:1.2rem">🍺 Beer Pong</div>
+    <div style="color:var(--muted);font-size:.8rem">bottoms up rajath</div>
   </div>
   <div class="game-screen">
-    <canvas id="beer-canvas" width="300" height="360"></canvas>
-    <div class="game-msg" id="beer-msg">Tilt your phone. Don't waste the beer.</div>
-    <div id="beer-timer" style="font-size:.9rem;color:var(--muted)"></div>
+    <canvas id="beer-canvas" width="340" height="500"></canvas>
+    <div class="game-msg" id="beer-msg">drag and release to aim</div>
     <button class="game-btn" id="beer-start-btn">Start Game</button>
   </div>
   <div class="bottom-nav" id="bottom-nav-beer"></div>
 </div>
 
-<!-- REELS SCREEN -->
+<!-- REELS -->
 <div class="screen hidden" id="reels">
   <div class="topbar" style="position:absolute;top:0;left:0;right:0;z-index:10;background:linear-gradient(to bottom,rgba(0,0,0,.6),transparent);border:none">
     <div class="topbar-logo" style="font-size:1.2rem">Reels</div>
-    <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <svg viewBox="0 0 24 24" class="icon-plain"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
   </div>
   <div class="reels-container" id="reels-container"></div>
   <div class="bottom-nav" id="bottom-nav-reels"></div>
 </div>
 
-<!-- CIGARETTE GAME SCREEN -->
+<!-- CIG -->
 <div class="screen hidden" id="cig-game">
   <div class="topbar">
     <div class="topbar-logo" style="font-size:1.2rem">🚬 SaveTheCig</div>
     <div style="color:var(--muted);font-size:.8rem">protect the priority</div>
   </div>
   <div class="game-screen">
-    <canvas id="cig-canvas"></canvas>
-    <div class="game-msg" id="cig-msg"></div>
+    <canvas id="cig-canvas" width="340" height="460"></canvas>
+    <div class="game-msg" id="cig-msg">protect the priority</div>
+    <div style="font-size:.85rem;color:var(--muted);margin-top:-.3rem;margin-bottom:.8rem">
+      what plans bro
+    </div>
     <button class="game-btn" id="cig-start-btn">Start Game</button>
   </div>
   <div class="bottom-nav" id="bottom-nav-cig"></div>
 </div>
 
-<!-- BADMINTON GAME SCREEN -->
+<!-- BAD -->
 <div class="screen hidden" id="badminton-game">
   <div class="topbar">
     <div class="topbar-logo" style="font-size:1.2rem">🏸 BadminRaj</div>
-    <div style="color:var(--muted);font-size:.8rem">you said you play daily</div>
+    <div style="color:var(--muted);font-size:.8rem">actual badminton now</div>
   </div>
   <div class="game-screen">
-    <canvas id="bad-canvas"></canvas>
-    <div class="game-msg" id="bad-msg"></div>
-    <button class="game-btn" id="bad-start-btn">Start Rally</button>
+    <div style="padding:1rem 1.2rem;text-align:center;color:var(--muted);line-height:1.6;max-width:320px">
+      proper badminton game instead of the placeholder rally
+    </div>
+    <button class="game-btn" id="open-badminton-link">Play Power Badminton</button>
+    <div class="game-msg" id="bad-msg">you said you play daily</div>
   </div>
   <div class="bottom-nav" id="bottom-nav-bad"></div>
 </div>
 
-<!-- PROFILE SCREEN -->
+<!-- PROFILE -->
 <div class="screen hidden" id="profile">
   <div class="topbar">
     <div style="font-size:.95rem;font-weight:600">rajath_weball</div>
-    <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <svg viewBox="0 0 24 24" class="icon-plain"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </div>
   <div class="profile-scroll" id="profile-scroll">
     <div class="profile-header">
@@ -319,8 +1116,8 @@ last sober sighting: unavailable</div>
       <div class="highlights-row" id="hl-row"></div>
     </div>
     <div class="posts-grid" id="posts-grid"></div>
-    <div style="padding:2rem;text-align:center">
-      <div style="color:var(--muted);font-size:.85rem;line-height:1.7">Happy Birthday Rajath 🍺🏎️🏸</div>
+    <div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem;line-height:1.7">
+      Happy Birthday Rajath 🍺🏎️🏸
     </div>
   </div>
   <div class="bottom-nav" id="bottom-nav-profile"></div>
@@ -331,7 +1128,9 @@ last sober sighting: unavailable</div>
   <div class="story-progress" id="story-progress"></div>
   <div class="story-view-header">
     <div class="story-user-info">
-      <div class="profile-pic" style="width:34px;height:34px;padding:2px"><div class="profile-pic-inner" style="font-size:.9rem;border-width:1.5px" id="sv-avatar">R</div></div>
+      <div class="profile-pic" style="width:34px;height:34px;padding:2px">
+        <div class="profile-pic-inner" style="font-size:.9rem;border-width:1.5px" id="sv-avatar">R</div>
+      </div>
       <div>
         <div style="font-weight:600;font-size:.85rem" id="sv-username">nightmode</div>
         <div style="font-size:.72rem;color:var(--muted)" id="sv-time">3:17 AM</div>
@@ -339,7 +1138,7 @@ last sober sighting: unavailable</div>
     </div>
     <div class="story-close" id="story-close">✕</div>
   </div>
-  <canvas id="story-canvas" style="flex:1;width:100%"></canvas>
+  <canvas id="story-canvas" class="story-canvas"></canvas>
 </div>
 
 <!-- POST VIEWER -->
@@ -348,12 +1147,10 @@ last sober sighting: unavailable</div>
     <div style="font-size:.95rem;font-weight:700">Post</div>
     <div class="post-view-close" id="post-view-close">✕</div>
   </div>
-
   <div class="post-view-wrap">
     <div class="post-view-image">
       <canvas id="post-view-canvas" width="600" height="600"></canvas>
     </div>
-
     <div class="post-view-meta">
       <div class="post-view-user">
         <div class="post-view-avatar" id="pv-avatar">🌙</div>
@@ -362,7 +1159,6 @@ last sober sighting: unavailable</div>
           <div class="post-view-location" id="pv-location">3:41 AM · Still awake</div>
         </div>
       </div>
-
       <div class="post-view-actions">
         <div id="pv-like-btn">
           <svg viewBox="0 0 24 24">
@@ -370,23 +1166,15 @@ last sober sighting: unavailable</div>
           </svg>
         </div>
         <div>
-          <svg viewBox="0 0 24 24">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
         <div>
-          <svg viewBox="0 0 24 24">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </div>
         <div class="save">
-          <svg viewBox="0 0 24 24">
-            <polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/>
-          </svg>
+          <svg viewBox="0 0 24 24"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg>
         </div>
       </div>
-
       <div class="post-view-likes" id="pv-likes"></div>
       <div class="post-view-caption" id="pv-caption"></div>
       <div class="post-view-comments" id="pv-comments"></div>
@@ -396,118 +1184,167 @@ last sober sighting: unavailable</div>
 </div>
 
 <script>
-// ====== STATE ======
-let currentScreen = 'login';
+/* ---------- STATE ---------- */
+let currentScreen = "login";
 let loginAttempts = 0;
-let beerGameRunning = false;
-let cigGameRunning = false;
-let badGameRunning = false;
 let currentReel = 0;
-let storyTimer;
 let currentOpenedPost = null;
+let storyTimer = null;
+let reelsBuilt = false;
+const likedPosts = {};
 
-// ====== UTILS ======
+/* ---------- TOAST ---------- */
 function showToast(msg) {
-  const t = document.getElementById('toast');
+  const t = document.getElementById("toast");
   t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
 }
 
+/* ---------- SCREEN NAV ---------- */
 function navigateTo(screenId) {
-  const all = document.querySelectorAll('.screen');
-  all.forEach(s => {
+  document.querySelectorAll(".screen").forEach((s) => {
     if (s.id !== screenId) {
-      s.classList.add('hidden');
-      s.classList.remove('active');
+      s.classList.add("hidden");
+      s.classList.remove("active");
     }
   });
   const target = document.getElementById(screenId);
-  target.classList.remove('hidden', 'slide-up');
-  target.classList.add('active');
+  target.classList.remove("hidden", "slide-up");
+  target.classList.add("active");
   currentScreen = screenId;
   updateNavs(screenId);
 }
 
-// ====== NAV ======
+/* ---------- NAV ---------- */
 const navItems = [
-  { id: 'home', icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', label: 'Home' },
-  { id: 'beer-game', beerIcon: true, label: 'Beer' },
-  { id: 'reels', reelIcon: true, label: 'Reels' },
-  { id: 'cig-game', cigIcon: true, label: 'Smoke' },
-  { id: 'badminton-game', badIcon: true, label: 'Court' },
-  { id: 'profile', personIcon: true, label: 'Profile' },
+  { id: "home", type: "home" },
+  { id: "beer-game", type: "beer" },
+  { id: "reels", type: "reels" },
+  { id: "cig-game", type: "cig" },
+  { id: "badminton-game", type: "bad" },
+  { id: "profile", type: "profile" },
 ];
+
+function navIcon(type) {
+  if (type === "beer") return `<svg viewBox="0 0 24 24"><path d="M5 8h14l-1.5 9a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 8z"/><path d="M5 8V6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2"/><path d="M19 11h2a2 2 0 0 1 0 4h-2"/></svg>`;
+  if (type === "reels") return `<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M2 7h20M2 17h20M7 2v20M17 2v20"/></svg>`;
+  if (type === "cig") return `<svg viewBox="0 0 24 24"><path d="M2 15h16M18 15h4M18 9c0 0 2 1 2 3"/><path d="M15 9c0 0 2 1 2 3"/></svg>`;
+  if (type === "bad") return `<svg viewBox="0 0 24 24"><path d="M8 3c4 0 7 3 7 7 0 1.8-.6 3.4-1.7 4.7"/><path d="M15 15 9 21"/><path d="M10.2 10.2 14 14"/><path d="M4 20l5-5"/></svg>`;
+  if (type === "profile") return `<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  return `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+}
 
 function buildNav(containerId) {
   const c = document.getElementById(containerId);
   if (!c) return;
-  c.innerHTML = '';
-  navItems.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'nav-item';
+  c.innerHTML = "";
+  navItems.forEach((item) => {
+    const div = document.createElement("div");
+    div.className = "nav-item";
     div.dataset.screen = item.id;
-    let svg = '';
-    if (item.beerIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.5 9a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 8z"/><path d="M5 8V6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2"/><path d="M19 11h2a2 2 0 0 1 0 4h-2"/></svg>`;
-    } else if (item.reelIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M2 7h20M2 17h20M7 2v20M17 2v20"/></svg>`;
-    } else if (item.cigIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15h16M18 15h4M18 9c0 0 2 1 2 3"/><path d="M15 9c0 0 2 1 2 3"/></svg>`;
-    } else if (item.badIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3c4 0 7 3 7 7 0 1.8-.6 3.4-1.7 4.7"/><path d="M15 15 9 21"/><path d="M10.2 10.2 14 14"/><path d="M4 20l5-5"/></svg>`;
-    } else if (item.personIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-    } else {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${item.icon}"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
-    }
-    div.innerHTML = svg + `<div class="nav-dot"></div>`;
-    div.addEventListener('click', () => {
+    div.innerHTML = navIcon(item.type) + `<div class="nav-dot"></div>`;
+    div.addEventListener("click", () => {
       navigateTo(item.id);
-      if (item.id === 'beer-game') initBeerCanvas();
-      if (item.id === 'cig-game') initCigCanvas();
-      if (item.id === 'badminton-game') initBadCanvas();
-      if (item.id === 'reels') initReels();
+      if (item.id === "beer-game") initBeerCanvas();
+      if (item.id === "cig-game") initCigCanvas();
+      if (item.id === "reels") initReels();
     });
     c.appendChild(div);
   });
 }
 
+function buildAllNavs() {
+  [
+    "bottom-nav",
+    "bottom-nav-beer",
+    "bottom-nav-reels",
+    "bottom-nav-cig",
+    "bottom-nav-bad",
+    "bottom-nav-profile",
+  ].forEach(buildNav);
+}
+
 function updateNavs(activeId) {
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.classList.toggle('active', item.dataset.screen === activeId);
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.classList.toggle("active", item.dataset.screen === activeId);
   });
 }
 
-// ====== LOGIN ======
-const loginBtn = document.getElementById('login-btn');
-const errMsg = document.getElementById('err-msg');
-const secretLink = document.getElementById('secret-link');
-const eyeToggle = document.getElementById('eye-toggle');
-const passInp = document.getElementById('password-inp');
+/* ---------- LOGIN ---------- */
+const loginBtn = document.getElementById("login-btn");
+const errMsg = document.getElementById("err-msg");
+const secretLink = document.getElementById("secret-link");
+const eyeToggle = document.getElementById("eye-toggle");
+const passInp = document.getElementById("password-inp");
 
-const errors = ['Incorrect password. Try again.', 'User not found. Check your details.', 'Too many failed attempts. Try again later.'];
+const errors = [
+  "Incorrect password. Try again.",
+  "User not found. Check your details.",
+  "Too many failed attempts. Try again later.",
+];
 
-eyeToggle.addEventListener('click', () => {
-  passInp.type = passInp.type === 'password' ? 'text' : 'password';
+eyeToggle.addEventListener("click", () => {
+  passInp.type = passInp.type === "password" ? "text" : "password";
 });
 
-loginBtn.addEventListener('click', () => {
-  loginBtn.style.opacity = '.6';
-  setTimeout(() => loginBtn.style.opacity = '1', 300);
+loginBtn.addEventListener("click", () => {
   errMsg.textContent = errors[Math.min(loginAttempts, errors.length - 1)];
-  errMsg.classList.add('show');
+  errMsg.classList.add("show");
   loginAttempts++;
   if (loginAttempts >= 2) {
-    secretLink.style.display = 'block';
-    setTimeout(() => secretLink.style.opacity = '1', 50);
+    secretLink.style.display = "block";
   }
-  setTimeout(() => errMsg.classList.remove('show'), 3000);
+  setTimeout(() => errMsg.classList.remove("show"), 2500);
 });
 
-secretLink.addEventListener('click', () => {
-  launchApp();
-});
+secretLink.addEventListener("click", launchApp);
+
+/* ---------- CONFETTI ---------- */
+function startConfetti() {
+  const canvas = document.getElementById("confetti-canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.style.display = "block";
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const pieces = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * canvas.height * 0.5,
+    w: 6 + Math.random() * 6,
+    h: 8 + Math.random() * 10,
+    dx: -2 + Math.random() * 4,
+    dy: 2 + Math.random() * 4,
+    rot: Math.random() * Math.PI,
+    dr: -0.15 + Math.random() * 0.3,
+    color: ["#ff4d6d", "#ffd60a", "#4d96ff", "#6bcb77", "#ffffff"][Math.floor(Math.random() * 5)],
+  }));
+
+  let frame = 0;
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach((p) => {
+      p.x += p.dx;
+      p.y += p.dy;
+      p.rot += p.dr;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+
+    frame++;
+    if (frame < 160) {
+      requestAnimationFrame(loop);
+    } else {
+      canvas.style.display = "none";
+    }
+  }
+  loop();
+}
 
 function launchApp() {
   buildAllNavs();
@@ -515,54 +1352,153 @@ function launchApp() {
   buildPosts();
   buildProfile();
   buildReels();
-  navigateTo('home');
-  showToast('Welcome back, Rajath 🎉');
+  initBeerCanvas();
+  initCigCanvas();
+  navigateTo("home");
+
+  document.getElementById("birthday-overlay").classList.remove("hidden");
+  startConfetti();
 }
 
-function buildAllNavs() {
-  ['bottom-nav','bottom-nav-beer','bottom-nav-reels','bottom-nav-cig','bottom-nav-bad','bottom-nav-profile'].forEach(id => buildNav(id));
-}
+document.getElementById("birthday-close").addEventListener("click", () => {
+  document.getElementById("birthday-overlay").classList.add("hidden");
+  showToast("Welcome to InstaRaj 🎉");
+});
 
-// ====== STORIES DATA ======
+/* ---------- STORIES ---------- */
 const storiesData = [
-  { name: 'nightmode', emoji: '🌙', bg: '#1a1a2e' },
-  { name: 'badminton…', emoji: '🏸', bg: '#0d1b0d' },
-  { name: 'f1brain', emoji: '🏎️', bg: '#1a0d0d' },
-  { name: 'insomnia', emoji: '😴', bg: '#1a1a0d' },
-  { name: 'weball', emoji: '🍺', bg: '#0d0d1a' },
-  { name: '3amvibes', emoji: '🌃', bg: '#0d1a1a' },
+  { name: "nightmode", emoji: "🌙", bg: "#1a1a2e" },
+  { name: "badminton…", emoji: "🏸", bg: "#0d1b0d" },
+  { name: "f1brain", emoji: "🏎️", bg: "#1a0d0d" },
+  { name: "insomnia", emoji: "😴", bg: "#1a1a0d" },
+  { name: "weball", emoji: "🍺", bg: "#0d0d1a" },
+  { name: "3amvibes", emoji: "🌃", bg: "#0d1a1a" },
 ];
 
 function buildStories() {
-  const row = document.getElementById('stories-row');
-  row.innerHTML = '';
+  const row = document.getElementById("stories-row");
+  row.innerHTML = "";
   storiesData.forEach((s, i) => {
-    const div = document.createElement('div');
-    div.className = 'story-item';
+    const div = document.createElement("div");
+    div.className = "story-item";
     div.innerHTML = `
-      <div class="story-ring grad" style="padding:2px">
+      <div class="story-ring">
         <div class="story-inner" style="background:${s.bg}">${s.emoji}</div>
       </div>
-      <div class="story-name">${s.name}</div>`;
-    div.addEventListener('click', () => openStory(i));
+      <div class="story-name">${s.name}</div>
+    `;
+    div.addEventListener("click", () => openStory(i));
     row.appendChild(div);
   });
 }
 
-// ====== POSTS DATA ======
+function openStory(idx) {
+  const s = storiesData[idx];
+  document.getElementById("sv-username").textContent = s.name;
+  document.getElementById("sv-avatar").textContent = s.emoji;
+  document.getElementById("sv-time").textContent =
+    ["11:23 PM", "2:47 AM", "12:01 AM", "3:17 AM", "9:45 PM", "4:02 AM"][idx];
+
+  const progRow = document.getElementById("story-progress");
+  progRow.innerHTML = storiesData
+    .map((_, i) => `<div class="story-prog-bar"><div class="story-prog-fill" id="spf-${i}"></div></div>`)
+    .join("");
+
+  const canvas = document.getElementById("story-canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = Math.max(window.innerHeight - 110, 520);
+  const W = canvas.width;
+  const H = canvas.height;
+
+  ctx.fillStyle = s.bg;
+  ctx.fillRect(0, 0, W, H);
+  ctx.font = "92px sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(s.emoji, W / 2, H / 2 - 40);
+
+  const msgs = ["still awake?", "bold choice", "expected behavior", "pattern detected", "fuck it we ball", "3am again huh"];
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 24px sans-serif";
+  ctx.fillText(msgs[idx], W / 2, H / 2 + 68);
+
+  const viewer = document.getElementById("story-viewer");
+  viewer.classList.remove("hidden", "slide-up");
+  viewer.classList.add("active");
+
+  clearTimeout(storyTimer);
+  const fill = document.getElementById(`spf-${idx}`);
+  requestAnimationFrame(() => {
+    fill.style.transition = "width 5s linear";
+    fill.style.width = "100%";
+  });
+  storyTimer = setTimeout(closeStory, 5000);
+}
+
+function closeStory() {
+  clearTimeout(storyTimer);
+  document.getElementById("story-viewer").classList.add("hidden");
+  document.getElementById("story-viewer").classList.remove("active");
+}
+
+document.getElementById("story-close").addEventListener("click", closeStory);
+
+/* ---------- POSTS ---------- */
 const postsData = [
-  { user: 'nightmode', avatar: '🌙', loc: '3:41 AM · Still awake', color: '#1a1a2e', likes: 'weball and 4 others', caption: 'nightmode: 2:41 AM and somehow still not sleeping 🌙', comments: 3, time: '1d', art: 'night' },
-  { user: 'badmintonking', avatar: '🏸', loc: 'The Court · Daily', color: '#0d1b0d', likes: 'insomnia and 7 others', caption: 'rajath.weball: you said you play daily bro 😂', comments: 12, time: '2d', art: 'court' },
-  { user: 'f1strategy', avatar: '🏎️', loc: 'Monaco · Paddock Access', color: '#1a0d0d', likes: 'gridlock and 22 others', caption: 'f1brain: strategy so strong he explained F1 for 40 mins to someone who just asked "is that a fast car" 💀', comments: 8, time: '3d', art: 'f1' },
-  { user: 'rajath.weball', avatar: '🍺', loc: 'Somewhere · Last seen: unknown', color: '#0d0d1a', likes: 'said last one 4 drinks ago', caption: 'rajath.weball: said "last one" 4 drinks ago. still going. fuck it we ball 🍺', comments: 19, time: '5d', art: 'beer' },
+  {
+    user: "nightmode",
+    avatar: "🌙",
+    loc: "3:41 AM · Still awake",
+    color: "#1a1a2e",
+    likes: "weball and 4 others",
+    caption: "nightmode: 2:41 AM and somehow still not sleeping 🌙",
+    comments: 3,
+    time: "1d",
+    art: "night",
+  },
+  {
+    user: "badmintonking",
+    avatar: "🏸",
+    loc: "The Court · Daily",
+    color: "#0d1b0d",
+    likes: "insomnia and 7 others",
+    caption: "rajath.weball: you said you play daily bro 😂",
+    comments: 12,
+    time: "2d",
+    art: "court",
+  },
+  {
+    user: "f1strategy",
+    avatar: "🏎️",
+    loc: "Monaco · Paddock Access",
+    color: "#1a0d0d",
+    likes: "gridlock and 22 others",
+    caption: 'f1brain: strategy so strong he explained F1 for 40 mins to someone who just asked "is that a fast car" 💀',
+    comments: 8,
+    time: "3d",
+    art: "f1",
+  },
+  {
+    user: "rajath.weball",
+    avatar: "🍺",
+    loc: "Somewhere · Last seen: unknown",
+    color: "#0d0d1a",
+    likes: "said last one 4 drinks ago",
+    caption: 'rajath.weball: said "last one" 4 drinks ago. still going. fuck it we ball 🍺',
+    comments: 19,
+    time: "5d",
+    art: "beer",
+  },
 ];
 
 function buildPosts() {
-  const c = document.getElementById('posts-container');
-  c.innerHTML = '';
+  const c = document.getElementById("posts-container");
+  c.innerHTML = "";
+
   postsData.forEach((p, i) => {
-    const div = document.createElement('div');
-    div.className = 'post';
+    const div = document.createElement("div");
+    div.className = "post";
     div.innerHTML = `
       <div class="post-header">
         <div class="post-user">
@@ -572,30 +1508,37 @@ function buildPosts() {
             <div class="post-location">${p.loc}</div>
           </div>
         </div>
-        <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        <svg viewBox="0 0 24 24" class="icon-plain" style="width:20px;height:20px"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
       </div>
-      <div class="post-img" data-art="${p.art}" data-color="${p.color}" data-idx="${i}">
-        <canvas width="400" height="400" style="width:100%;height:100%;display:block"></canvas>
+
+      <div class="post-img" data-idx="${i}">
+        <canvas width="400" height="400"></canvas>
         <div class="heart-anim sticker-anim" id="heart-${i}">
           <img src="sticker.png" alt="sticker">
         </div>
       </div>
+
       <div class="post-actions">
-        <div class="like-btn" data-idx="${i}"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-        <div><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <div><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
-        <div class="save"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg></div>
+        <div class="like-btn" data-idx="${i}">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+        <div class="save"><svg viewBox="0 0 24 24"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg></div>
       </div>
-      <div class="post-likes" id="likes-${i}">Liked by ${p.likes}</div>
-      <div class="post-caption"><b>${p.caption.split(':')[0]}:</b>${p.caption.split(':').slice(1).join(':')}</div>
+
+      <div class="post-likes">Liked by ${p.likes}</div>
+      <div class="post-caption"><b>${p.caption.split(":")[0]}:</b>${p.caption.split(":").slice(1).join(":")}</div>
       <div class="post-comments">View all ${p.comments} comments</div>
-      <div class="post-time">${p.time} ago</div>`;
+      <div class="post-time">${p.time} ago</div>
+    `;
+
     c.appendChild(div);
 
-    const canvas = div.querySelector('canvas');
+    const canvas = div.querySelector("canvas");
     drawPostArt(canvas, p.art, p.color);
 
-    const postImg = div.querySelector('.post-img');
+    const postImg = div.querySelector(".post-img");
 
     let lastTap = 0;
     let singleTapTimer = null;
@@ -603,63 +1546,72 @@ function buildPosts() {
     let startY = 0;
     let moved = false;
 
-    postImg.addEventListener('touchstart', (e) => {
-      const t = e.touches[0];
-      startX = t.clientX;
-      startY = t.clientY;
-      moved = false;
-    }, { passive: true });
+    postImg.addEventListener(
+      "touchstart",
+      (e) => {
+        const t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        moved = false;
+      },
+      { passive: true }
+    );
 
-    postImg.addEventListener('touchmove', (e) => {
-      const t = e.touches[0];
-      const dx = Math.abs(t.clientX - startX);
-      const dy = Math.abs(t.clientY - startY);
-      if (dx > 10 || dy > 10) moved = true;
-    }, { passive: true });
+    postImg.addEventListener(
+      "touchmove",
+      (e) => {
+        const t = e.touches[0];
+        const dx = Math.abs(t.clientX - startX);
+        const dy = Math.abs(t.clientY - startY);
+        if (dx > 12 || dy > 12) moved = true;
+      },
+      { passive: true }
+    );
 
-    postImg.addEventListener('touchend', () => {
-      if (moved) return;
+    postImg.addEventListener(
+      "touchend",
+      () => {
+        if (moved) return;
 
-      const now = Date.now();
+        const now = Date.now();
+        if (now - lastTap < 260) {
+          clearTimeout(singleTapTimer);
+          singleTapTimer = null;
+          triggerLike(i);
+        } else {
+          singleTapTimer = setTimeout(() => openPost(i), 220);
+        }
+        lastTap = now;
+      },
+      { passive: true }
+    );
 
-      if (now - lastTap < 280) {
-        clearTimeout(singleTapTimer);
-        singleTapTimer = null;
-        triggerLike(i);
-      } else {
-        singleTapTimer = setTimeout(() => {
-          openPost(i);
-        }, 220);
-      }
+    postImg.addEventListener("click", (e) => e.preventDefault());
 
-      lastTap = now;
-    }, { passive: true });
-
-    postImg.addEventListener('click', (e) => {
-      e.preventDefault();
-    });
-
-    div.querySelector('.like-btn').addEventListener('click', () => triggerLike(i));
+    div.querySelector(".like-btn").addEventListener("click", () => triggerLike(i));
   });
 }
 
-const likedPosts = {};
 function triggerLike(idx) {
   const btn = document.querySelector(`.like-btn[data-idx="${idx}"]`);
-  const heart = document.getElementById(`heart-${idx}`);
+  const sticker = document.getElementById(`heart-${idx}`);
+
   if (!likedPosts[idx]) {
     likedPosts[idx] = true;
-    btn.classList.add('liked');
-    heart.classList.add('show');
-    setTimeout(() => { heart.classList.remove('show'); heart.classList.add('hide'); }, 700);
-    setTimeout(() => heart.classList.remove('hide'), 1200);
+    btn.classList.add("liked");
+    sticker.classList.add("show");
+    setTimeout(() => {
+      sticker.classList.remove("show");
+      sticker.classList.add("hide");
+    }, 700);
+    setTimeout(() => sticker.classList.remove("hide"), 1200);
   } else {
     likedPosts[idx] = false;
-    btn.classList.remove('liked');
+    btn.classList.remove("liked");
   }
 
   if (currentOpenedPost === idx) {
-    document.getElementById('pv-like-btn').classList.toggle('liked', likedPosts[idx]);
+    document.getElementById("pv-like-btn").classList.toggle("liked", likedPosts[idx]);
   }
 }
 
@@ -667,48 +1619,51 @@ function openPost(idx) {
   const post = postsData[idx];
   currentOpenedPost = idx;
 
-  document.getElementById('pv-avatar').textContent = post.avatar;
-  document.getElementById('pv-avatar').style.background = post.color;
-  document.getElementById('pv-username').textContent = post.user;
-  document.getElementById('pv-location').textContent = post.loc;
-  document.getElementById('pv-likes').textContent = 'Liked by ' + post.likes;
-  document.getElementById('pv-caption').innerHTML =
-    `<b>${post.caption.split(':')[0]}:</b>${post.caption.split(':').slice(1).join(':')}`;
-  document.getElementById('pv-comments').textContent = `View all ${post.comments} comments`;
-  document.getElementById('pv-time').textContent = `${post.time} ago`;
+  document.getElementById("pv-avatar").textContent = post.avatar;
+  document.getElementById("pv-avatar").style.background = post.color;
+  document.getElementById("pv-username").textContent = post.user;
+  document.getElementById("pv-location").textContent = post.loc;
+  document.getElementById("pv-likes").textContent = "Liked by " + post.likes;
+  document.getElementById("pv-caption").innerHTML =
+    `<b>${post.caption.split(":")[0]}:</b>${post.caption.split(":").slice(1).join(":")}`;
+  document.getElementById("pv-comments").textContent = `View all ${post.comments} comments`;
+  document.getElementById("pv-time").textContent = `${post.time} ago`;
 
-  const canvas = document.getElementById('post-view-canvas');
-  canvas.width = 600;
-  canvas.height = 600;
-  drawPostArt(canvas, post.art, post.color);
+  const likeBtn = document.getElementById("pv-like-btn");
+  likeBtn.classList.toggle("liked", !!likedPosts[idx]);
 
-  const viewer = document.getElementById('post-viewer');
-  viewer.classList.remove('hidden', 'slide-up');
-  viewer.classList.add('active');
+  const canvas = document.getElementById("post-view-canvas");
+  drawPostArt(canvas, post.art, post.color, 600, 600);
+
+  const viewer = document.getElementById("post-viewer");
+  viewer.classList.remove("hidden", "slide-up");
+  viewer.classList.add("active");
 }
 
 function closePost() {
-  const viewer = document.getElementById('post-viewer');
-  viewer.classList.remove('active');
-  viewer.classList.add('hidden');
+  const viewer = document.getElementById("post-viewer");
+  viewer.classList.remove("active");
+  viewer.classList.add("hidden");
   currentOpenedPost = null;
 }
 
-document.getElementById('post-view-close').addEventListener('click', closePost);
-document.getElementById('pv-like-btn').addEventListener('click', () => {
+document.getElementById("post-view-close").addEventListener("click", closePost);
+document.getElementById("pv-like-btn").addEventListener("click", () => {
   if (currentOpenedPost !== null) triggerLike(currentOpenedPost);
 });
 
-function drawPostArt(canvas, type, baseColor) {
-  const ctx = canvas.getContext('2d');
-  const W = 400, H = 400;
+function drawPostArt(canvas, type, baseColor, customW = 400, customH = 400) {
+  const ctx = canvas.getContext("2d");
+  const W = customW;
+  const H = customH;
   canvas.width = W;
   canvas.height = H;
-  ctx.fillStyle = baseColor || '#111';
+
+  ctx.fillStyle = baseColor || "#111";
   ctx.fillRect(0, 0, W, H);
 
-  if (type === 'night') {
-    ctx.fillStyle = '#0a0a1e';
+  if (type === "night") {
+    ctx.fillStyle = "#0a0a1e";
     ctx.fillRect(0, 0, W, H);
     for (let i = 0; i < 80; i++) {
       ctx.fillStyle = `rgba(255,255,255,${Math.random() * .8 + .2})`;
@@ -716,155 +1671,120 @@ function drawPostArt(canvas, type, baseColor) {
       ctx.arc(Math.random() * W, Math.random() * H * .8, Math.random() * 2 + .5, 0, Math.PI * 2);
       ctx.fill();
     }
-    ctx.fillStyle = '#fffde7';
+    ctx.fillStyle = "#fffde7";
     ctx.beginPath();
-    ctx.arc(300, 80, 40, 0, Math.PI * 2);
+    ctx.arc(W * 0.75, H * 0.2, W * 0.1, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#0a0a1e';
+    ctx.fillStyle = "#0a0a1e";
     ctx.beginPath();
-    ctx.arc(318, 72, 34, 0, Math.PI * 2);
+    ctx.arc(W * 0.79, H * 0.18, W * 0.085, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.font = 'bold 48px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('3:17 AM', W/2, H/2 + 40);
-    ctx.font = '18px sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-    ctx.fillText('still not sleeping', W/2, H/2 + 75);
-  } else if (type === 'court') {
-    ctx.fillStyle = '#1a5c1a';
+    ctx.fillStyle = "rgba(255,255,255,0.5)";
+    ctx.font = `bold ${Math.round(W * 0.12)}px sans-serif`;
+    ctx.textAlign = "center";
+    ctx.fillText("3:17 AM", W / 2, H / 2 + 40);
+    ctx.font = `18px sans-serif`;
+    ctx.fillStyle = "rgba(255,255,255,0.3)";
+    ctx.fillText("still not sleeping", W / 2, H / 2 + 75);
+  } else if (type === "court") {
+    ctx.fillStyle = "#1a5c1a";
     ctx.fillRect(0, 0, W, H);
-    ctx.strokeStyle = '#fff';
+    ctx.strokeStyle = "#fff";
     ctx.lineWidth = 3;
-    ctx.strokeRect(40, 40, 320, 320);
+    ctx.strokeRect(W * 0.1, H * 0.1, W * 0.8, H * 0.8);
     ctx.beginPath();
-    ctx.moveTo(40, 200); ctx.lineTo(360, 200);
+    ctx.moveTo(W * 0.1, H * 0.5);
+    ctx.lineTo(W * 0.9, H * 0.5);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(200, 40); ctx.lineTo(200, 360);
+    ctx.moveTo(W * 0.5, H * 0.1);
+    ctx.lineTo(W * 0.5, H * 0.9);
     ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.strokeStyle = "rgba(255,255,255,0.5)";
     ctx.lineWidth = 2;
-    ctx.strokeRect(80, 80, 240, 240);
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(40, 200); ctx.lineTo(360, 200);
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.6)';
-    ctx.font = 'bold 22px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('you said daily bro', W/2, H - 20);
-  } else if (type === 'f1') {
-    ctx.fillStyle = '#1a0d0d';
+    ctx.strokeRect(W * 0.2, H * 0.2, W * 0.6, H * 0.6);
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.font = `bold ${Math.round(W * 0.055)}px sans-serif`;
+    ctx.textAlign = "center";
+    ctx.fillText("you said daily bro", W / 2, H - 20);
+  } else if (type === "f1") {
+    ctx.fillStyle = "#1a0d0d";
     ctx.fillRect(0, 0, W, H);
-    ctx.strokeStyle = '#ff3333';
+    ctx.strokeStyle = "#ff3333";
     ctx.lineWidth = 5;
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = '#ff0000';
     ctx.beginPath();
-    ctx.moveTo(50, 200); ctx.bezierCurveTo(50, 50, 350, 50, 350, 200);
-    ctx.bezierCurveTo(350, 350, 50, 350, 50, 200);
+    ctx.moveTo(W * 0.12, H * 0.5);
+    ctx.bezierCurveTo(W * 0.12, H * 0.12, W * 0.88, H * 0.12, W * 0.88, H * 0.5);
+    ctx.bezierCurveTo(W * 0.88, H * 0.88, W * 0.12, H * 0.88, W * 0.12, H * 0.5);
     ctx.stroke();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = '#ff3333';
-    ctx.font = 'bold 36px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('FORMULA 1', W/2, H/2);
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.font = '16px sans-serif';
-    ctx.fillText('the real sport 🏎️', W/2, H/2 + 35);
-  } else if (type === 'beer') {
-    ctx.fillStyle = '#0d0d1a';
+    ctx.fillStyle = "#ff3333";
+    ctx.font = `bold ${Math.round(W * 0.09)}px sans-serif`;
+    ctx.textAlign = "center";
+    ctx.fillText("FORMULA 1", W / 2, H / 2);
+    ctx.fillStyle = "rgba(255,255,255,0.5)";
+    ctx.font = `16px sans-serif`;
+    ctx.fillText("the real sport 🏎️", W / 2, H / 2 + 35);
+  } else if (type === "beer") {
+    ctx.fillStyle = "#0d0d1a";
     ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
     ctx.beginPath();
-    ctx.moveTo(140, 80); ctx.lineTo(260, 80); ctx.lineTo(280, 350); ctx.lineTo(120, 350); ctx.closePath();
-    ctx.fill();
-    const grad = ctx.createLinearGradient(0, 150, 0, 350);
-    grad.addColorStop(0, '#f5c842');
-    grad.addColorStop(1, '#c8860a');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.moveTo(148, 155); ctx.lineTo(252, 155); ctx.lineTo(276, 345); ctx.lineTo(124, 345); ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = '#fffde7';
-    ctx.beginPath();
-    for (let i = 0; i < 8; i++) {
-      ctx.arc(148 + i * 16, 155, 12, Math.PI, 0);
-    }
+    ctx.moveTo(W * 0.35, H * 0.2);
+    ctx.lineTo(W * 0.65, H * 0.2);
+    ctx.lineTo(W * 0.7, H * 0.88);
+    ctx.lineTo(W * 0.3, H * 0.88);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = '#f5c842';
-    ctx.font = 'bold 28px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('one more 🍺', W/2, 40);
-    ctx.fillStyle = 'rgba(255,255,255,0.4)';
-    ctx.font = '14px sans-serif';
-    ctx.fillText('"last one" - him, 4 drinks ago', W/2, H - 20);
+
+    const grad = ctx.createLinearGradient(0, H * 0.38, 0, H * 0.88);
+    grad.addColorStop(0, "#f5c842");
+    grad.addColorStop(1, "#c8860a");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(W * 0.37, H * 0.39);
+    ctx.lineTo(W * 0.63, H * 0.39);
+    ctx.lineTo(W * 0.69, H * 0.86);
+    ctx.lineTo(W * 0.31, H * 0.86);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#fffde7";
+    for (let i = 0; i < 8; i++) {
+      ctx.beginPath();
+      ctx.arc(W * 0.37 + i * (W * 0.04), H * 0.39, W * 0.03, Math.PI, 0);
+      ctx.fill();
+    }
+
+    ctx.fillStyle = "#f5c842";
+    ctx.font = `bold ${Math.round(W * 0.07)}px sans-serif`;
+    ctx.textAlign = "center";
+    ctx.fillText("one more 🍺", W / 2, H * 0.1);
   }
 }
 
-// ====== PROFILE ======
-function buildProfile() {
-  const hlRow = document.getElementById('hl-row');
-  const highlights = [
-    { name: 'NightMode', e: '🌙' },
-    { name: 'Gridlock', e: '🏎️' },
-    { name: 'WeBall', e: '🍺' },
-    { name: 'Badminton', e: '🏸' },
-    { name: 'Paddock', e: '🔧' },
-    { name: '3AM', e: '😴' },
-  ];
-  hlRow.innerHTML = highlights.map(h => `
-    <div class="highlight">
-      <div class="hl-ring">${h.e}</div>
-      <div class="hl-name">${h.name}</div>
-    </div>`).join('');
-
-  const grid = document.getElementById('posts-grid');
-  const colors = ['#1a1a2e','#0d1b0d','#1a0d0d','#0d0d1a','#1a0d1a','#0d1a1a','#2a1a0d','#1a2a0d','#0d0d2a'];
-  const emojis = ['🌙','🏸','🏎️','🍺','😴','🎉','🏆','🔥','⚡'];
-  grid.innerHTML = '';
-  for (let i = 0; i < 9; i++) {
-    const div = document.createElement('div');
-    div.className = 'grid-post';
-    div.style.background = colors[i];
-    div.innerHTML = `<canvas width="120" height="120" style="width:100%;height:100%;display:block"></canvas>`;
-    grid.appendChild(div);
-    const canvas = div.querySelector('canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = colors[i];
-    ctx.fillRect(0, 0, 120, 120);
-    ctx.font = '36px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(emojis[i], 60, 60);
-  }
-}
-
-// ====== REELS ======
+/* ---------- REELS ---------- */
 const reelsData = [
-  { user: 'nightmode', caption: '2:41 AM and still no sleep. classic pattern 🌙', emoji: '🌙', bg: '#0a0a1e', color: '#4a90d9' },
-  { user: 'rajath.weball', caption: '"last one" he said. 45 mins ago. 🍺', emoji: '🍺', bg: '#1a0d00', color: '#f5c842' },
-  { user: 'f1strategy', caption: 'spent 40 mins explaining DRS to someone who thought F1 was a keyboard key 😭🏎️', emoji: '🏎️', bg: '#1a0000', color: '#ff4444' },
-  { user: 'badmintonking', caption: 'plays everyday. loses to a 50 year old uncle. no further questions 🏸', emoji: '🏸', bg: '#001a00', color: '#44ff44' },
-  { user: '3amcrisis', caption: 'last seen online: 3:08 AM. last seen sleeping: unknown 😴', emoji: '😴', bg: '#0a0a0a', color: '#aaaaaa' },
+  { user: "nightmode", caption: "2:41 AM and still no sleep. classic pattern 🌙", emoji: "🌙", bg: "#0a0a1e", color: "#4a90d9" },
+  { user: "rajath.weball", caption: '"last one" he said. 45 mins ago. 🍺', emoji: "🍺", bg: "#1a0d00", color: "#f5c842" },
+  { user: "f1strategy", caption: "spent 40 mins explaining DRS to someone who thought F1 was a keyboard key 😭🏎️", emoji: "🏎️", bg: "#1a0000", color: "#ff4444" },
+  { user: "badmintonking", caption: "plays everyday. loses to a 50 year old uncle. no further questions 🏸", emoji: "🏸", bg: "#001a00", color: "#44ff44" },
+  { user: "3amcrisis", caption: "last seen online: 3:08 AM. last seen sleeping: unknown 😴", emoji: "😴", bg: "#0a0a0a", color: "#aaaaaa" },
 ];
 
-let reelsBuilt = false;
 function buildReels() {
   if (reelsBuilt) return;
   reelsBuilt = true;
-  const container = document.getElementById('reels-container');
-  container.innerHTML = '';
+
+  const container = document.getElementById("reels-container");
+  container.innerHTML = "";
+
   reelsData.forEach((r, i) => {
-    const div = document.createElement('div');
-    div.className = 'reel';
+    const div = document.createElement("div");
+    div.className = "reel";
     div.style.transform = `translateY(${i * 100}%)`;
     div.innerHTML = `
       <div class="reel-bg" style="background:${r.bg}">
-        <canvas width="400" height="700" style="width:100%;height:100%;object-fit:cover;display:block" data-idx="${i}"></canvas>
+        <canvas width="400" height="700" style="width:100%;height:100%;display:block"></canvas>
         <div class="reel-overlay"></div>
         <div class="reel-info">
           <div class="reel-username">@${r.user}</div>
@@ -884,38 +1804,43 @@ function buildReels() {
             <span>Share</span>
           </div>
         </div>
-      </div>`;
+      </div>
+    `;
     container.appendChild(div);
-    const canvas = div.querySelector('canvas');
+
+    const canvas = div.querySelector("canvas");
     drawReelArt(canvas, r);
   });
 
   let startY = 0;
-  container.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
-  container.addEventListener('touchend', e => {
+  container.addEventListener("touchstart", (e) => {
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  container.addEventListener("touchend", (e) => {
     const dy = startY - e.changedTouches[0].clientY;
     if (Math.abs(dy) > 50) {
       currentReel = Math.max(0, Math.min(reelsData.length - 1, currentReel + (dy > 0 ? 1 : -1)));
-      updateReelPosition();
+      document.querySelectorAll(".reel").forEach((el, i) => {
+        el.style.transform = `translateY(${(i - currentReel) * 100}%)`;
+      });
     }
-  });
+  }, { passive: true });
 }
 
-function updateReelPosition() {
-  document.querySelectorAll('.reel').forEach((el, i) => {
-    el.style.transform = `translateY(${(i - currentReel) * 100}%)`;
-  });
-}
+function initReels() {}
 
 function drawReelArt(canvas, reel) {
-  const ctx = canvas.getContext('2d');
-  const W = 400, H = 700;
+  const ctx = canvas.getContext("2d");
+  const W = 400;
+  const H = 700;
   ctx.fillStyle = reel.bg;
   ctx.fillRect(0, 0, W, H);
-  ctx.font = '120px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(reel.emoji, W / 2, H * .38);
+  ctx.font = "120px sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(reel.emoji, W / 2, H * 0.38);
+
   for (let i = 0; i < 12; i++) {
     ctx.strokeStyle = `${reel.color}22`;
     ctx.lineWidth = 1;
@@ -924,243 +1849,225 @@ function drawReelArt(canvas, reel) {
     ctx.lineTo(W, i * 60);
     ctx.stroke();
   }
-  ctx.fillStyle = reel.color + '33';
+
+  ctx.fillStyle = reel.color + "33";
   ctx.beginPath();
-  ctx.arc(W / 2, H * .38, 100, 0, Math.PI * 2);
+  ctx.arc(W / 2, H * 0.38, 100, 0, Math.PI * 2);
   ctx.fill();
 }
 
-// ====== STORY VIEWER ======
-function openStory(idx) {
-  const s = storiesData[idx];
-  document.getElementById('sv-username').textContent = s.name;
-  document.getElementById('sv-avatar').textContent = s.emoji;
-  const times = ['11:23 PM', '2:47 AM', '12:01 AM', '3:17 AM', '9:45 PM', '4:02 AM'];
-  document.getElementById('sv-time').textContent = times[idx];
-
-  const progRow = document.getElementById('story-progress');
-  progRow.innerHTML = storiesData.map((_, i) =>
-    `<div class="story-prog-bar"><div class="story-prog-fill" id="spf-${i}"></div></div>`
-  ).join('');
-
-  const canvas = document.getElementById('story-canvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth || 375;
-  canvas.height = canvas.offsetHeight || 600;
-  const W = canvas.width, H = canvas.height;
-  ctx.fillStyle = s.bg;
-  ctx.fillRect(0, 0, W, H);
-  ctx.font = '80px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(s.emoji, W / 2, H / 2 - 40);
-
-  const msgs = ['still awake?', 'bold choice', 'expected behavior', 'pattern detected', 'fuck it we ball', '3am again huh'];
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 24px sans-serif';
-  ctx.fillText(msgs[idx], W / 2, H / 2 + 60);
-
-  const viewer = document.getElementById('story-viewer');
-  viewer.classList.remove('hidden', 'slide-up');
-  viewer.classList.add('active');
-
-  clearTimeout(storyTimer);
-  for (let i = 0; i < idx; i++) {
-    const fill = document.getElementById(`spf-${i}`);
-    if (fill) fill.style.width = '100%';
-  }
-  const currentFill = document.getElementById(`spf-${idx}`);
-  if (currentFill) {
-    currentFill.style.transition = 'width 5s linear';
-    requestAnimationFrame(() => currentFill.style.width = '100%');
-    storyTimer = setTimeout(() => closeStory(), 5100);
-  }
-}
-
-function closeStory() {
-  clearTimeout(storyTimer);
-  const viewer = document.getElementById('story-viewer');
-  viewer.classList.remove('active');
-  viewer.classList.add('hidden');
-}
-
-document.getElementById('story-close').addEventListener('click', closeStory);
-
-// ====== BEER GAME ======
-let beerAngle = 0;
-let beerLiquidPct = 0.8;
-let beerGameTime = 0;
-let beerRAF;
-let beerTiltEnabled = false;
-let beerTouchMode = false;
-let beerRunning = false;
+/* ---------- BEER PONG ---------- */
+let pongRunning = false;
+let pongBall = { x: 0, y: 0, vx: 0, vy: 0, r: 10, active: false };
+let pongCups = [];
+let pongShotsLeft = 6;
+let pongDragging = false;
+let pongAim = { x: 0, y: 0 };
 
 function initBeerCanvas() {
-  const canvas = document.getElementById('beer-canvas');
-  const W = Math.min(window.innerWidth - 40, 300);
+  const canvas = document.getElementById("beer-canvas");
+  const W = Math.min(window.innerWidth - 30, 340);
   canvas.width = W;
-  canvas.height = Math.round(W * 1.2);
-  drawBeer(canvas, beerAngle, beerLiquidPct);
+  canvas.height = 500;
+
+  pongBall = { x: W / 2, y: Hstart(canvas), vx: 0, vy: 0, r: 10, active: false };
+  pongShotsLeft = 6;
+
+  pongCups = [
+    { x: W * 0.35, y: 120, hit: false },
+    { x: W * 0.50, y: 95, hit: false },
+    { x: W * 0.65, y: 120, hit: false },
+    { x: W * 0.43, y: 155, hit: false },
+    { x: W * 0.57, y: 155, hit: false },
+    { x: W * 0.50, y: 190, hit: false },
+  ];
+
+  drawBeerPong();
 }
 
-function drawBeer(canvas, sway, fillPct) {
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
+function Hstart(canvas) {
+  return canvas.height - 60;
+}
 
-  ctx.fillStyle = '#0a0a0a';
-  ctx.fillRect(0, 0, W, H);
+function resetBall() {
+  const canvas = document.getElementById("beer-canvas");
+  pongBall.x = canvas.width / 2;
+  pongBall.y = Hstart(canvas);
+  pongBall.vx = 0;
+  pongBall.vy = 0;
+  pongBall.active = false;
+}
 
+function drawCup(ctx, x, y, hit) {
   ctx.save();
-  ctx.translate(W / 2, H * 0.55);
-  ctx.rotate(sway * 0.42);
-
-  ctx.strokeStyle = 'rgba(255,255,255,.35)';
-  ctx.lineWidth = 4;
+  ctx.translate(x, y);
+  ctx.fillStyle = hit ? "rgba(120,120,120,.45)" : "#d04a4a";
   ctx.beginPath();
-  ctx.moveTo(-60,-120);
-  ctx.lineTo(60,-120);
-  ctx.lineTo(82,120);
-  ctx.lineTo(-82,120);
-  ctx.closePath();
-  ctx.stroke();
-
-  const beerTop = 120 - 240 * fillPct;
-  ctx.fillStyle = '#d08c11';
-  ctx.beginPath();
-  ctx.moveTo(-56, beerTop - sway * 30);
-  ctx.lineTo(56, beerTop + sway * 30);
-  ctx.lineTo(78,116);
-  ctx.lineTo(-78,116);
+  ctx.moveTo(-18, -8);
+  ctx.lineTo(18, -8);
+  ctx.lineTo(11, 28);
+  ctx.lineTo(-11, 28);
   ctx.closePath();
   ctx.fill();
 
-  ctx.fillStyle = '#fff7cf';
-  for(let i=0;i<7;i++){
-    ctx.beginPath();
-    ctx.arc(-50 + i * 16, beerTop + Math.sin(i + sway) * 2, 10, Math.PI, 0);
-    ctx.fill();
-  }
-
+  ctx.fillStyle = hit ? "rgba(255,255,255,.1)" : "rgba(255,255,255,.14)";
+  ctx.beginPath();
+  ctx.ellipse(0, -8, 18, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 
-async function enableBeerTilt() {
-  try {
-    if (
-      typeof DeviceOrientationEvent !== 'undefined' &&
-      typeof DeviceOrientationEvent.requestPermission === 'function'
-    ) {
-      const result = await DeviceOrientationEvent.requestPermission();
-      if (result === 'granted') {
-        beerTiltEnabled = true;
-        beerTouchMode = false;
-        showToast('Tilt enabled');
-      } else {
-        beerTouchMode = true;
-        showToast('Using touch fallback');
-      }
-    } else {
-      beerTiltEnabled = true;
-      beerTouchMode = false;
-    }
-  } catch (e) {
-    beerTouchMode = true;
-    showToast('Using touch fallback');
+function drawBeerPong() {
+  const canvas = document.getElementById("beer-canvas");
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width;
+  const H = canvas.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  ctx.fillStyle = "#120b07";
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#4a2414";
+  ctx.fillRect(0, H * 0.22, W, H * 0.78);
+
+  pongCups.forEach((c) => drawCup(ctx, c.x, c.y, c.hit));
+
+  if (pongDragging && !pongBall.active) {
+    ctx.strokeStyle = "rgba(255,255,255,.35)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(pongBall.x, pongBall.y);
+    ctx.lineTo(pongAim.x, pongAim.y);
+    ctx.stroke();
   }
+
+  ctx.fillStyle = "#f6f1e7";
+  ctx.beginPath();
+  ctx.arc(pongBall.x, pongBall.y, pongBall.r, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 16px sans-serif";
+  ctx.fillText("Shots: " + pongShotsLeft, 16, 28);
 }
 
-window.addEventListener('deviceorientation', (e) => {
-  if (!beerTiltEnabled) return;
-  if (typeof e.gamma === 'number') {
-    const normalized = e.gamma / 24;
-    beerAngle = Math.max(-0.9, Math.min(0.9, normalized));
-  }
-});
+function startBeerPong() {
+  pongRunning = true;
+  pongShotsLeft = 6;
+  initBeerCanvas();
+  document.getElementById("beer-msg").textContent = "drag and release to aim";
 
-document.getElementById('beer-canvas').addEventListener('touchmove', (e) => {
-  if (!beerTouchMode) return;
-  const touch = e.touches[0];
-  const rect = e.target.getBoundingClientRect();
-  const x = touch.clientX - rect.left;
-  const ratio = (x / rect.width - 0.5) * 2;
-  beerAngle = Math.max(-0.9, Math.min(0.9, ratio));
+  function loop() {
+    if (!pongRunning) return;
+
+    if (pongBall.active) {
+      pongBall.x += pongBall.vx;
+      pongBall.y += pongBall.vy;
+      pongBall.vy += 0.18;
+
+      for (const cup of pongCups) {
+        if (cup.hit) continue;
+        const dx = pongBall.x - cup.x;
+        const dy = pongBall.y - (cup.y + 6);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 14) {
+          cup.hit = true;
+          pongBall.active = false;
+          document.getElementById("beer-msg").textContent = "bottoms up rajath!!";
+          showToast("bottoms up rajath!!");
+          setTimeout(() => resetBall(), 500);
+        }
+      }
+
+      const canvas = document.getElementById("beer-canvas");
+      if (
+        pongBall.y > canvas.height + 20 ||
+        pongBall.x < -20 ||
+        pongBall.x > canvas.width + 20
+      ) {
+        pongBall.active = false;
+        pongShotsLeft--;
+        if (pongShotsLeft <= 0) {
+          pongRunning = false;
+          document.getElementById("beer-msg").textContent = "game over bro 🍺";
+        } else {
+          document.getElementById("beer-msg").textContent = "missed. run it back";
+          resetBall();
+        }
+      }
+    }
+
+    drawBeerPong();
+    requestAnimationFrame(loop);
+  }
+
+  requestAnimationFrame(loop);
+}
+
+const beerCanvas = document.getElementById("beer-canvas");
+
+beerCanvas.addEventListener("touchstart", (e) => {
+  if (!pongRunning || pongBall.active) return;
+  pongDragging = true;
+  const rect = beerCanvas.getBoundingClientRect();
+  pongAim.x = e.touches[0].clientX - rect.left;
+  pongAim.y = e.touches[0].clientY - rect.top;
 }, { passive: true });
 
-function updateBeer() {
-  if (!beerRunning) return;
+beerCanvas.addEventListener("touchmove", (e) => {
+  if (!pongDragging || pongBall.active) return;
+  const rect = beerCanvas.getBoundingClientRect();
+  pongAim.x = e.touches[0].clientX - rect.left;
+  pongAim.y = e.touches[0].clientY - rect.top;
+}, { passive: true });
 
-  beerGameTime -= 0.016;
+beerCanvas.addEventListener("touchend", () => {
+  if (!pongDragging || pongBall.active) return;
+  pongDragging = false;
 
-  const excessiveTilt = Math.max(0, Math.abs(beerAngle) - 0.38);
-  beerLiquidPct -= excessiveTilt * 0.0032;
+  const dx = pongBall.x - pongAim.x;
+  const dy = pongBall.y - pongAim.y;
+  pongBall.vx = dx * 0.06;
+  pongBall.vy = dy * 0.06;
+  pongBall.active = true;
+}, { passive: true });
 
-  const canvas = document.getElementById('beer-canvas');
-  drawBeer(canvas, beerAngle, beerLiquidPct);
+document.getElementById("beer-start-btn").addEventListener("click", startBeerPong);
 
-  const msg = document.getElementById('beer-msg');
-  const timer = document.getElementById('beer-timer');
-  timer.textContent = beerGameTime > 0 ? beerGameTime.toFixed(1) + 's' : '';
-
-  if (beerLiquidPct <= 0.45) {
-    beerRunning = false;
-    msg.textContent = 'waste of good beer';
-    return;
-  }
-
-  if (beerGameTime <= 0) {
-    beerRunning = false;
-    msg.textContent = 'respect the glass 🍺';
-    return;
-  }
-
-  msg.textContent = Math.abs(beerAngle) > 0.45 ? 'steady bro…' : 'nice';
-  beerRAF = requestAnimationFrame(updateBeer);
-}
-
-document.getElementById('beer-start-btn').addEventListener('click', async () => {
-  await enableBeerTilt();
-  beerRunning = true;
-  beerGameTime = 12;
-  beerLiquidPct = 0.82;
-  beerAngle = 0;
-  cancelAnimationFrame(beerRAF);
-  beerRAF = requestAnimationFrame(updateBeer);
-});
-
-// ====== CIGARETTE GAME ======
+/* ---------- CIG ---------- */
 let cigX = 160;
 let cigLives = 100;
 let cigDrops = [];
-let cigRAF;
 let cigCanvas, cigCtx;
 
 function initCigCanvas() {
-  cigCanvas = document.getElementById('cig-canvas');
+  cigCanvas = document.getElementById("cig-canvas");
   cigCanvas.width = Math.min(window.innerWidth - 24, 340);
   cigCanvas.height = 460;
-  cigCtx = cigCanvas.getContext('2d');
+  cigCtx = cigCanvas.getContext("2d");
   drawCigGame();
 }
 
 function drawCigarette(x, y) {
-  cigCtx.fillStyle = '#fff';
+  cigCtx.fillStyle = "#fff";
   cigCtx.fillRect(x - 30, y, 50, 12);
-  cigCtx.fillStyle = '#d28a2f';
+  cigCtx.fillStyle = "#d28a2f";
   cigCtx.fillRect(x + 20, y, 18, 12);
-  cigCtx.fillStyle = '#ff6a2f';
+  cigCtx.fillStyle = "#ff6a2f";
   cigCtx.beginPath();
   cigCtx.arc(x - 34, y + 6, 4, 0, Math.PI * 2);
   cigCtx.fill();
 }
 
 function drawCigGame() {
-  const W = cigCanvas.width, H = cigCanvas.height;
-  cigCtx.clearRect(0,0,W,H);
-  cigCtx.fillStyle = '#08131f';
-  cigCtx.fillRect(0,0,W,H);
+  const W = cigCanvas.width;
+  const H = cigCanvas.height;
+  cigCtx.clearRect(0, 0, W, H);
+  cigCtx.fillStyle = "#08131f";
+  cigCtx.fillRect(0, 0, W, H);
 
-  cigCtx.fillStyle = 'rgba(255,255,255,.08)';
+  cigCtx.fillStyle = "rgba(255,255,255,.08)";
   cigCtx.beginPath();
   cigCtx.arc(70, 50, 36, 0, Math.PI * 2);
   cigCtx.arc(110, 52, 28, 0, Math.PI * 2);
@@ -1168,8 +2075,8 @@ function drawCigGame() {
   cigCtx.arc(285, 72, 24, 0, Math.PI * 2);
   cigCtx.fill();
 
-  cigDrops.forEach(d => {
-    cigCtx.strokeStyle = '#7fc8ff';
+  cigDrops.forEach((d) => {
+    cigCtx.strokeStyle = "#7fc8ff";
     cigCtx.lineWidth = 2;
     cigCtx.beginPath();
     cigCtx.moveTo(d.x, d.y);
@@ -1179,27 +2086,36 @@ function drawCigGame() {
 
   drawCigarette(cigX, H - 70);
 
-  cigCtx.fillStyle = '#fff';
-  cigCtx.font = 'bold 16px sans-serif';
-  cigCtx.fillText('Life: ' + cigLives + '%', 16, 28);
+  cigCtx.fillStyle = "#fff";
+  cigCtx.font = "bold 16px sans-serif";
+  cigCtx.fillText("Life: " + cigLives + "%", 16, 28);
 }
 
 function startCigGame() {
   cigGameRunning = true;
   cigLives = 100;
   cigDrops = [];
-  document.getElementById('cig-msg').textContent = 'protect the priority';
+  document.getElementById("cig-msg").textContent = "protect the priority";
 
   function loop() {
     if (!cigGameRunning) return;
 
     if (Math.random() < 0.22) {
-      cigDrops.push({ x: Math.random() * cigCanvas.width, y: -10, speed: 4 + Math.random() * 3 });
+      cigDrops.push({
+        x: Math.random() * cigCanvas.width,
+        y: -10,
+        speed: 4 + Math.random() * 3,
+      });
     }
 
-    cigDrops.forEach(d => d.y += d.speed);
-    cigDrops = cigDrops.filter(d => {
-      const hit = d.y > cigCanvas.height - 82 && d.y < cigCanvas.height - 56 && d.x > cigX - 34 && d.x < cigX + 38;
+    cigDrops.forEach((d) => (d.y += d.speed));
+    cigDrops = cigDrops.filter((d) => {
+      const hit =
+        d.y > cigCanvas.height - 82 &&
+        d.y < cigCanvas.height - 56 &&
+        d.x > cigX - 34 &&
+        d.x < cigX + 38;
+
       if (hit) cigLives -= 8;
       return d.y < cigCanvas.height && !hit;
     });
@@ -1208,164 +2124,67 @@ function startCigGame() {
 
     if (cigLives <= 0) {
       cigGameRunning = false;
-      document.getElementById('cig-msg').textContent = 'gone. like your sleep schedule';
+      document.getElementById("cig-msg").textContent = "gone. like your sleep schedule";
       return;
     }
 
-    cigRAF = requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
   }
 
   requestAnimationFrame(loop);
 }
 
-document.getElementById('cig-start-btn').addEventListener('click', startCigGame);
-document.getElementById('cig-canvas').addEventListener('touchmove', (e) => {
+document.getElementById("cig-start-btn").addEventListener("click", startCigGame);
+document.getElementById("cig-canvas").addEventListener("touchmove", (e) => {
   if (!cigGameRunning) return;
   const rect = cigCanvas.getBoundingClientRect();
   cigX = e.touches[0].clientX - rect.left;
 }, { passive: true });
 
-// ====== BADMINTON GAME ======
-let rallyScore = 0;
-let shuttleX = 240;
-let shuttleY = 130;
-let shuttleVX = -4.2;
-let shuttleVY = 1.6;
-let shuttleAngle = -0.4;
-
-function initBadCanvas() {
-  const canvas = document.getElementById('bad-canvas');
-  canvas.width = Math.min(window.innerWidth - 24, 340);
-  canvas.height = 460;
-  drawBadCourt(0, canvas.width - 90, 130, -0.5);
-}
-
-function drawBadCourt(score, shuttleX, shuttleY, shuttleAngle = 0) {
-  const canvas = document.getElementById('bad-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-
-  ctx.clearRect(0,0,W,H);
-
-  ctx.fillStyle = '#0d4271';
-  ctx.fillRect(0,0,W,H);
-
-  ctx.fillStyle = '#16b78e';
-  ctx.fillRect(24,120,W-48,250);
-
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(24,120,W-48,250);
-
-  ctx.beginPath();
-  ctx.moveTo(W/2,120);
-  ctx.lineTo(W/2,370);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(24,245);
-  ctx.lineTo(W-24,245);
-  ctx.stroke();
-
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(24,245,W-48,4);
-
-  ctx.fillStyle = '#e8eefb';
-  ctx.fillRect(60,315,24,56);
-  ctx.fillRect(W-84,160,24,56);
-
-  ctx.save();
-  ctx.translate(shuttleX, shuttleY);
-  ctx.rotate(shuttleAngle);
-
-  ctx.fillStyle = '#f4f1e8';
-  ctx.beginPath();
-  ctx.ellipse(0, 6, 8, 6, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2;
-  for (let i = -3; i <= 3; i++) {
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(i * 4, -14);
-    ctx.stroke();
-  }
-
-  ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.arc(0, 0, 4, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.restore();
-
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 20px sans-serif';
-  ctx.fillText('Rally: ' + score, 20, 40);
-}
-
-document.getElementById('bad-start-btn').addEventListener('click', () => {
-  if (badGameRunning) return;
-
-  badGameRunning = true;
-  rallyScore = 0;
-
-  const canvas = document.getElementById('bad-canvas');
-  shuttleX = canvas.width - 80;
-  shuttleY = 150;
-  shuttleVX = -4.2;
-  shuttleVY = 1.2;
-  shuttleAngle = -0.5;
-
-  document.getElementById('bad-msg').textContent = 'don’t choke';
-
-  function loop() {
-    if (!badGameRunning) return;
-
-    shuttleX += shuttleVX;
-    shuttleY += shuttleVY;
-    shuttleVY += 0.045;
-    shuttleAngle = Math.atan2(shuttleVY, shuttleVX);
-
-    if (shuttleX > canvas.width - 86 && shuttleVX > 0) {
-      shuttleVX = -(4.6 + rallyScore * 0.08);
-      shuttleVY = -2.4;
-    }
-
-    if (shuttleY > 360) {
-      badGameRunning = false;
-      document.getElementById('bad-msg').textContent =
-        rallyScore >= 4 ? 'okay wait that was clean' : 'you said you play daily';
-      drawBadCourt(rallyScore, shuttleX, shuttleY, shuttleAngle);
-      return;
-    }
-
-    drawBadCourt(rallyScore, shuttleX, shuttleY, shuttleAngle);
-    requestAnimationFrame(loop);
-  }
-
-  requestAnimationFrame(loop);
+/* ---------- BAD LINK ---------- */
+document.getElementById("open-badminton-link").addEventListener("click", () => {
+  window.open("https://poki.com/en/g/power-badminton", "_blank");
 });
 
-document.getElementById('bad-canvas').addEventListener('click', () => {
-  if (!badGameRunning) return;
+/* ---------- PROFILE ---------- */
+function buildProfile() {
+  const hlRow = document.getElementById("hl-row");
+  const highlights = [
+    { name: "NightMode", e: "🌙" },
+    { name: "Gridlock", e: "🏎️" },
+    { name: "WeBall", e: "🍺" },
+    { name: "Badminton", e: "🏸" },
+    { name: "Paddock", e: "🔧" },
+    { name: "3AM", e: "😴" },
+  ];
 
-  const playerX = 72;
-  const hitWindow = Math.abs(shuttleX - playerX) < 58 && shuttleY > 220;
+  hlRow.innerHTML = highlights
+    .map(
+      (h) => `
+      <div class="highlight">
+        <div class="hl-ring">${h.e}</div>
+        <div class="hl-name">${h.name}</div>
+      </div>
+    `
+    )
+    .join("");
 
-  if (hitWindow && shuttleVX < 0) {
-    shuttleVX = 4.8 + rallyScore * 0.08;
-    shuttleVY = -2.9;
-    rallyScore++;
-    document.getElementById('bad-msg').textContent =
-      rallyScore > 5 ? 'you’re locked in' : 'nice';
-  }
-});
+  const grid = document.getElementById("posts-grid");
+  const gridPosts = [0, 1, 2, 3, 0, 1, 2, 3, 0];
+  grid.innerHTML = "";
 
-// ====== INIT ======
-initBeerCanvas();
-initCigCanvas();
-initBadCanvas();
+  gridPosts.forEach((postIndex) => {
+    const div = document.createElement("div");
+    div.className = "grid-post";
+    div.innerHTML = `<canvas width="120" height="120"></canvas>`;
+    grid.appendChild(div);
+
+    const canvas = div.querySelector("canvas");
+    drawPostArt(canvas, postsData[postIndex].art, postsData[postIndex].color, 120, 120);
+
+    div.addEventListener("click", () => openPost(postIndex));
+  });
+}
 </script>
 </body>
 </html>

@@ -271,14 +271,14 @@
   .grid-post{aspect-ratio:1;background:#111;overflow:hidden;cursor:pointer}
   .grid-post canvas{width:100%;height:100%;display:block}
 
-  /* game */
+  /* games */
   .game-screen{
-    flex:1;padding:1.2rem 1rem calc(var(--navH) + 10px);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.85rem;
+    flex:1;padding:1rem 1rem calc(var(--navH) + 12px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;
   }
   .game-card{
     width:min(92vw,360px);background:#111;border:1px solid var(--border);border-radius:18px;
-    padding:1.15rem;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.35);
+    padding:1rem;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.35);
   }
   .game-btn{
     border:none;background:var(--blue);color:#fff;border-radius:999px;
@@ -286,34 +286,75 @@
   }
   .game-msg{min-height:2rem;font-size:1rem;font-weight:700;text-align:center}
 
-  /* beer */
-  #beer-stage{
-    width:min(94vw,380px);height:500px;
-    background:linear-gradient(180deg,#2f180f,#6a391f 32%,#ad6f38 33%,#8c5428 100%);
-    border-radius:16px;border:1px solid #4b2d18;box-shadow:inset 0 0 0 3px rgba(255,218,150,.08);
-    display:block;
+  /* reflex game */
+  .reflex-head{
+    width:min(94vw,380px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:700;
+    font-size:.95rem;
   }
-  .drink-overlay{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s ease;
+  .reflex-board{
+    width:min(94vw,380px);
+    height:420px;
+    background:
+      radial-gradient(circle at center, rgba(255,214,99,.06), transparent 40%),
+      linear-gradient(180deg,#111,#0b0b0b);
+    border:1px solid var(--border);
+    border-radius:20px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    padding:14px;
+    position:relative;
+    overflow:hidden;
   }
-  .drink-overlay.show{opacity:1}
-  .drink-card{
-    width:min(88vw,300px);background:#111;border:1px solid var(--border);border-radius:18px;
-    padding:1rem;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.45);
+  .reflex-slot{
+    border-radius:18px;
+    background:radial-gradient(circle at 50% 35%, #1c1c1c, #0d0d0d);
+    border:1px solid #222;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+    user-select:none;
   }
-  .drink-shot{width:86px;height:110px;margin:0 auto .7rem;position:relative}
-  .drink-hand{
-    position:absolute;left:6px;top:28px;width:74px;height:44px;background:#d6b193;border-radius:24px;
-    transform:rotate(-18deg);box-shadow:inset 0 -4px 0 rgba(0,0,0,.08);
+  .reflex-slot.active::after{
+    content:"";
+    position:absolute;
+    inset:8px;
+    border-radius:14px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.05), inset 0 0 22px rgba(255,255,255,.03);
   }
-  .drink-glass{
-    position:absolute;left:26px;top:8px;width:40px;height:56px;border:3px solid rgba(255,255,255,.9);
-    border-top:none;border-radius:0 0 12px 12px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));overflow:hidden;
+  .drink-item{
+    font-size:2rem;
+    transform:translateY(28px) scale(.7);
+    opacity:0;
+    transition:transform .16s ease, opacity .16s ease;
   }
-  .drink-liquid{position:absolute;left:0;right:0;bottom:0;height:68%;background:linear-gradient(180deg,#a26a35,#6e421d)}
-  .drink-title{font-size:1rem;font-weight:700}
-  .drink-sub{font-size:.82rem;color:var(--muted);margin-top:.3rem}
+  .reflex-slot.active .drink-item{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+  .reflex-footer{
+    width:min(94vw,380px);
+    display:flex;
+    gap:.5rem;
+    justify-content:center;
+    flex-wrap:wrap;
+    font-size:.82rem;
+    color:var(--muted);
+    text-align:center;
+  }
+  .reflex-pill{
+    padding:.45rem .8rem;
+    border:1px solid var(--border);
+    border-radius:999px;
+    background:#111;
+  }
 
   /* cig */
   #cig-stage{
@@ -379,24 +420,26 @@
   <div class="bottom-nav" id="bottom-nav"></div>
 </section>
 
-<section class="screen" id="beer-game" style="position:absolute">
+<section class="screen" id="beer-game">
   <div class="topbar">
-    <div class="topbar-title">🍺 Beer Pong</div>
-    <div style="font-size:.78rem;color:var(--muted)">one player</div>
+    <div class="topbar-title">🥃 Bottoms Up Reflex</div>
+    <div style="font-size:.78rem;color:var(--muted)">tap only whiskey</div>
   </div>
   <div class="game-screen">
-    <canvas id="beer-stage" width="380" height="500"></canvas>
-    <div class="game-msg" id="beer-msg">tap to bounce the ball</div>
-    <button class="game-btn" id="beer-start-btn">Start Game</button>
-  </div>
-  <div class="drink-overlay" id="drink-overlay">
-    <div class="drink-card">
-      <div class="drink-shot">
-        <div class="drink-glass"><div class="drink-liquid"></div></div>
-        <div class="drink-hand"></div>
-      </div>
-      <div class="drink-title">missed. bottoms up 🍺</div>
-      <div class="drink-sub">as if he’s taking the shot himself</div>
+    <div class="reflex-head">
+      <div id="reflex-score">Score: 0</div>
+      <div id="reflex-lives">Lives: 3</div>
+    </div>
+
+    <div class="reflex-board" id="reflex-board"></div>
+
+    <div class="game-msg" id="reflex-msg">only real ones tap whiskey</div>
+    <button class="game-btn" id="reflex-start-btn">Start Game</button>
+
+    <div class="reflex-footer">
+      <div class="reflex-pill">🥃 tap this</div>
+      <div class="reflex-pill">💧 / 🧃 / 🥛 avoid</div>
+      <div class="reflex-pill">3 mistakes = done bro</div>
     </div>
   </div>
   <div class="bottom-nav" id="bottom-nav-beer"></div>
@@ -619,7 +662,7 @@ function launchApp(){
   buildPosts();
   buildReels();
   buildProfile();
-  initBeerPong();
+  initReflexGame();
   initCigGame();
   activateScreen('home');
   $('#birthday-overlay').classList.remove('hidden');
@@ -1023,200 +1066,136 @@ function drawReel(canvas, reel){
   }
 }
 
-/* beer */
-let beerCanvas, beerCtx;
-let beerBall, beerShots = 6, beerRunning = false, beerDrinkTimer = null;
-let beerCups = [];
-let beerBounces = 0;
+/* bottoms up reflex */
+let reflexRunning = false;
+let reflexScore = 0;
+let reflexLives = 3;
+let reflexSpeed = 900;
+let reflexTimer = null;
+let reflexSlots = [];
+let reflexActiveIndex = -1;
+let reflexActiveType = null;
 
-function initBeerPong(){
-  beerCanvas = $('#beer-stage');
-  beerCtx = beerCanvas.getContext('2d');
-  resetBeerPong();
-  drawBeerPong();
-}
+const reflexTypes = [
+  { key:'whiskey', emoji:'🥃', good:true },
+  { key:'water', emoji:'💧', good:false },
+  { key:'juice', emoji:'🧃', good:false },
+  { key:'milk', emoji:'🥛', good:false }
+];
 
-function resetBeerPong(){
-  const W = beerCanvas.width, H = beerCanvas.height;
-  beerBall = { x: W/2, y: H-48, vx: 0, vy: 0, r: 10, active: false };
-  beerShots = 6;
-  beerBounces = 0;
-  beerRunning = false;
-  beerCups = [
-    {x:W*.50, y:115, hit:false},
-    {x:W*.44, y:148, hit:false},
-    {x:W*.56, y:148, hit:false},
-    {x:W*.38, y:181, hit:false},
-    {x:W*.50, y:181, hit:false},
-    {x:W*.62, y:181, hit:false}
-  ];
-  $('#drink-overlay').classList.remove('show');
-}
+function initReflexGame(){
+  const board = $('#reflex-board');
+  board.innerHTML = '';
+  reflexSlots = [];
 
-function drawCup(ctx, x, y, hit){
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.fillStyle = hit ? 'rgba(140,140,140,.35)' : '#df473f';
-  ctx.beginPath();
-  ctx.moveTo(-18,-8); ctx.lineTo(18,-8); ctx.lineTo(11,26); ctx.lineTo(-11,26); ctx.closePath();
-  ctx.fill();
-  ctx.fillStyle = hit ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.18)';
-  ctx.beginPath();
-  ctx.ellipse(0,-8,18,5,0,0,Math.PI*2);
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawBeerPong(){
-  const ctx = beerCtx, W = beerCanvas.width, H = beerCanvas.height;
-  ctx.clearRect(0,0,W,H);
-
-  const wood = ctx.createLinearGradient(0,0,0,H);
-  wood.addColorStop(0,'#5f341d');
-  wood.addColorStop(.25,'#8f5428');
-  wood.addColorStop(.26,'#b06f38');
-  wood.addColorStop(1,'#7b4724');
-  ctx.fillStyle = wood;
-  ctx.fillRect(0,0,W,H);
-
-  ctx.fillStyle = 'rgba(255,224,160,.12)';
-  ctx.fillRect(W*.16, 34, W*.68, H-68);
-  ctx.strokeStyle = 'rgba(255,220,150,.26)';
-  ctx.lineWidth = 3;
-  ctx.strokeRect(W*.16, 34, W*.68, H-68);
-
-  ctx.fillStyle = '#a87c2d';
-  for (const x of [28,50,W-50,W-28]) {
-    ctx.fillRect(x-6, 78, 12, 70);
-    ctx.beginPath();
-    ctx.arc(x, 72, 9, 0, Math.PI*2);
-    ctx.fill();
+  for (let i = 0; i < 9; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'reflex-slot';
+    slot.innerHTML = `<div class="drink-item"></div>`;
+    slot.addEventListener('click', () => handleReflexTap(i));
+    board.appendChild(slot);
+    reflexSlots.push(slot);
   }
 
-  beerCups.forEach(c => drawCup(ctx, c.x, c.y, c.hit));
-
-  ctx.fillStyle = '#fff';
-  ctx.beginPath();
-  ctx.arc(beerBall.x, beerBall.y, beerBall.r, 0, Math.PI*2);
-  ctx.fill();
-
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 16px sans-serif';
-  ctx.fillText(`Shots: ${beerShots}`, 16, 24);
-  ctx.fillText(`Cups: ${beerCups.filter(c => !c.hit).length}`, W - 82, 24);
+  resetReflexGame();
 }
 
-function resetBeerBall(){
-  beerBall.x = beerCanvas.width/2;
-  beerBall.y = beerCanvas.height-48;
-  beerBall.vx = 0;
-  beerBall.vy = 0;
-  beerBall.active = false;
-  beerBounces = 0;
+function resetReflexGame(){
+  reflexRunning = false;
+  reflexScore = 0;
+  reflexLives = 3;
+  reflexSpeed = 900;
+  reflexActiveIndex = -1;
+  reflexActiveType = null;
+  clearTimeout(reflexTimer);
+  reflexSlots.forEach(s => {
+    s.classList.remove('active');
+    s.querySelector('.drink-item').textContent = '';
+  });
+  $('#reflex-score').textContent = `Score: ${reflexScore}`;
+  $('#reflex-lives').textContent = `Lives: ${reflexLives}`;
+  $('#reflex-msg').textContent = 'only real ones tap whiskey';
 }
 
-function showDrinkShot(){
-  $('#drink-overlay').classList.add('show');
-  clearTimeout(beerDrinkTimer);
-  beerDrinkTimer = setTimeout(() => {
-    $('#drink-overlay').classList.remove('show');
-  }, 1300);
+function updateReflexUI(){
+  $('#reflex-score').textContent = `Score: ${reflexScore}`;
+  $('#reflex-lives').textContent = `Lives: ${reflexLives}`;
 }
 
-function startBeerShot(targetX){
-  if (!beerRunning || beerBall.active) return;
-  const dx = targetX - beerBall.x;
-  beerBall.vx = dx * 0.03;
-  beerBall.vy = -8.2;
-  beerBall.active = true;
-  beerBounces = 0;
+function endReflexGame(){
+  reflexRunning = false;
+  clearTimeout(reflexTimer);
+  reflexSlots.forEach(s => s.classList.remove('active'));
+  let verdict = 'you’re done bro';
+  if (reflexScore >= 25) verdict = 'okay wait you’re locked in';
+  else if (reflexScore >= 12) verdict = 'either focused or too far gone';
+  $('#reflex-msg').textContent = verdict;
 }
 
-function beerLoop(){
-  if (!beerRunning) return;
+function spawnReflexItem(){
+  if (!reflexRunning) return;
 
-  if (beerBall.active) {
-    beerBall.x += beerBall.vx;
-    beerBall.y += beerBall.vy;
-    beerBall.vy += 0.26;
-
-    const floorY = beerCanvas.height - 38;
-
-    if (beerBall.y >= floorY && beerBall.vy > 0) {
-      beerBall.y = floorY;
-      beerBall.vy *= -0.58;
-      beerBall.vx *= 0.92;
-      beerBounces++;
-      if (Math.abs(beerBall.vy) < 1.7) {
-        beerBall.active = false;
-        beerShots--;
-        $('#beer-msg').textContent = 'missed. bottoms up';
-        showDrinkShot();
-        if (beerShots <= 0) {
-          beerRunning = false;
-          $('#beer-msg').textContent = 'game over bro 🍺';
-        } else {
-          setTimeout(resetBeerBall, 600);
-        }
+  if (reflexActiveIndex !== -1) {
+    if (reflexActiveType && reflexActiveType.good) {
+      reflexLives--;
+      updateReflexUI();
+      $('#reflex-msg').textContent = 'missed the whiskey';
+      if (reflexLives <= 0) {
+        endReflexGame();
+        return;
       }
     }
+    reflexSlots[reflexActiveIndex].classList.remove('active');
+  }
 
-    for (const cup of beerCups) {
-      if (cup.hit) continue;
-      const dx = beerBall.x - cup.x;
-      const dy = beerBall.y - (cup.y + 4);
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 13) {
-        cup.hit = true;
-        beerBall.active = false;
-        $('#beer-msg').textContent = 'bottoms up rajath!!';
-        showToast('bottoms up rajath!!');
-        setTimeout(resetBeerBall, 500);
-      }
-    }
+  const idx = Math.floor(Math.random() * reflexSlots.length);
+  const type = reflexTypes[Math.floor(Math.random() * reflexTypes.length)];
+  reflexActiveIndex = idx;
+  reflexActiveType = type;
 
-    if (beerBall.x < -24 || beerBall.x > beerCanvas.width + 24 || beerBall.y > beerCanvas.height + 60) {
-      beerBall.active = false;
-      beerShots--;
-      $('#beer-msg').textContent = 'missed. bottoms up';
-      showDrinkShot();
-      if (beerShots <= 0) {
-        beerRunning = false;
-        $('#beer-msg').textContent = 'game over bro 🍺';
-      } else {
-        setTimeout(resetBeerBall, 600);
-      }
-    }
+  const slot = reflexSlots[idx];
+  slot.classList.add('active');
+  slot.querySelector('.drink-item').textContent = type.emoji;
 
-    if (beerCups.every(c => c.hit)) {
-      beerRunning = false;
-      $('#beer-msg').textContent = 'clean sweep 🍺';
-      showToast('all cups down');
+  reflexSpeed = Math.max(320, 900 - reflexScore * 18);
+
+  reflexTimer = setTimeout(spawnReflexItem, reflexSpeed);
+}
+
+function handleReflexTap(i){
+  if (!reflexRunning) return;
+  if (i !== reflexActiveIndex) return;
+
+  const slot = reflexSlots[i];
+  slot.classList.remove('active');
+
+  if (reflexActiveType.good) {
+    reflexScore++;
+    updateReflexUI();
+    $('#reflex-msg').textContent =
+      reflexScore > 18 ? 'bottoms up rajath!!' :
+      reflexScore > 9 ? 'okay now you’re locked in' :
+      'good one';
+    if (reflexScore === 20) showToast('bottoms up rajath!!');
+  } else {
+    reflexLives--;
+    updateReflexUI();
+    $('#reflex-msg').textContent = 'bro that was not whiskey';
+    if (reflexLives <= 0) {
+      endReflexGame();
+      return;
     }
   }
 
-  drawBeerPong();
-  requestAnimationFrame(beerLoop);
+  reflexActiveIndex = -1;
+  reflexActiveType = null;
 }
 
-$('#beer-stage').addEventListener('click', (e) => {
-  const r = beerCanvas.getBoundingClientRect();
-  const x = e.clientX - r.left;
-  startBeerShot(x);
-});
-
-$('#beer-stage').addEventListener('touchstart', (e) => {
-  const r = beerCanvas.getBoundingClientRect();
-  const x = e.touches[0].clientX - r.left;
-  startBeerShot(x);
-}, { passive:true });
-
-$('#beer-start-btn').addEventListener('click', () => {
-  resetBeerPong();
-  beerRunning = true;
-  $('#beer-msg').textContent = 'tap to bounce the ball';
-  drawBeerPong();
-  requestAnimationFrame(beerLoop);
+$('#reflex-start-btn').addEventListener('click', () => {
+  resetReflexGame();
+  reflexRunning = true;
+  $('#reflex-msg').textContent = 'tap only the whiskey 🥃';
+  spawnReflexItem();
 });
 
 /* cig */

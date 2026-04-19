@@ -22,7 +22,6 @@
   #login{justify-content:center;align-items:center;padding:2rem}
   .logo-wrap{text-align:center;margin-bottom:2.5rem}
   .logo-text{font-family:'Dancing Script',cursive;font-size:3rem;color:#fff;letter-spacing:-1px}
-  .logo-sub{font-size:.7rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem}
   .input-group{width:100%;max-width:360px;margin:0 auto}
   .inp-wrap{position:relative;margin-bottom:.75rem}
   .inp-wrap input{width:100%;background:#121212;border:1px solid var(--border);color:#fff;padding:.9rem 3rem .9rem 1rem;border-radius:6px;font-size:.9rem;font-family:var(--font);outline:none;transition:border-color .2s}
@@ -36,7 +35,6 @@
   .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
   .secret-link{display:none;text-align:center;color:var(--muted);font-size:.85rem;margin-top:.5rem;cursor:pointer;transition:color .2s}
   .secret-link span{color:var(--blue);font-weight:600}
-  .secret-link:hover span{text-decoration:underline}
   .forgot{text-align:center;color:var(--blue);font-size:.85rem;font-weight:600;cursor:pointer;margin-top:.5rem}
   .login-footer{position:absolute;bottom:2rem;left:0;right:0;text-align:center;color:var(--muted);font-size:.8rem}
   .login-footer b{color:#fff}
@@ -69,10 +67,11 @@
   .post-username{font-size:.88rem;font-weight:600}
   .post-location{font-size:.72rem;color:var(--muted)}
   .post-img{width:100%;aspect-ratio:1;background:var(--surface);position:relative;overflow:hidden;cursor:pointer}
-  .post-img canvas,.post-img .img-placeholder{width:100%;height:100%;object-fit:cover;display:block}
+  .post-img canvas{width:100%;height:100%;object-fit:cover;display:block}
   .heart-anim{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transform:scale(.5);transition:opacity .15s,transform .15s}
   .heart-anim.show{opacity:1;transform:scale(1)}
   .heart-anim.hide{opacity:0;transform:scale(1.5);transition:opacity .3s .2s,transform .3s .2s}
+  .sticker-anim img{width:92px;height:92px;object-fit:contain;display:block;filter:drop-shadow(0 8px 20px rgba(0,0,0,.35))}
   .post-actions{display:flex;align-items:center;padding:.7rem 1rem .4rem;gap:1rem}
   .post-actions svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;cursor:pointer;flex-shrink:0}
   .post-actions .save{margin-left:auto}
@@ -101,14 +100,14 @@
   .game-btn{background:var(--blue);color:#fff;border:none;padding:.75rem 2.5rem;border-radius:24px;font-size:.95rem;font-weight:600;font-family:var(--font);cursor:pointer;transition:transform .1s,opacity .15s;margin-top:1rem}
   .game-btn:active{transform:scale(.95);opacity:.85}
 
-  /* BEER GAME */
+  /* BEER */
   #beer-game{background:#000}
   #beer-canvas{border-radius:12px;margin-bottom:.5rem}
 
-  /* CIGARETTE GAME */
+  /* CIG */
   #cig-game{background:#0a0a0a}
 
-  /* BADMINTON GAME */
+  /* BADMINTON */
   #badminton-game{background:#0d1a1a}
 
   /* REELS */
@@ -125,7 +124,6 @@
   .reel-action{display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer}
   .reel-action svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .reel-action span{font-size:.72rem;color:#fff}
-  .reel-audio{position:absolute;bottom:1rem;right:75px;font-size:.72rem;color:#fff;display:flex;align-items:center;gap:.4rem}
 
   /* PROFILE */
   #profile{overflow:hidden}
@@ -165,22 +163,30 @@
   .story-close{color:#fff;font-size:1.5rem;cursor:pointer;line-height:1;padding:.5rem}
   .story-canvas{width:100%;flex:1;object-fit:contain}
 
-  /* PERMISSION OVERLAY */
-  .perm-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;z-index:10;padding:2rem;text-align:center}
-  .perm-icon{font-size:3rem}
-  .perm-title{font-size:1.2rem;font-weight:700}
-  .perm-sub{font-size:.85rem;color:var(--muted);line-height:1.6}
+  /* POST VIEWER */
+  #post-viewer{background:#000;z-index:220}
+  .post-view-top{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0}
+  .post-view-close{font-size:1.5rem;color:#fff;cursor:pointer;padding:.3rem .5rem;line-height:1}
+  .post-view-wrap{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding-bottom:80px;-webkit-overflow-scrolling:touch}
+  .post-view-image{width:100%;aspect-ratio:1;background:#111;position:relative}
+  .post-view-image canvas{width:100%;height:100%;display:block}
+  .post-view-meta{padding:1rem}
+  .post-view-user{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
+  .post-view-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;flex-shrink:0}
+  .post-view-username{font-size:.92rem;font-weight:700}
+  .post-view-location{font-size:.75rem;color:var(--muted);margin-top:.1rem}
+  .post-view-actions{display:flex;align-items:center;gap:1rem;margin-bottom:.8rem}
+  .post-view-actions svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .post-view-actions .save{margin-left:auto}
+  .post-view-likes{font-size:.86rem;font-weight:600;margin-bottom:.45rem}
+  .post-view-caption{font-size:.86rem;line-height:1.6;margin-bottom:.45rem}
+  .post-view-caption b{margin-right:.35rem}
+  .post-view-comments{font-size:.8rem;color:var(--muted);margin-bottom:.45rem}
+  .post-view-time{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 
-  /* NOTIF TOAST */
+  /* TOAST */
   .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);color:#fff;padding:.6rem 1.2rem;border-radius:20px;font-size:.82rem;font-weight:500;z-index:999;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;border:1px solid var(--border)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-  /* BIRTHDAY BANNER */
-  .bday-banner{background:linear-gradient(135deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-size:1.8rem;font-weight:700;text-align:center;margin-bottom:.5rem;animation:pulse 2s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
-
-  /* CONFETTI */
-  #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:1000;display:none}
 
   input:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #121212 inset;-webkit-text-fill-color:#fff}
   ::placeholder{color:#555}
@@ -188,9 +194,6 @@
 </head>
 <body>
 
-<canvas id="confetti-canvas"></canvas>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <!-- LOGIN SCREEN -->
@@ -317,8 +320,7 @@ last sober sighting: unavailable</div>
     </div>
     <div class="posts-grid" id="posts-grid"></div>
     <div style="padding:2rem;text-align:center">
-      <div class="bday-banner">Happy Birthday Rajath! 🎂</div>
-      <div style="color:var(--muted);font-size:.85rem;line-height:1.7">Hope this year brings more badminton wins,<br>less 3AM regrets, and the same amount of<br>questionable decisions we all love. 🍺🏎️🏸</div>
+      <div style="color:var(--muted);font-size:.85rem;line-height:1.7">Happy Birthday Rajath 🍺🏎️🏸</div>
     </div>
   </div>
   <div class="bottom-nav" id="bottom-nav-profile"></div>
@@ -340,6 +342,59 @@ last sober sighting: unavailable</div>
   <canvas id="story-canvas" style="flex:1;width:100%"></canvas>
 </div>
 
+<!-- POST VIEWER -->
+<div class="screen hidden slide-up" id="post-viewer">
+  <div class="post-view-top">
+    <div style="font-size:.95rem;font-weight:700">Post</div>
+    <div class="post-view-close" id="post-view-close">✕</div>
+  </div>
+
+  <div class="post-view-wrap">
+    <div class="post-view-image">
+      <canvas id="post-view-canvas" width="600" height="600"></canvas>
+    </div>
+
+    <div class="post-view-meta">
+      <div class="post-view-user">
+        <div class="post-view-avatar" id="pv-avatar">🌙</div>
+        <div>
+          <div class="post-view-username" id="pv-username">nightmode</div>
+          <div class="post-view-location" id="pv-location">3:41 AM · Still awake</div>
+        </div>
+      </div>
+
+      <div class="post-view-actions">
+        <div id="pv-like-btn">
+          <svg viewBox="0 0 24 24">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </div>
+        <div class="save">
+          <svg viewBox="0 0 24 24">
+            <polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="post-view-likes" id="pv-likes"></div>
+      <div class="post-view-caption" id="pv-caption"></div>
+      <div class="post-view-comments" id="pv-comments"></div>
+      <div class="post-view-time" id="pv-time"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ====== STATE ======
 let currentScreen = 'login';
@@ -348,7 +403,8 @@ let beerGameRunning = false;
 let cigGameRunning = false;
 let badGameRunning = false;
 let currentReel = 0;
-let touchStartY = 0;
+let storyTimer;
+let currentOpenedPost = null;
 
 // ====== UTILS ======
 function showToast(msg) {
@@ -393,17 +449,17 @@ function buildNav(containerId) {
     div.dataset.screen = item.id;
     let svg = '';
     if (item.beerIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M5 8h14l-1.5 9a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 8z"/><path d="M5 8V6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2"/><path d="M19 11h2a2 2 0 0 1 0 4h-2"/></svg>`;
+      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.5 9a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 8z"/><path d="M5 8V6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2"/><path d="M19 11h2a2 2 0 0 1 0 4h-2"/></svg>`;
     } else if (item.reelIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M2 7h20M2 17h20M7 2v20M17 2v20"/></svg>`;
+      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M2 7h20M2 17h20M7 2v20M17 2v20"/></svg>`;
     } else if (item.cigIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M2 15h16M18 15h4M18 9c0 0 2 1 2 3"/><path d="M15 9c0 0 2 1 2 3"/></svg>`;
+      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15h16M18 15h4M18 9c0 0 2 1 2 3"/><path d="M15 9c0 0 2 1 2 3"/></svg>`;
     } else if (item.badIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg>`;
+      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3c4 0 7 3 7 7 0 1.8-.6 3.4-1.7 4.7"/><path d="M15 15 9 21"/><path d="M10.2 10.2 14 14"/><path d="M4 20l5-5"/></svg>`;
     } else if (item.personIcon) {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     } else {
-      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="${item.icon}"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+      svg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${item.icon}"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
     }
     div.innerHTML = svg + `<div class="nav-dot"></div>`;
     div.addEventListener('click', () => {
@@ -461,7 +517,6 @@ function launchApp() {
   buildReels();
   navigateTo('home');
   showToast('Welcome back, Rajath 🎉');
-  setTimeout(() => startConfetti(), 800);
 }
 
 function buildAllNavs() {
@@ -521,7 +576,9 @@ function buildPosts() {
       </div>
       <div class="post-img" data-art="${p.art}" data-color="${p.color}" data-idx="${i}">
         <canvas width="400" height="400" style="width:100%;height:100%;display:block"></canvas>
-        <div class="heart-anim" id="heart-${i}"><svg viewBox="0 0 24 24" style="width:80px;height:80px;fill:#fff;stroke:none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="heart-anim sticker-anim" id="heart-${i}">
+          <img src="sticker.png" alt="sticker">
+        </div>
       </div>
       <div class="post-actions">
         <div class="like-btn" data-idx="${i}"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
@@ -535,17 +592,53 @@ function buildPosts() {
       <div class="post-time">${p.time} ago</div>`;
     c.appendChild(div);
 
-    // Draw post art
     const canvas = div.querySelector('canvas');
     drawPostArt(canvas, p.art, p.color);
 
-    // Double tap to like
+    const postImg = div.querySelector('.post-img');
+
     let lastTap = 0;
-    div.querySelector('.post-img').addEventListener('click', () => {
+    let singleTapTimer = null;
+    let startX = 0;
+    let startY = 0;
+    let moved = false;
+
+    postImg.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+      moved = false;
+    }, { passive: true });
+
+    postImg.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      const dx = Math.abs(t.clientX - startX);
+      const dy = Math.abs(t.clientY - startY);
+      if (dx > 10 || dy > 10) moved = true;
+    }, { passive: true });
+
+    postImg.addEventListener('touchend', () => {
+      if (moved) return;
+
       const now = Date.now();
-      if (now - lastTap < 300) triggerLike(i);
+
+      if (now - lastTap < 280) {
+        clearTimeout(singleTapTimer);
+        singleTapTimer = null;
+        triggerLike(i);
+      } else {
+        singleTapTimer = setTimeout(() => {
+          openPost(i);
+        }, 220);
+      }
+
       lastTap = now;
+    }, { passive: true });
+
+    postImg.addEventListener('click', (e) => {
+      e.preventDefault();
     });
+
     div.querySelector('.like-btn').addEventListener('click', () => triggerLike(i));
   });
 }
@@ -564,16 +657,57 @@ function triggerLike(idx) {
     likedPosts[idx] = false;
     btn.classList.remove('liked');
   }
+
+  if (currentOpenedPost === idx) {
+    document.getElementById('pv-like-btn').classList.toggle('liked', likedPosts[idx]);
+  }
 }
+
+function openPost(idx) {
+  const post = postsData[idx];
+  currentOpenedPost = idx;
+
+  document.getElementById('pv-avatar').textContent = post.avatar;
+  document.getElementById('pv-avatar').style.background = post.color;
+  document.getElementById('pv-username').textContent = post.user;
+  document.getElementById('pv-location').textContent = post.loc;
+  document.getElementById('pv-likes').textContent = 'Liked by ' + post.likes;
+  document.getElementById('pv-caption').innerHTML =
+    `<b>${post.caption.split(':')[0]}:</b>${post.caption.split(':').slice(1).join(':')}`;
+  document.getElementById('pv-comments').textContent = `View all ${post.comments} comments`;
+  document.getElementById('pv-time').textContent = `${post.time} ago`;
+
+  const canvas = document.getElementById('post-view-canvas');
+  canvas.width = 600;
+  canvas.height = 600;
+  drawPostArt(canvas, post.art, post.color);
+
+  const viewer = document.getElementById('post-viewer');
+  viewer.classList.remove('hidden', 'slide-up');
+  viewer.classList.add('active');
+}
+
+function closePost() {
+  const viewer = document.getElementById('post-viewer');
+  viewer.classList.remove('active');
+  viewer.classList.add('hidden');
+  currentOpenedPost = null;
+}
+
+document.getElementById('post-view-close').addEventListener('click', closePost);
+document.getElementById('pv-like-btn').addEventListener('click', () => {
+  if (currentOpenedPost !== null) triggerLike(currentOpenedPost);
+});
 
 function drawPostArt(canvas, type, baseColor) {
   const ctx = canvas.getContext('2d');
   const W = 400, H = 400;
+  canvas.width = W;
+  canvas.height = H;
   ctx.fillStyle = baseColor || '#111';
   ctx.fillRect(0, 0, W, H);
 
   if (type === 'night') {
-    // Night sky
     ctx.fillStyle = '#0a0a1e';
     ctx.fillRect(0, 0, W, H);
     for (let i = 0; i < 80; i++) {
@@ -582,7 +716,6 @@ function drawPostArt(canvas, type, baseColor) {
       ctx.arc(Math.random() * W, Math.random() * H * .8, Math.random() * 2 + .5, 0, Math.PI * 2);
       ctx.fill();
     }
-    // Moon
     ctx.fillStyle = '#fffde7';
     ctx.beginPath();
     ctx.arc(300, 80, 40, 0, Math.PI * 2);
@@ -591,7 +724,6 @@ function drawPostArt(canvas, type, baseColor) {
     ctx.beginPath();
     ctx.arc(318, 72, 34, 0, Math.PI * 2);
     ctx.fill();
-    // 3AM text
     ctx.fillStyle = 'rgba(255,255,255,0.5)';
     ctx.font = 'bold 48px sans-serif';
     ctx.textAlign = 'center';
@@ -600,7 +732,6 @@ function drawPostArt(canvas, type, baseColor) {
     ctx.fillStyle = 'rgba(255,255,255,0.3)';
     ctx.fillText('still not sleeping', W/2, H/2 + 75);
   } else if (type === 'court') {
-    // Badminton court top-down
     ctx.fillStyle = '#1a5c1a';
     ctx.fillRect(0, 0, W, H);
     ctx.strokeStyle = '#fff';
@@ -615,7 +746,6 @@ function drawPostArt(canvas, type, baseColor) {
     ctx.strokeStyle = 'rgba(255,255,255,0.5)';
     ctx.lineWidth = 2;
     ctx.strokeRect(80, 80, 240, 240);
-    // Net
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 4;
     ctx.beginPath();
@@ -626,7 +756,6 @@ function drawPostArt(canvas, type, baseColor) {
     ctx.textAlign = 'center';
     ctx.fillText('you said daily bro', W/2, H - 20);
   } else if (type === 'f1') {
-    // F1 track
     ctx.fillStyle = '#1a0d0d';
     ctx.fillRect(0, 0, W, H);
     ctx.strokeStyle = '#ff3333';
@@ -646,15 +775,12 @@ function drawPostArt(canvas, type, baseColor) {
     ctx.font = '16px sans-serif';
     ctx.fillText('the real sport 🏎️', W/2, H/2 + 35);
   } else if (type === 'beer') {
-    // Beer art
     ctx.fillStyle = '#0d0d1a';
     ctx.fillRect(0, 0, W, H);
-    // Glass
     ctx.fillStyle = 'rgba(255,255,255,0.08)';
     ctx.beginPath();
     ctx.moveTo(140, 80); ctx.lineTo(260, 80); ctx.lineTo(280, 350); ctx.lineTo(120, 350); ctx.closePath();
     ctx.fill();
-    // Beer fill
     const grad = ctx.createLinearGradient(0, 150, 0, 350);
     grad.addColorStop(0, '#f5c842');
     grad.addColorStop(1, '#c8860a');
@@ -662,7 +788,6 @@ function drawPostArt(canvas, type, baseColor) {
     ctx.beginPath();
     ctx.moveTo(148, 155); ctx.lineTo(252, 155); ctx.lineTo(276, 345); ctx.lineTo(124, 345); ctx.closePath();
     ctx.fill();
-    // Foam
     ctx.fillStyle = '#fffde7';
     ctx.beginPath();
     for (let i = 0; i < 8; i++) {
@@ -761,12 +886,10 @@ function buildReels() {
         </div>
       </div>`;
     container.appendChild(div);
-    // Draw reel art
     const canvas = div.querySelector('canvas');
     drawReelArt(canvas, r);
   });
 
-  // Swipe handling
   let startY = 0;
   container.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
   container.addEventListener('touchend', e => {
@@ -789,12 +912,10 @@ function drawReelArt(canvas, reel) {
   const W = 400, H = 700;
   ctx.fillStyle = reel.bg;
   ctx.fillRect(0, 0, W, H);
-  // Big emoji
   ctx.font = '120px sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(reel.emoji, W / 2, H * .38);
-  // Lines
   for (let i = 0; i < 12; i++) {
     ctx.strokeStyle = `${reel.color}22`;
     ctx.lineWidth = 1;
@@ -810,12 +931,10 @@ function drawReelArt(canvas, reel) {
 }
 
 // ====== STORY VIEWER ======
-let storyTimer;
 function openStory(idx) {
   const s = storiesData[idx];
   document.getElementById('sv-username').textContent = s.name;
   document.getElementById('sv-avatar').textContent = s.emoji;
-
   const times = ['11:23 PM', '2:47 AM', '12:01 AM', '3:17 AM', '9:45 PM', '4:02 AM'];
   document.getElementById('sv-time').textContent = times[idx];
 
@@ -824,7 +943,6 @@ function openStory(idx) {
     `<div class="story-prog-bar"><div class="story-prog-fill" id="spf-${i}"></div></div>`
   ).join('');
 
-  // Draw story canvas
   const canvas = document.getElementById('story-canvas');
   const ctx = canvas.getContext('2d');
   canvas.width = canvas.offsetWidth || 375;
@@ -846,7 +964,6 @@ function openStory(idx) {
   viewer.classList.remove('hidden', 'slide-up');
   viewer.classList.add('active');
 
-  // Progress bar
   clearTimeout(storyTimer);
   for (let i = 0; i < idx; i++) {
     const fill = document.getElementById(`spf-${i}`);
@@ -872,22 +989,18 @@ document.getElementById('story-close').addEventListener('click', closeStory);
 // ====== BEER GAME ======
 let beerAngle = 0;
 let beerLiquidPct = 0.8;
-let beerSpilled = 0;
 let beerGameTime = 0;
 let beerRAF;
-let beerInterval;
-let beerSway = 0;
-let beerSwayVel = 0;
-
-const beerMsgs = ['steady bro 🍺', 'alcohol deserves better', 'waste of good beer', 'that tilt was criminal', 'respect the glass', 'don\'t spill it!', 'absolute chaos'];
+let beerTiltEnabled = false;
+let beerTouchMode = false;
+let beerRunning = false;
 
 function initBeerCanvas() {
   const canvas = document.getElementById('beer-canvas');
-  if (!canvas) return;
   const W = Math.min(window.innerWidth - 40, 300);
   canvas.width = W;
   canvas.height = Math.round(W * 1.2);
-  drawBeer(canvas, 0, 0.8);
+  drawBeer(canvas, beerAngle, beerLiquidPct);
 }
 
 function drawBeer(canvas, sway, fillPct) {
@@ -895,710 +1008,364 @@ function drawBeer(canvas, sway, fillPct) {
   const W = canvas.width, H = canvas.height;
   ctx.clearRect(0, 0, W, H);
 
-  // Background
   ctx.fillStyle = '#0a0a0a';
   ctx.fillRect(0, 0, W, H);
 
-  // Warm glow behind glass
-  const spotGrad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W * 0.6);
-  spotGrad.addColorStop(0, 'rgba(200,140,0,0.13)');
-  spotGrad.addColorStop(1, 'transparent');
-  ctx.fillStyle = spotGrad;
-  ctx.fillRect(0, 0, W, H);
-
   ctx.save();
-  ctx.translate(W / 2, H * 0.52);
-  ctx.rotate(sway * 0.38);
+  ctx.translate(W / 2, H * 0.55);
+  ctx.rotate(sway * 0.42);
 
-  // --- Pint glass dimensions ---
-  // Top rim is wider, bottom narrows, then a small base
-  const topW   = W * 0.52;   // full width at rim
-  const botW   = W * 0.30;   // width at very bottom of barrel
-  const gh     = H * 0.68;   // total glass height
-  const baseH  = H * 0.04;   // thick base height
-  const rimH   = H * 0.015;  // rim lip height
-
-  // glass outline path (pint shape — slight outward bulge at top third)
-  // Points: top-left, top-right, bottom-right, bottom-left (trapezoid with slight curve)
-  const tl = { x: -topW/2, y: -gh/2 };
-  const tr = { x:  topW/2, y: -gh/2 };
-  const br = { x:  botW/2, y:  gh/2 - baseH };
-  const bl = { x: -botW/2, y:  gh/2 - baseH };
-
-  function glassSidePath() {
-    ctx.beginPath();
-    ctx.moveTo(tl.x, tl.y);
-    ctx.lineTo(tr.x, tr.y);
-    // right side: straight line from top to bottom
-    ctx.lineTo(br.x, br.y);
-    // base bottom
-    ctx.lineTo(br.x, gh/2);
-    ctx.lineTo(bl.x, gh/2);
-    ctx.lineTo(bl.x, bl.y);
-    ctx.closePath();
-  }
-
-  // ---- Clip region for liquid ----
-  ctx.save();
-  glassSidePath();
-  ctx.clip();
-
-  // Fill entire glass interior with very faint glass tint
-  ctx.fillStyle = 'rgba(180,220,255,0.04)';
-  ctx.fillRect(-topW/2 - 5, -gh/2 - 5, topW + 10, gh + 10);
-
-  // Beer liquid
-  const slopePx = sway * topW * 0.55;
-  // liquid surface Y (interpolate left/right X at fillPct height)
-  const liquidTop = gh/2 - baseH - (gh - baseH) * fillPct;
-
-  // interpolate left/right X of glass walls at liquidTop
-  const wallFrac = (liquidTop - (-gh/2)) / (gh - baseH - (-gh/2) + 0.001);
-  const liqLeftX  = tl.x + (bl.x - tl.x) * wallFrac;
-  const liqRightX = tr.x + (br.x - tr.x) * wallFrac;
-
-  if (fillPct > 0.02) {
-    const beerGrad = ctx.createLinearGradient(liqLeftX, liquidTop, liqRightX, gh/2);
-    beerGrad.addColorStop(0, '#f7d060');
-    beerGrad.addColorStop(0.4, '#e8a820');
-    beerGrad.addColorStop(1, '#9a5c08');
-    ctx.fillStyle = beerGrad;
-
-    ctx.beginPath();
-    ctx.moveTo(liqLeftX,  liquidTop - slopePx);
-    ctx.lineTo(liqRightX, liquidTop + slopePx);
-    ctx.lineTo(br.x + 2, gh/2 + 2);
-    ctx.lineTo(bl.x - 2, gh/2 + 2);
-    ctx.closePath();
-    ctx.fill();
-
-    // Bubbles rising
-    ctx.fillStyle = 'rgba(255,230,100,0.35)';
-    const bubblePositions = [0.2, 0.45, 0.7, 0.35, 0.6];
-    bubblePositions.forEach((bx, bi) => {
-      const bxPos = liqLeftX + (liqRightX - liqLeftX) * bx;
-      const byOffset = ((Date.now() / 600 + bi * 1.3) % 1);
-      const byPos = liquidTop + slopePx * 0.3 + (gh/2 - liquidTop) * byOffset;
-      if (byPos > liquidTop) {
-        ctx.beginPath();
-        ctx.arc(bxPos, byPos, 3 + bi % 2 * 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    });
-  }
-
-  // Foam layer
-  if (fillPct > 0.15) {
-    const foamY = liquidTop;
-    const foamSlope = slopePx;
-    const foamThick = 18 + fillPct * 10;
-    // foam body
-    ctx.fillStyle = '#fffde7';
-    ctx.beginPath();
-    ctx.moveTo(liqLeftX, foamY - foamSlope - foamThick);
-    ctx.lineTo(liqRightX, foamY + foamSlope - foamThick);
-    ctx.lineTo(liqRightX, foamY + foamSlope + 4);
-    ctx.lineTo(liqLeftX, foamY - foamSlope + 4);
-    ctx.closePath();
-    ctx.fill();
-    // bubbly foam top
-    ctx.fillStyle = '#fff';
-    const foamW = liqRightX - liqLeftX;
-    const numBubbles = Math.ceil(foamW / 14);
-    for (let i = 0; i <= numBubbles; i++) {
-      const bx = liqLeftX + (foamW / numBubbles) * i;
-      const by = foamY - foamSlope + (foamY - foamSlope - (foamY - foamSlope - foamThick)) * 0.5
-                 + Math.sin(i * 1.3 + sway) * 4 - foamThick * 0.5;
-      ctx.beginPath();
-      ctx.arc(bx, by - foamThick/2 + foamSlope * (i/numBubbles - 0.5) * 2, 8 + Math.sin(i) * 2, Math.PI, 0);
-      ctx.fill();
-    }
-  }
-
-  ctx.restore(); // end clip
-
-  // ---- Glass outline drawn ON TOP ----
-  glassSidePath();
-  ctx.strokeStyle = 'rgba(255,255,255,0.32)';
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  // Rim lip highlight
-  ctx.fillStyle = 'rgba(255,255,255,0.18)';
-  ctx.beginPath();
-  ctx.rect(tl.x - 3, tl.y, topW + 6, rimH * 3);
-  ctx.fill();
-
-  // Base thickness
-  ctx.fillStyle = 'rgba(255,255,255,0.10)';
-  ctx.beginPath();
-  ctx.rect(bl.x - 4, bl.y, botW + 8, baseH);
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.28)';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(bl.x - 4, bl.y, botW + 8, baseH);
-
-  // Glass sheen (left highlight strip)
-  const sheenGrad = ctx.createLinearGradient(tl.x + 8, tl.y, tl.x + 22, tl.y);
-  sheenGrad.addColorStop(0, 'rgba(255,255,255,0.0)');
-  sheenGrad.addColorStop(0.5, 'rgba(255,255,255,0.18)');
-  sheenGrad.addColorStop(1, 'rgba(255,255,255,0.0)');
-  ctx.save();
-  glassSidePath();
-  ctx.clip();
-  ctx.fillStyle = sheenGrad;
-  ctx.fillRect(tl.x + 8, tl.y, 14, gh);
-  ctx.restore();
-
-  // ---- Handle ----
-  // Draw a proper D-shaped handle on the right
-  const handleX = br.x + 6;
-  const handleTopY = -gh * 0.18;
-  const handleBotY =  gh * 0.18;
-  const handleBulge = topW * 0.38;
-
-  ctx.strokeStyle = 'rgba(255,255,255,0.30)';
-  ctx.lineWidth = 11;
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(handleX, handleTopY);
-  ctx.bezierCurveTo(handleX + handleBulge, handleTopY, handleX + handleBulge, handleBotY, handleX, handleBotY);
-  ctx.stroke();
-
-  // Handle inner shadow
-  ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+  ctx.strokeStyle = 'rgba(255,255,255,.35)';
   ctx.lineWidth = 4;
   ctx.beginPath();
-  ctx.moveTo(handleX + 2, handleTopY + 4);
-  ctx.bezierCurveTo(handleX + handleBulge - 4, handleTopY + 4, handleX + handleBulge - 4, handleBotY - 4, handleX + 2, handleBotY - 4);
+  ctx.moveTo(-60,-120);
+  ctx.lineTo(60,-120);
+  ctx.lineTo(82,120);
+  ctx.lineTo(-82,120);
+  ctx.closePath();
   ctx.stroke();
+
+  const beerTop = 120 - 240 * fillPct;
+  ctx.fillStyle = '#d08c11';
+  ctx.beginPath();
+  ctx.moveTo(-56, beerTop - sway * 30);
+  ctx.lineTo(56, beerTop + sway * 30);
+  ctx.lineTo(78,116);
+  ctx.lineTo(-78,116);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#fff7cf';
+  for(let i=0;i<7;i++){
+    ctx.beginPath();
+    ctx.arc(-50 + i * 16, beerTop + Math.sin(i + sway) * 2, 10, Math.PI, 0);
+    ctx.fill();
+  }
 
   ctx.restore();
 }
 
-function startBeerGame() {
-  const btn = document.getElementById('beer-start-btn');
-  btn.style.display = 'none';
-  beerLiquidPct = 0.8;
-  beerSpilled = 0;
-  beerSway = 0;
-  beerSwayVel = 0;
-  beerGameTime = 15;
-  beerGameRunning = true;
+async function enableBeerTilt() {
+  try {
+    if (
+      typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function'
+    ) {
+      const result = await DeviceOrientationEvent.requestPermission();
+      if (result === 'granted') {
+        beerTiltEnabled = true;
+        beerTouchMode = false;
+        showToast('Tilt enabled');
+      } else {
+        beerTouchMode = true;
+        showToast('Using touch fallback');
+      }
+    } else {
+      beerTiltEnabled = true;
+      beerTouchMode = false;
+    }
+  } catch (e) {
+    beerTouchMode = true;
+    showToast('Using touch fallback');
+  }
+}
+
+window.addEventListener('deviceorientation', (e) => {
+  if (!beerTiltEnabled) return;
+  if (typeof e.gamma === 'number') {
+    const normalized = e.gamma / 24;
+    beerAngle = Math.max(-0.9, Math.min(0.9, normalized));
+  }
+});
+
+document.getElementById('beer-canvas').addEventListener('touchmove', (e) => {
+  if (!beerTouchMode) return;
+  const touch = e.touches[0];
+  const rect = e.target.getBoundingClientRect();
+  const x = touch.clientX - rect.left;
+  const ratio = (x / rect.width - 0.5) * 2;
+  beerAngle = Math.max(-0.9, Math.min(0.9, ratio));
+}, { passive: true });
+
+function updateBeer() {
+  if (!beerRunning) return;
+
+  beerGameTime -= 0.016;
+
+  const excessiveTilt = Math.max(0, Math.abs(beerAngle) - 0.38);
+  beerLiquidPct -= excessiveTilt * 0.0032;
 
   const canvas = document.getElementById('beer-canvas');
-  const timerEl = document.getElementById('beer-timer');
-  const msgEl = document.getElementById('beer-msg');
-  msgEl.textContent = '🎮 Keep it steady!';
+  drawBeer(canvas, beerAngle, beerLiquidPct);
 
-  // Try device orientation
-  let hasMotion = false;
-  const motionHandler = (e) => {
-    hasMotion = true;
-    const g = e.gamma || 0;
-    beerSwayVel += g * 0.003;
-  };
-  window.addEventListener('deviceorientation', motionHandler);
+  const msg = document.getElementById('beer-msg');
+  const timer = document.getElementById('beer-timer');
+  timer.textContent = beerGameTime > 0 ? beerGameTime.toFixed(1) + 's' : '';
 
-  // Touch fallback
-  let touchX = null;
-  canvas.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
-  canvas.addEventListener('touchmove', e => {
-    if (touchX !== null) {
-      const dx = e.touches[0].clientX - touchX;
-      beerSwayVel += dx * 0.01;
-      touchX = e.touches[0].clientX;
-    }
-  }, { passive: true });
-  canvas.addEventListener('touchend', () => { touchX = null; });
-
-  beerInterval = setInterval(() => {
-    beerGameTime--;
-    timerEl.textContent = `⏱ ${beerGameTime}s remaining`;
-    if (beerGameTime <= 0) endBeerGame(true);
-  }, 1000);
-
-  const loop = () => {
-    if (!beerGameRunning) return;
-    beerSway += beerSwayVel;
-    beerSwayVel *= 0.92;
-    beerSway *= 0.96;
-
-    if (Math.abs(beerSway) > 0.5) {
-      beerLiquidPct -= Math.abs(beerSway) * 0.003;
-      beerLiquidPct = Math.max(0, beerLiquidPct);
-    }
-
-    drawBeer(canvas, beerSway, beerLiquidPct);
-
-    if (!hasMotion && beerGameRunning) {
-      beerSwayVel += (Math.random() - 0.5) * 0.02;
-    }
-
-    if (beerLiquidPct <= 0.05) {
-      endBeerGame(false);
-      return;
-    }
-    beerRAF = requestAnimationFrame(loop);
-  };
-  loop();
-}
-
-function endBeerGame(won) {
-  beerGameRunning = false;
-  clearInterval(beerInterval);
-  cancelAnimationFrame(beerRAF);
-  const btn = document.getElementById('beer-start-btn');
-  const msgEl = document.getElementById('beer-msg');
-  const timerEl = document.getElementById('beer-timer');
-
-  if (won) {
-    const pct = Math.round(beerLiquidPct * 100);
-    msgEl.textContent = `🍺 ${pct}% saved! Rajath would be proud.`;
-  } else {
-    msgEl.textContent = beerMsgs[Math.floor(Math.random() * beerMsgs.length)];
-  }
-  timerEl.textContent = won ? '✅ Survived!' : '❌ Beer wasted';
-  btn.textContent = 'Play Again';
-  btn.style.display = 'block';
-}
-
-document.getElementById('beer-start-btn').addEventListener('click', startBeerGame);
-
-// ====== CIGARETTE GAME ======
-let cigCanvas, cigCtx, cigCW, cigCH;
-let cigX, cigY;
-let drops = [];
-let cigScore = 0;
-let cigHealth = 3;
-let cigRAF2;
-let cigInterval2;
-let cigGameTime2 = 20;
-let cigSpeed = 3;
-
-function initCigCanvas() {
-  cigCanvas = document.getElementById('cig-canvas');
-  if (!cigCanvas) return;
-  cigCW = Math.min(window.innerWidth - 0, window.innerWidth);
-  cigCH = window.innerHeight - 180;
-  cigCanvas.width = cigCW;
-  cigCanvas.height = cigCH;
-  cigCanvas.style.width = cigCW + 'px';
-  cigCanvas.style.height = cigCH + 'px';
-  cigX = cigCW / 2;
-  cigY = cigCH - 80;
-  drawCigIdle();
-}
-
-function drawCigIdle() {
-  if (!cigCtx) cigCtx = cigCanvas.getContext('2d');
-  const ctx = cigCtx;
-  ctx.fillStyle = '#080810';
-  ctx.fillRect(0, 0, cigCW, cigCH);
-  // Clouds
-  ctx.fillStyle = '#1a1a2e';
-  for (let i = 0; i < 5; i++) {
-    ctx.beginPath();
-    ctx.ellipse(i * (cigCW/4), 30, 60, 20, 0, 0, Math.PI*2);
-    ctx.fill();
-  }
-  ctx.fillStyle = '#f5c842';
-  ctx.font = 'bold 16px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('protect the priority 🚬', cigCW/2, cigCH/2 - 20);
-}
-
-function startCigGame() {
-  if (!cigCanvas) initCigCanvas();
-  cigCtx = cigCanvas.getContext('2d');
-  drops = [];
-  cigScore = 0;
-  cigHealth = 3;
-  cigGameTime2 = 20;
-  cigSpeed = 3;
-  cigX = cigCW / 2;
-  cigGameRunning = true;
-
-  document.getElementById('cig-start-btn').style.display = 'none';
-  document.getElementById('cig-msg').textContent = '🚬 Drag to protect!';
-
-  // Touch control
-  cigCanvas.addEventListener('touchmove', onCigMove, { passive: true });
-  cigCanvas.addEventListener('mousemove', onCigMouseMove);
-
-  cigInterval2 = setInterval(() => {
-    cigGameTime2--;
-    if (cigGameTime2 % 5 === 0) cigSpeed += 0.5;
-    if (drops.length < 20) drops.push({ x: Math.random() * cigCW, y: -10, spd: cigSpeed + Math.random() * 2 });
-    if (cigGameTime2 <= 0) endCigGame(true);
-  }, 1000);
-
-  const loop2 = () => {
-    if (!cigGameRunning) return;
-    drawCigFrame();
-    cigRAF2 = requestAnimationFrame(loop2);
-  };
-  loop2();
-}
-
-function onCigMove(e) {
-  const rect = cigCanvas.getBoundingClientRect();
-  cigX = e.touches[0].clientX - rect.left;
-}
-function onCigMouseMove(e) {
-  const rect = cigCanvas.getBoundingClientRect();
-  cigX = e.clientX - rect.left;
-}
-
-function drawCigFrame() {
-  const ctx = cigCtx;
-  ctx.fillStyle = '#080810';
-  ctx.fillRect(0, 0, cigCW, cigCH);
-
-  // Storm bg
-  ctx.fillStyle = '#10102a';
-  ctx.fillRect(0, 0, cigCW, cigCH/3);
-
-  // Lightning occasional
-  if (Math.random() < 0.01) {
-    ctx.strokeStyle = 'rgba(180,180,255,0.6)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    const lx = Math.random() * cigCW;
-    ctx.moveTo(lx, 0);
-    ctx.lineTo(lx + 20, 60);
-    ctx.lineTo(lx - 10, 120);
-    ctx.stroke();
-  }
-
-  // Score
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 16px sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText(`Score: ${cigScore}`, 16, 30);
-  ctx.fillText(`🔥 `.repeat(cigHealth), cigCW - 100, 30);
-  ctx.fillText(`⏱ ${cigGameTime2}s`, cigCW/2 - 20, 30);
-
-  // Raindrops
-  drops.forEach((d, i) => {
-    d.y += d.spd;
-    ctx.strokeStyle = 'rgba(100,150,255,0.7)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(d.x, d.y);
-    ctx.lineTo(d.x - 2, d.y - 10);
-    ctx.stroke();
-
-    // Collision
-    if (d.y > cigY - 20 && d.y < cigY + 30 && d.x > cigX - 35 && d.x < cigX + 35) {
-      drops.splice(i, 1);
-      cigHealth--;
-      if (cigHealth <= 0) endCigGame(false);
-    } else if (d.y > cigCH + 10) {
-      drops.splice(i, 1);
-      cigScore++;
-    }
-  });
-
-  // Cigarette
-  ctx.save();
-  ctx.translate(cigX, cigY);
-  // Cig body
-  ctx.fillStyle = '#f0f0f0';
-  ctx.fillRect(-30, -5, 50, 12);
-  ctx.fillStyle = '#c8a070';
-  ctx.fillRect(18, -5, 10, 12);
-  // Filter
-  ctx.fillStyle = '#e07040';
-  ctx.fillRect(20, -5, 8, 12);
-  // Smoke
-  ctx.strokeStyle = 'rgba(200,200,200,0.4)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(-30, -5);
-  ctx.bezierCurveTo(-40, -20, -50, -15, -45, -40);
-  ctx.stroke();
-  // Ember
-  ctx.fillStyle = '#ff6600';
-  ctx.beginPath();
-  ctx.arc(-32, 1, 4, 0, Math.PI*2);
-  ctx.fill();
-  ctx.restore();
-}
-
-function endCigGame(won) {
-  cigGameRunning = false;
-  clearInterval(cigInterval2);
-  cancelAnimationFrame(cigRAF2);
-  cigCanvas.removeEventListener('touchmove', onCigMove);
-  cigCanvas.removeEventListener('mousemove', onCigMouseMove);
-
-  const msgs = ['gone. like your sleep schedule 💀', 'you had one job', 'tragic', 'unacceptable'];
-  const winMsgs = ['survived somehow 🚬', `${cigScore} drops dodged. legendary.`, 'the cigarette lives on'];
-
-  document.getElementById('cig-msg').textContent = won ? winMsgs[Math.floor(Math.random()*winMsgs.length)] : msgs[Math.floor(Math.random()*msgs.length)];
-  const btn = document.getElementById('cig-start-btn');
-  btn.textContent = 'Play Again';
-  btn.style.display = 'block';
-}
-
-document.getElementById('cig-start-btn').addEventListener('click', startCigGame);
-
-// ====== BADMINTON GAME ======
-let badCanvas, badCtx, badCW, badCH;
-let badBallX, badBallY, badBallVX, badBallVY;
-let badPlayerX;
-let badScore2 = 0;
-let badRAF3;
-let badGameOver = false;
-
-function initBadCanvas() {
-  badCanvas = document.getElementById('bad-canvas');
-  if (!badCanvas) return;
-  badCW = Math.min(window.innerWidth, 480);
-  badCH = window.innerHeight - 180;
-  badCanvas.width = badCW;
-  badCanvas.height = badCH;
-  badCanvas.style.width = badCW + 'px';
-  badCanvas.style.height = badCH + 'px';
-  badPlayerX = badCW / 2;
-  drawBadIdle();
-}
-
-function drawBadIdle() {
-  if (!badCtx) badCtx = badCanvas.getContext('2d');
-  const ctx = badCtx;
-  ctx.fillStyle = '#0d1a1a';
-  ctx.fillRect(0, 0, badCW, badCH);
-  // Court lines
-  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(20, 20, badCW - 40, badCH - 40);
-  // Net
-  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(0, badCH * .45);
-  ctx.lineTo(badCW, badCH * .45);
-  ctx.stroke();
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 16px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('🏸 tap to start rally', badCW/2, badCH/2);
-}
-
-function startBadGame() {
-  if (!badCanvas) initBadCanvas();
-  badCtx = badCanvas.getContext('2d');
-  badBallX = badCW / 2;
-  badBallY = badCH * 0.3;
-  const angle = (Math.random() * 60 + 60) * (Math.PI/180);
-  badBallVX = Math.cos(angle) * 4 * (Math.random() > 0.5 ? 1 : -1);
-  badBallVY = Math.abs(Math.sin(angle)) * 4;
-  badScore2 = 0;
-  badGameOver = false;
-  badGameRunning = true;
-
-  document.getElementById('bad-start-btn').style.display = 'none';
-  document.getElementById('bad-msg').textContent = '🏸 Swipe to hit!';
-
-  badCanvas.addEventListener('touchmove', onBadMove, { passive: true });
-  badCanvas.addEventListener('mousemove', onBadMouseMove);
-  badCanvas.addEventListener('touchstart', onBadHit);
-  badCanvas.addEventListener('click', onBadHit);
-
-  const loop3 = () => {
-    if (!badGameRunning) return;
-    drawBadFrame();
-    badRAF3 = requestAnimationFrame(loop3);
-  };
-  loop3();
-}
-
-function onBadMove(e) {
-  const rect = badCanvas.getBoundingClientRect();
-  badPlayerX = e.touches[0].clientX - rect.left;
-}
-function onBadMouseMove(e) {
-  const rect = badCanvas.getBoundingClientRect();
-  badPlayerX = e.clientX - rect.left;
-}
-function onBadHit() {
-  // Smash up if ball is near player
-  if (badBallY > badCH * 0.7 && Math.abs(badBallX - badPlayerX) < 60) {
-    badBallVY = -(Math.abs(badBallVY) + 1);
-    badBallVX += (badBallX - badPlayerX) * 0.05;
-    badScore2++;
-    document.getElementById('bad-msg').textContent = `🔥 Rally: ${badScore2}`;
-  }
-}
-
-function drawBadFrame() {
-  const ctx = badCtx;
-  ctx.fillStyle = '#0d1a1a';
-  ctx.fillRect(0, 0, badCW, badCH);
-
-  // Court
-  ctx.strokeStyle = '#1e4040';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(20, 20, badCW-40, badCH-40);
-  ctx.beginPath();
-  ctx.moveTo(20, badCH*.45); ctx.lineTo(badCW-20, badCH*.45);
-  ctx.stroke();
-
-  // Net
-  ctx.strokeStyle = 'rgba(255,255,255,.6)';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(0, badCH*.45); ctx.lineTo(badCW, badCH*.45);
-  ctx.stroke();
-  // Net posts
-  ctx.strokeStyle = '#888';
-  ctx.lineWidth = 4;
-  ctx.beginPath(); ctx.moveTo(0, badCH*.4); ctx.lineTo(0, badCH*.5); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(badCW, badCH*.4); ctx.lineTo(badCW, badCH*.5); ctx.stroke();
-
-  // Enemy player (top)
-  const enemyX = badCW/2 + Math.sin(Date.now()/800) * badCW * .25;
-  drawBadPlayer(ctx, enemyX, badCH*.15, '#ff6666', false);
-
-  // Player (bottom)
-  drawBadPlayer(ctx, badPlayerX, badCH*.82, '#44aaff', true);
-
-  // Ball physics
-  badBallX += badBallVX;
-  badBallY += badBallVY;
-  badBallVY += 0.15; // gravity
-
-  // Wall bounce
-  if (badBallX < 10 || badBallX > badCW - 10) badBallVX *= -1;
-
-  // Net collision
-  if (badBallY > badCH*.43 && badBallY < badCH*.47 && Math.abs(badBallVY) < 5) {
-    badBallVY *= -0.8;
-  }
-
-  // Enemy return
-  if (badBallY < badCH * .2 && badBallVY < 0) {
-    badBallVY = Math.abs(badBallVY) * (1 + badScore2 * 0.02);
-    badBallVX = (badBallX - enemyX) * 0.06 * (1 + Math.random());
-  }
-
-  // Miss - ball hits bottom
-  if (badBallY > badCH + 20) {
-    endBadGame();
+  if (beerLiquidPct <= 0.45) {
+    beerRunning = false;
+    msg.textContent = 'waste of good beer';
     return;
   }
 
-  // Shuttlecock
-  ctx.save();
-  ctx.translate(badBallX, badBallY);
-  // Cork
-  ctx.fillStyle = '#ffe066';
+  if (beerGameTime <= 0) {
+    beerRunning = false;
+    msg.textContent = 'respect the glass 🍺';
+    return;
+  }
+
+  msg.textContent = Math.abs(beerAngle) > 0.45 ? 'steady bro…' : 'nice';
+  beerRAF = requestAnimationFrame(updateBeer);
+}
+
+document.getElementById('beer-start-btn').addEventListener('click', async () => {
+  await enableBeerTilt();
+  beerRunning = true;
+  beerGameTime = 12;
+  beerLiquidPct = 0.82;
+  beerAngle = 0;
+  cancelAnimationFrame(beerRAF);
+  beerRAF = requestAnimationFrame(updateBeer);
+});
+
+// ====== CIGARETTE GAME ======
+let cigX = 160;
+let cigLives = 100;
+let cigDrops = [];
+let cigRAF;
+let cigCanvas, cigCtx;
+
+function initCigCanvas() {
+  cigCanvas = document.getElementById('cig-canvas');
+  cigCanvas.width = Math.min(window.innerWidth - 24, 340);
+  cigCanvas.height = 460;
+  cigCtx = cigCanvas.getContext('2d');
+  drawCigGame();
+}
+
+function drawCigarette(x, y) {
+  cigCtx.fillStyle = '#fff';
+  cigCtx.fillRect(x - 30, y, 50, 12);
+  cigCtx.fillStyle = '#d28a2f';
+  cigCtx.fillRect(x + 20, y, 18, 12);
+  cigCtx.fillStyle = '#ff6a2f';
+  cigCtx.beginPath();
+  cigCtx.arc(x - 34, y + 6, 4, 0, Math.PI * 2);
+  cigCtx.fill();
+}
+
+function drawCigGame() {
+  const W = cigCanvas.width, H = cigCanvas.height;
+  cigCtx.clearRect(0,0,W,H);
+  cigCtx.fillStyle = '#08131f';
+  cigCtx.fillRect(0,0,W,H);
+
+  cigCtx.fillStyle = 'rgba(255,255,255,.08)';
+  cigCtx.beginPath();
+  cigCtx.arc(70, 50, 36, 0, Math.PI * 2);
+  cigCtx.arc(110, 52, 28, 0, Math.PI * 2);
+  cigCtx.arc(250, 70, 32, 0, Math.PI * 2);
+  cigCtx.arc(285, 72, 24, 0, Math.PI * 2);
+  cigCtx.fill();
+
+  cigDrops.forEach(d => {
+    cigCtx.strokeStyle = '#7fc8ff';
+    cigCtx.lineWidth = 2;
+    cigCtx.beginPath();
+    cigCtx.moveTo(d.x, d.y);
+    cigCtx.lineTo(d.x, d.y + 12);
+    cigCtx.stroke();
+  });
+
+  drawCigarette(cigX, H - 70);
+
+  cigCtx.fillStyle = '#fff';
+  cigCtx.font = 'bold 16px sans-serif';
+  cigCtx.fillText('Life: ' + cigLives + '%', 16, 28);
+}
+
+function startCigGame() {
+  cigGameRunning = true;
+  cigLives = 100;
+  cigDrops = [];
+  document.getElementById('cig-msg').textContent = 'protect the priority';
+
+  function loop() {
+    if (!cigGameRunning) return;
+
+    if (Math.random() < 0.22) {
+      cigDrops.push({ x: Math.random() * cigCanvas.width, y: -10, speed: 4 + Math.random() * 3 });
+    }
+
+    cigDrops.forEach(d => d.y += d.speed);
+    cigDrops = cigDrops.filter(d => {
+      const hit = d.y > cigCanvas.height - 82 && d.y < cigCanvas.height - 56 && d.x > cigX - 34 && d.x < cigX + 38;
+      if (hit) cigLives -= 8;
+      return d.y < cigCanvas.height && !hit;
+    });
+
+    drawCigGame();
+
+    if (cigLives <= 0) {
+      cigGameRunning = false;
+      document.getElementById('cig-msg').textContent = 'gone. like your sleep schedule';
+      return;
+    }
+
+    cigRAF = requestAnimationFrame(loop);
+  }
+
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('cig-start-btn').addEventListener('click', startCigGame);
+document.getElementById('cig-canvas').addEventListener('touchmove', (e) => {
+  if (!cigGameRunning) return;
+  const rect = cigCanvas.getBoundingClientRect();
+  cigX = e.touches[0].clientX - rect.left;
+}, { passive: true });
+
+// ====== BADMINTON GAME ======
+let rallyScore = 0;
+let shuttleX = 240;
+let shuttleY = 130;
+let shuttleVX = -4.2;
+let shuttleVY = 1.6;
+let shuttleAngle = -0.4;
+
+function initBadCanvas() {
+  const canvas = document.getElementById('bad-canvas');
+  canvas.width = Math.min(window.innerWidth - 24, 340);
+  canvas.height = 460;
+  drawBadCourt(0, canvas.width - 90, 130, -0.5);
+}
+
+function drawBadCourt(score, shuttleX, shuttleY, shuttleAngle = 0) {
+  const canvas = document.getElementById('bad-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  ctx.clearRect(0,0,W,H);
+
+  ctx.fillStyle = '#0d4271';
+  ctx.fillRect(0,0,W,H);
+
+  ctx.fillStyle = '#16b78e';
+  ctx.fillRect(24,120,W-48,250);
+
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(24,120,W-48,250);
+
   ctx.beginPath();
-  ctx.arc(0, 0, 8, 0, Math.PI*2);
+  ctx.moveTo(W/2,120);
+  ctx.lineTo(W/2,370);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(24,245);
+  ctx.lineTo(W-24,245);
+  ctx.stroke();
+
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(24,245,W-48,4);
+
+  ctx.fillStyle = '#e8eefb';
+  ctx.fillRect(60,315,24,56);
+  ctx.fillRect(W-84,160,24,56);
+
+  ctx.save();
+  ctx.translate(shuttleX, shuttleY);
+  ctx.rotate(shuttleAngle);
+
+  ctx.fillStyle = '#f4f1e8';
+  ctx.beginPath();
+  ctx.ellipse(0, 6, 8, 6, 0, 0, Math.PI * 2);
   ctx.fill();
-  // Feathers
-  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-  ctx.lineWidth = 1;
-  const angle = Math.atan2(badBallVY, badBallVX) + Math.PI;
+
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
   for (let i = -3; i <= 3; i++) {
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(Math.cos(angle + i*0.2) * 16, Math.sin(angle + i*0.2) * 16);
+    ctx.lineTo(i * 4, -14);
     ctx.stroke();
   }
+
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(0, 0, 4, 0, Math.PI * 2);
+  ctx.fill();
+
   ctx.restore();
 
-  // Score
   ctx.fillStyle = '#fff';
-  ctx.font = 'bold 18px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(`Rally: ${badScore2}`, badCW/2, 45);
+  ctx.font = 'bold 20px sans-serif';
+  ctx.fillText('Rally: ' + score, 20, 40);
 }
 
-function drawBadPlayer(ctx, x, y, color, isPlayer) {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.arc(x, y - 20, 10, 0, Math.PI*2);
-  ctx.fill();
-  ctx.fillRect(x - 6, y - 10, 12, 22);
-  // Racket
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(x + (isPlayer ? -15 : 15), y);
-  ctx.lineTo(x + (isPlayer ? -30 : 30), y - 15);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.ellipse(x + (isPlayer ? -35 : 35), y - 22, 12, 15, isPlayer ? -0.3 : 0.3, 0, Math.PI*2);
-  ctx.stroke();
-}
+document.getElementById('bad-start-btn').addEventListener('click', () => {
+  if (badGameRunning) return;
 
-function endBadGame() {
-  badGameRunning = false;
-  cancelAnimationFrame(badRAF3);
-  badCanvas.removeEventListener('touchmove', onBadMove);
-  badCanvas.removeEventListener('mousemove', onBadMouseMove);
+  badGameRunning = true;
+  rallyScore = 0;
 
-  const msgs = ["don't choke 😂", "you said you play daily", "okay that was embarrassing", "run it back bro", "uncle ji would be disappointed"];
-  const winMsgs = [`🏸 ${badScore2} returns! not bad`, 'actually decent', 'badminton god unlocked'];
+  const canvas = document.getElementById('bad-canvas');
+  shuttleX = canvas.width - 80;
+  shuttleY = 150;
+  shuttleVX = -4.2;
+  shuttleVY = 1.2;
+  shuttleAngle = -0.5;
 
-  document.getElementById('bad-msg').textContent = badScore2 >= 10 ? winMsgs[1] : msgs[Math.floor(Math.random()*msgs.length)];
-  const btn = document.getElementById('bad-start-btn');
-  btn.textContent = 'Run It Back';
-  btn.style.display = 'block';
-}
+  document.getElementById('bad-msg').textContent = 'don’t choke';
 
-document.getElementById('bad-start-btn').addEventListener('click', startBadGame);
+  function loop() {
+    if (!badGameRunning) return;
 
-// ====== CONFETTI ======
-function startConfetti() {
-  const canvas = document.getElementById('confetti-canvas');
-  canvas.style.display = 'block';
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const ctx = canvas.getContext('2d');
-  const pieces = Array.from({ length: 80 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * -canvas.height,
-    w: Math.random() * 10 + 5,
-    h: Math.random() * 5 + 3,
-    r: Math.random() * Math.PI * 2,
-    rv: (Math.random() - 0.5) * 0.2,
-    vx: (Math.random() - 0.5) * 3,
-    vy: Math.random() * 3 + 2,
-    color: ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b','#cc5de8'][Math.floor(Math.random()*6)]
-  }));
+    shuttleX += shuttleVX;
+    shuttleY += shuttleVY;
+    shuttleVY += 0.045;
+    shuttleAngle = Math.atan2(shuttleVY, shuttleVX);
 
-  let frames = 0;
-  const drop = () => {
-    if (frames++ > 200) { canvas.style.display = 'none'; return; }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pieces.forEach(p => {
-      p.x += p.vx; p.y += p.vy; p.r += p.rv;
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.r);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-      ctx.restore();
-    });
-    requestAnimationFrame(drop);
-  };
-  drop();
-}
+    if (shuttleX > canvas.width - 86 && shuttleVX > 0) {
+      shuttleVX = -(4.6 + rallyScore * 0.08);
+      shuttleVY = -2.4;
+    }
 
-// ====== INIT ======
-window.addEventListener('resize', () => {
-  if (currentScreen === 'beer-game') initBeerCanvas();
-  if (currentScreen === 'cig-game') initCigCanvas();
-  if (currentScreen === 'badminton-game') initBadCanvas();
+    if (shuttleY > 360) {
+      badGameRunning = false;
+      document.getElementById('bad-msg').textContent =
+        rallyScore >= 4 ? 'okay wait that was clean' : 'you said you play daily';
+      drawBadCourt(rallyScore, shuttleX, shuttleY, shuttleAngle);
+      return;
+    }
+
+    drawBadCourt(rallyScore, shuttleX, shuttleY, shuttleAngle);
+    requestAnimationFrame(loop);
+  }
+
+  requestAnimationFrame(loop);
 });
 
-// Draw idle beer on load
-setTimeout(initBeerCanvas, 100);
+document.getElementById('bad-canvas').addEventListener('click', () => {
+  if (!badGameRunning) return;
+
+  const playerX = 72;
+  const hitWindow = Math.abs(shuttleX - playerX) < 58 && shuttleY > 220;
+
+  if (hitWindow && shuttleVX < 0) {
+    shuttleVX = 4.8 + rallyScore * 0.08;
+    shuttleVY = -2.9;
+    rallyScore++;
+    document.getElementById('bad-msg').textContent =
+      rallyScore > 5 ? 'you’re locked in' : 'nice';
+  }
+});
+
+// ====== INIT ======
+initBeerCanvas();
+initCigCanvas();
+initBadCanvas();
 </script>
 </body>
 </html>

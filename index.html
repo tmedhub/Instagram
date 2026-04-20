@@ -42,10 +42,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
   /* login */
-  #login{
-    display:none !important;
-    align-items:center;justify-content:center;padding:2rem
-  }
+  #login{align-items:center;justify-content:center;padding:2rem}
   .logo-wrap{text-align:center;margin-bottom:2.25rem}
   .logo-text{font-family:'Dancing Script',cursive;font-size:3rem;letter-spacing:-1px}
   .login-card{width:100%;max-width:360px}
@@ -413,7 +410,7 @@
   </div>
 </div>
 
-<section class="screen" id="login">
+<section class="screen active" id="login">
   <div class="logo-wrap">
     <div class="logo-text">Instagram</div>
   </div>
@@ -635,27 +632,20 @@ const loginErrors = [
   'Too many failed attempts. Try again later.'
 ];
 
-const eyeToggle = $('#eye-toggle');
-if (eyeToggle) {
-  eyeToggle.addEventListener('click', () => {
-    const p = $('#password-inp');
-    if (p) p.type = p.type === 'password' ? 'text' : 'password';
-  });
-}
+$('#eye-toggle').addEventListener('click', () => {
+  const p = $('#password-inp');
+  p.type = p.type === 'password' ? 'text' : 'password';
+});
 
-const loginBtn = $('#login-btn');
-if (loginBtn) {
-  loginBtn.addEventListener('click', () => {
-    $('#err-msg').textContent = loginErrors[Math.min(loginAttempts, loginErrors.length - 1)];
-    $('#err-msg').classList.add('show');
-    loginAttempts++;
-    if (loginAttempts >= 2) $('#secret-link').style.display = 'block';
-    setTimeout(() => $('#err-msg').classList.remove('show'), 2400);
-  });
-}
+$('#login-btn').addEventListener('click', () => {
+  $('#err-msg').textContent = loginErrors[Math.min(loginAttempts, loginErrors.length - 1)];
+  $('#err-msg').classList.add('show');
+  loginAttempts++;
+  if (loginAttempts >= 2) $('#secret-link').style.display = 'block';
+  setTimeout(() => $('#err-msg').classList.remove('show'), 2400);
+});
 
-const secretLink = $('#secret-link');
-if (secretLink) secretLink.addEventListener('click', launchApp);
+$('#secret-link').addEventListener('click', launchApp);
 
 /* confetti */
 function startConfetti(){
@@ -724,12 +714,12 @@ const navItems = [
 ];
 
 function navIcon(type){
-  if (type === 'beer') return `<svg viewBox="0 0 24 24"><path d="M5 8h14l-1.5 9a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 8z"/><path d="M5 8V6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2"/><path d="M19 11h2a2 2 0 0 1 0 4h-2"/></svg>`;
-  if (type === 'reels') return `<svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M2 7h20M2 17h20M7 2v20M17 2v20"/></svg>`;
-  if (type === 'cig') return `<svg viewBox="0 0 24 24"><path d="M2 15h16M18 15h4M18 9c0 0 2 1 2 3"/><path d="M15 9c0 0 2 1 2 3"/></svg>`;
-  if (type === 'bad') return `<svg viewBox="0 0 24 24"><path d="M8 3c4 0 7 3 7 7 0 1.8-.6 3.4-1.7 4.7"/><path d="M15 15 9 21"/><path d="M10.2 10.2 14 14"/><path d="M4 20l5-5"/></svg>`;
-  if (type === 'profile') return `<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-  return `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+  if (type === 'beer') return <svg viewBox="0 0 24 24"><path d="M5 8h14l-1.5 9a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 8z"/><path d="M5 8V6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2"/><path d="M19 11h2a2 2 0 0 1 0 4h-2"/></svg>;
+  if (type === 'reels') return <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M2 7h20M2 17h20M7 2v20M17 2v20"/></svg>;
+  if (type === 'cig') return <svg viewBox="0 0 24 24"><path d="M2 15h16M18 15h4M18 9c0 0 2 1 2 3"/><path d="M15 9c0 0 2 1 2 3"/></svg>;
+  if (type === 'bad') return <svg viewBox="0 0 24 24"><path d="M8 3c4 0 7 3 7 7 0 1.8-.6 3.4-1.7 4.7"/><path d="M15 15 9 21"/><path d="M10.2 10.2 14 14"/><path d="M4 20l5-5"/></svg>;
+  if (type === 'profile') return <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+  return <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
 }
 
 function buildNav(containerId){
@@ -740,7 +730,7 @@ function buildNav(containerId){
     const d = document.createElement('div');
     d.className = 'nav-item';
     d.dataset.id = item.id;
-    d.innerHTML = navIcon(item.type) + `<div class="nav-dot"></div>`;
+    d.innerHTML = navIcon(item.type) + <div class="nav-dot"></div>;
     d.addEventListener('click', () => activateScreen(item.id));
     el.appendChild(d);
   });
@@ -785,7 +775,7 @@ function openStory(i){
   $('#sv-time').textContent = ['11:23 PM','2:47 AM','12:01 AM','3:17 AM','9:45 PM','4:02 AM'][i];
 
   const p = $('#story-progress');
-  p.innerHTML = stories.map((_, idx) => `<div class="story-prog-bar"><div class="story-prog-fill" id="spf-${idx}"></div></div>`).join('');
+  p.innerHTML = stories.map((_, idx) => <div class="story-prog-bar"><div class="story-prog-fill" id="spf-${idx}"></div></div>).join('');
 
   const canvas = $('#story-canvas');
   const ctx = canvas.getContext('2d');
@@ -805,7 +795,7 @@ function openStory(i){
 
   $('#story-viewer').classList.add('active');
   clearTimeout(window.storyTimer);
-  const fill = document.getElementById(`spf-${i}`);
+  const fill = document.getElementById(spf-${i});
   requestAnimationFrame(() => {
     fill.style.transition = 'width 5s linear';
     fill.style.width = '100%';
@@ -914,8 +904,8 @@ function buildPosts(){
 }
 
 function triggerLike(i){
-  const btn = document.querySelector(`.like-btn[data-idx="${i}"]`);
-  const sticker = document.getElementById(`sticker-${i}`);
+  const btn = document.querySelector(.like-btn[data-idx="${i}"]);
+  const sticker = document.getElementById(sticker-${i});
 
   if (!likedPosts[i]) {
     likedPosts[i] = true;
@@ -944,9 +934,9 @@ function openPost(i){
   $('#pv-username').textContent = p.user;
   $('#pv-location').textContent = p.loc;
   $('#pv-likes').textContent = 'Liked by ' + p.likes;
-  $('#pv-caption').innerHTML = `<b>${p.caption.split(':')[0]}:</b>${p.caption.split(':').slice(1).join(':')}`;
-  $('#pv-comments').textContent = `View all ${p.comments} comments`;
-  $('#pv-time').textContent = `${p.time} ago`;
+  $('#pv-caption').innerHTML = <b>${p.caption.split(':')[0]}:</b>${p.caption.split(':').slice(1).join(':')};
+  $('#pv-comments').textContent = View all ${p.comments} comments;
+  $('#pv-time').textContent = ${p.time} ago;
   $('#pv-like-btn').classList.toggle('liked', !!likedPosts[i]);
   drawPostArt($('#post-view-canvas'), p.art, p.color, 600, 600);
   $('#post-viewer').classList.add('active');
@@ -972,9 +962,9 @@ function drawPostArt(canvas, type, color, W = 400, H = 400){
     ctx.fillStyle = '#0a0a1e';
     ctx.fillRect(0,0,W,H);
     for (let i=0;i<80;i++){
-      ctx.fillStyle = `rgba(255,255,255,${Math.random()*.8+.2})`;
+      ctx.fillStyle = rgba(255,255,255,${Math.random()*.8+.2});
       ctx.beginPath();
-      ctx.arc(Math.random()*W, Math.random()*H*.8, Math.random()*2+.5, 0, Math.PI*2);
+      ctx.arc(Math.random()W, Math.random()*H.8, Math.random()*2+.5, 0, Math.PI*2);
       ctx.fill();
     }
     ctx.fillStyle = '#fffde7';
@@ -982,7 +972,7 @@ function drawPostArt(canvas, type, color, W = 400, H = 400){
     ctx.fillStyle = '#0a0a1e';
     ctx.beginPath(); ctx.arc(W*.79,H*.18,W*.085,0,Math.PI*2); ctx.fill();
     ctx.fillStyle = 'rgba(255,255,255,.55)';
-    ctx.font = `bold ${Math.round(W*.12)}px sans-serif`;
+    ctx.font = bold ${Math.round(W*.12)}px sans-serif;
     ctx.textAlign = 'center';
     ctx.fillText('3:17 AM', W/2, H/2 + 30);
   } else if (type === 'court') {
@@ -995,7 +985,7 @@ function drawPostArt(canvas, type, color, W = 400, H = 400){
     ctx.beginPath(); ctx.moveTo(W*.5,H*.1); ctx.lineTo(W*.5,H*.9); ctx.stroke();
     ctx.strokeRect(W*.2,H*.2,W*.6,H*.6);
     ctx.fillStyle = 'rgba(255,255,255,.6)';
-    ctx.font = `bold ${Math.round(W*.055)}px sans-serif`;
+    ctx.font = bold ${Math.round(W*.055)}px sans-serif;
     ctx.textAlign = 'center';
     ctx.fillText('you said daily bro', W/2, H - 18);
   } else if (type === 'f1') {
@@ -1009,7 +999,7 @@ function drawPostArt(canvas, type, color, W = 400, H = 400){
     ctx.bezierCurveTo(W*.88,H*.88,W*.12,H*.88,W*.12,H*.5);
     ctx.stroke();
     ctx.fillStyle = '#ff3333';
-    ctx.font = `bold ${Math.round(W*.09)}px sans-serif`;
+    ctx.font = bold ${Math.round(W*.09)}px sans-serif;
     ctx.textAlign = 'center';
     ctx.fillText('FORMULA 1', W/2, H/2);
   } else if (type === 'beer') {
@@ -1049,7 +1039,7 @@ function buildReels(){
   reels.forEach((r, i) => {
     const d = document.createElement('div');
     d.className = 'reel';
-    d.style.transform = `translateY(${i*100}%)`;
+    d.style.transform = translateY(${i*100}%);
     d.innerHTML = `
       <canvas width="400" height="700"></canvas>
       <div class="reel-overlay"></div>
@@ -1082,7 +1072,7 @@ function buildReels(){
     const dy = startY - e.changedTouches[0].clientY;
     if (Math.abs(dy) > 50) {
       window.currentReel = Math.max(0, Math.min(reels.length - 1, (window.currentReel || 0) + (dy > 0 ? 1 : -1)));
-      $$('.reel').forEach((el, i) => el.style.transform = `translateY(${(i-(window.currentReel||0))*100}%)`);
+      $$('.reel').forEach((el, i) => el.style.transform = translateY(${(i-(window.currentReel||0))*100}%));
     }
   }, { passive:true });
 }
@@ -1131,7 +1121,7 @@ function initReflexGame(){
   for (let i = 0; i < 9; i++) {
     const slot = document.createElement('div');
     slot.className = 'reflex-slot';
-    slot.innerHTML = `<div class="drink-item"></div>`;
+    slot.innerHTML = <div class="drink-item"></div>;
     slot.addEventListener('click', () => handleReflexTap(i));
     board.appendChild(slot);
     reflexSlots.push(slot);
@@ -1152,21 +1142,24 @@ function resetReflexGame(){
     s.classList.remove('active');
     s.querySelector('.drink-item').textContent = '';
   });
-  $('#reflex-score').textContent = `Score: ${reflexScore}`;
-  $('#reflex-lives').textContent = `Lives: ${reflexLives}`;
+  $('#reflex-score').textContent = Score: ${reflexScore};
+  $('#reflex-lives').textContent = Lives: ${reflexLives};
   $('#reflex-msg').textContent = 'only real ones tap whiskey';
 }
 
 function updateReflexUI(){
-  $('#reflex-score').textContent = `Score: ${reflexScore}`;
-  $('#reflex-lives').textContent = `Lives: ${reflexLives}`;
+  $('#reflex-score').textContent = Score: ${reflexScore};
+  $('#reflex-lives').textContent = Lives: ${reflexLives};
 }
 
 function endReflexGame(){
   reflexRunning = false;
   clearTimeout(reflexTimer);
   reflexSlots.forEach(s => s.classList.remove('active'));
-  $('#reflex-msg').textContent = 'goshh sloshedd you are man';
+  let verdict = 'gosh you’re sloshed man';
+  if (reflexScore >= 25) verdict = 'damnnn you’re locked in';
+  else if (reflexScore >= 12) verdict = 'either focused or too far gone';
+  $('#reflex-msg').textContent = verdict;
 }
 
 function spawnReflexItem(){
@@ -1414,16 +1407,12 @@ function buildProfile(){
   gridPosts.forEach(idx => {
     const d = document.createElement('div');
     d.className = 'grid-post';
-    d.innerHTML = `<canvas width="120" height="120"></canvas>`;
+    d.innerHTML = <canvas width="120" height="120"></canvas>;
     grid.appendChild(d);
     drawPostArt(d.querySelector('canvas'), posts[idx].art, posts[idx].color, 120, 120);
     d.addEventListener('click', () => openPost(idx));
   });
 }
-
-window.addEventListener('load', () => {
-  launchApp();
-});
 </script>
 
 </body>

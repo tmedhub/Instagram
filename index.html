@@ -42,11 +42,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
   /* login */
-  #login{
-    align-items:center;
-    justify-content:center;
-    padding:2rem;
-  }
+  #login{align-items:center;justify-content:center;padding:2rem}
   .logo-wrap{text-align:center;margin-bottom:2.25rem}
   .logo-text{font-family:'Dancing Script',cursive;font-size:3rem;letter-spacing:-1px}
   .login-card{width:100%;max-width:360px}
@@ -76,9 +72,26 @@
   .divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--border)}
   .forgot{text-align:center;color:var(--blue);font-size:.85rem;font-weight:600;cursor:pointer}
   .secret-link{
-    display:none;text-align:center;margin-top:.8rem;font-size:.9rem;color:var(--muted);cursor:pointer;
+    display:none;
+    text-align:center;
+    margin-top:1rem;
+    font-size:.96rem;
+    color:#fff;
+    cursor:pointer;
+    padding:.9rem 1rem;
+    border:1px solid rgba(0,149,246,.55);
+    border-radius:14px;
+    background:linear-gradient(180deg, rgba(0,149,246,.16), rgba(0,149,246,.05));
+    box-shadow:0 10px 28px rgba(0,149,246,.12);
   }
-  .secret-link span{color:var(--blue);font-weight:700}
+  .secret-link span{color:#7ec8ff;font-weight:700}
+  .secret-link.attention{
+    animation:softPulse 1.3s ease-in-out infinite;
+  }
+  @keyframes softPulse{
+    0%,100%{transform:scale(1);box-shadow:0 10px 28px rgba(0,149,246,.12)}
+    50%{transform:scale(1.02);box-shadow:0 14px 34px rgba(0,149,246,.24)}
+  }
   .login-footer{
     position:absolute;bottom:2rem;left:0;right:0;text-align:center;color:var(--muted);font-size:.82rem;
   }
@@ -169,8 +182,12 @@
   .sticker-anim.hide{
     opacity:0;transform:scale(1.45);transition:opacity .28s ease, transform .28s ease;
   }
-  .sticker-anim img{
-    width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 14px 32px rgba(0,0,0,.45));
+  .sticker-emoji{
+    font-size:7rem;
+    line-height:1;
+    color:transparent;
+    -webkit-text-stroke:3px #fff;
+    filter:drop-shadow(0 14px 32px rgba(0,0,0,.45));
   }
   .post-actions{display:flex;align-items:center;gap:1rem;padding:.75rem 1rem .45rem}
   .post-actions .save,.post-view-actions .save{margin-left:auto}
@@ -312,36 +329,22 @@
   .reflex-board{
     width:min(94vw,380px);
     height:420px;
-    background:
-      radial-gradient(circle at 50% 18%, rgba(255,214,99,.10), transparent 35%),
-      linear-gradient(180deg,#15110c,#0b0b0b 28%, #111 100%);
-    border:1px solid var(--border);
-    border-radius:22px;
+    background:linear-gradient(180deg,#121212,#0b0b0b 70%, #101010 100%);
+    border:1px solid #242424;
+    border-radius:24px;
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:14px;
-    padding:14px;
+    grid-template-rows:repeat(3,1fr);
+    gap:12px;
+    padding:12px;
     position:relative;
     overflow:hidden;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
-  }
-  .reflex-board::before{
-    content:"BOTTOMS UP";
-    position:absolute;
-    top:10px;
-    left:0;
-    right:0;
-    text-align:center;
-    font-size:.72rem;
-    letter-spacing:.18em;
-    color:rgba(255,255,255,.08);
-    font-weight:700;
-    pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
   }
   .reflex-slot{
     border-radius:18px;
-    background:radial-gradient(circle at 50% 35%, #1c1c1c, #0d0d0d);
-    border:1px solid #222;
+    background:linear-gradient(180deg,#181818,#101010);
+    border:1px solid #2b2b2b;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -349,22 +352,26 @@
     overflow:hidden;
     cursor:pointer;
     user-select:none;
-    transition:transform .08s ease, border-color .12s ease;
+    aspect-ratio:1/1;
+    transition:transform .08s ease, border-color .12s ease, background .12s ease;
   }
   .reflex-slot:active{transform:scale(.97)}
-  .reflex-slot.active{border-color:#3a2a15}
+  .reflex-slot.active{
+    border-color:#5a4322;
+    background:linear-gradient(180deg,#1d1710,#120f0b);
+  }
   .reflex-slot.active::after{
     content:"";
     position:absolute;
     inset:8px;
     border-radius:14px;
     box-shadow:
-      0 0 0 1px rgba(255,255,255,.05),
-      inset 0 0 26px rgba(255,214,99,.05);
+      0 0 0 1px rgba(255,255,255,.04),
+      inset 0 0 26px rgba(245,200,66,.06);
   }
   .drink-item{
-    font-size:2.15rem;
-    transform:translateY(28px) scale(.7);
+    font-size:2.1rem;
+    transform:translateY(22px) scale(.75);
     opacity:0;
     transition:transform .16s ease, opacity .16s ease;
     filter:drop-shadow(0 8px 14px rgba(0,0,0,.35));
@@ -372,22 +379,6 @@
   .reflex-slot.active .drink-item{
     transform:translateY(0) scale(1);
     opacity:1;
-  }
-  .reflex-footer{
-    width:min(94vw,380px);
-    display:flex;
-    gap:.5rem;
-    justify-content:center;
-    flex-wrap:wrap;
-    font-size:.82rem;
-    color:var(--muted);
-    text-align:center;
-  }
-  .reflex-pill{
-    padding:.45rem .8rem;
-    border:1px solid var(--border);
-    border-radius:999px;
-    background:#111;
   }
 
   /* cig */
@@ -416,7 +407,7 @@
 
 <section class="screen active" id="login">
   <div class="logo-wrap">
-    <div class="logo-text">Instagram</div>
+    <div class="logo-text">InstaRaj</div>
   </div>
   <div class="login-card">
     <div class="inp-wrap">
@@ -457,7 +448,7 @@
 <section class="screen" id="beer-game">
   <div class="topbar">
     <div class="topbar-title">🥃 Bottoms Up Reflex</div>
-    <div style="font-size:.78rem;color:var(--muted)">tap only whiskey</div>
+    <div style="font-size:.78rem;color:var(--muted)">stay sharp</div>
   </div>
   <div class="game-screen">
     <div class="reflex-head">
@@ -467,14 +458,8 @@
 
     <div class="reflex-board" id="reflex-board"></div>
 
-    <div class="game-msg" id="reflex-msg">only real ones tap whiskey</div>
+    <div class="game-msg" id="reflex-msg">only grab alcohol bro</div>
     <button class="game-btn" id="reflex-start-btn">Start Game</button>
-
-    <div class="reflex-footer">
-      <div class="reflex-pill">🥃 tap this</div>
-      <div class="reflex-pill">💧 / 🧃 / 🥛 avoid</div>
-      <div class="reflex-pill">3 mistakes = done bro</div>
-    </div>
   </div>
   <div class="bottom-nav" id="bottom-nav-beer"></div>
 </section>
@@ -628,8 +613,13 @@ function updateNavs(activeId){
   $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.id === activeId));
 }
 
+function clamp(val, min, max){
+  return Math.max(min, Math.min(max, val));
+}
+
 /* login */
 let loginAttempts = 0;
+let appLaunched = false;
 const loginErrors = [
   'Incorrect password. Try again.',
   'User not found. Check your details.',
@@ -645,14 +635,16 @@ $('#login-btn').addEventListener('click', () => {
   $('#err-msg').textContent = loginErrors[Math.min(loginAttempts, loginErrors.length - 1)];
   $('#err-msg').classList.add('show');
   loginAttempts++;
-  if (loginAttempts >= 2) $('#secret-link').style.display = 'block';
+
+  if (loginAttempts >= 1) {
+    $('#secret-link').style.display = 'block';
+    $('#secret-link').classList.add('attention');
+  }
+
   setTimeout(() => $('#err-msg').classList.remove('show'), 2400);
 });
 
-$('#secret-link').addEventListener('click', () => {
-  $('#login').classList.remove('active');
-  launchApp();
-});
+$('#secret-link').addEventListener('click', launchApp);
 
 /* confetti */
 function startConfetti(){
@@ -694,6 +686,9 @@ function startConfetti(){
 }
 
 function launchApp(){
+  if (appLaunched) return;
+  appLaunched = true;
+
   buildAllNavs();
   buildStories();
   buildPosts();
@@ -752,7 +747,7 @@ const stories = [
   {name:'nightmode', emoji:'🌙', bg:'#1a1a2e', msg:'still awake?'},
   {name:'badminton…', emoji:'🏸', bg:'#0d1b0d', msg:'court soon?'},
   {name:'f1brain', emoji:'🏎️', bg:'#1a0d0d', msg:'grid position 1'},
-  {name:'insomnia', emoji:'😴', bg:'#1a1a0d', msg:'sleep missing?'},
+  {name:'insomnia', emoji:'😴', bg:'#1a1a0d', msg:'sleep missing'},
   {name:'weball', emoji:'🍺', bg:'#0d0d1a', msg:'fuck it we ball'},
   {name:'3amvibes', emoji:'🌃', bg:'#0d1a1a', msg:'3am again huh'}
 ];
@@ -849,7 +844,7 @@ function buildPosts(){
       <div class="post-img" data-idx="${i}">
         <canvas width="400" height="400"></canvas>
         <div class="sticker-anim" id="sticker-${i}">
-          <img src="sticker.png" alt="sticker">
+          <div class="sticker-emoji">😝</div>
         </div>
       </div>
 
@@ -1151,7 +1146,7 @@ function resetReflexGame(){
   });
   $('#reflex-score').textContent = `Score: ${reflexScore}`;
   $('#reflex-lives').textContent = `Lives: ${reflexLives}`;
-  $('#reflex-msg').textContent = 'only real ones tap whiskey';
+  $('#reflex-msg').textContent = 'only grab alcohol bro';
 }
 
 function updateReflexUI(){
@@ -1229,7 +1224,7 @@ function handleReflexTap(i){
   } else {
     reflexLives--;
     updateReflexUI();
-    $('#reflex-msg').textContent = 'bro that was not whiskey';
+    $('#reflex-msg').textContent = 'bro that was not alcohol';
     if (reflexLives <= 0) {
       endReflexGame();
       return;
@@ -1243,7 +1238,7 @@ function handleReflexTap(i){
 $('#reflex-start-btn').addEventListener('click', () => {
   resetReflexGame();
   reflexRunning = true;
-  $('#reflex-msg').textContent = 'tap only the whiskey 🥃';
+  $('#reflex-msg').textContent = 'only grab alcohol bro';
   spawnReflexItem();
 });
 
@@ -1377,13 +1372,13 @@ $('#cig-start-btn').addEventListener('click', () => {
 $('#cig-stage').addEventListener('touchmove', e => {
   if (!cigRunning) return;
   const r = cigCanvasEl.getBoundingClientRect();
-  cigX = e.touches[0].clientX - r.left;
+  cigX = clamp(e.touches[0].clientX - r.left, 20, cigCanvasEl.width - 20);
 }, { passive:true });
 
 $('#cig-stage').addEventListener('mousemove', e => {
   if (!cigRunning) return;
   const r = cigCanvasEl.getBoundingClientRect();
-  cigX = e.clientX - r.left;
+  cigX = clamp(e.clientX - r.left, 20, cigCanvasEl.width - 20);
 });
 
 /* badminton */
@@ -1420,10 +1415,6 @@ function buildProfile(){
     d.addEventListener('click', () => openPost(idx));
   });
 }
-
-window.addEventListener('load', () => {
-  activateScreen('login');
-});
 </script>
 
 </body>

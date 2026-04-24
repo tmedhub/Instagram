@@ -18,7 +18,7 @@
   .screen{position:absolute;inset:0;display:flex;flex-direction:column;background:#000;transform:translateX(100%);opacity:0;pointer-events:none;transition:.28s ease}
   .screen.active{transform:translateX(0);opacity:1;pointer-events:auto}
   .screen.overlay{z-index:300;background:#000}
-  .toast{position:fixed;left:50%;bottom:calc(var(--navH) + 18px);transform:translateX(-50%) translateY(12px);background:#171717;border:1px solid var(--border);color:#fff;font-size:.83rem;padding:.65rem 1rem;border-radius:999px;opacity:0;pointer-events:none;transition:.22s ease;z-index:1200;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
+  .toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%) translateY(-12px);background:rgba(20,20,20,.58);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:.83rem;font-weight:800;padding:.78rem 1rem;border-radius:14px;opacity:0;pointer-events:none;transition:.22s ease;z-index:1200;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 12px 34px rgba(0,0,0,.35)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
   #login{align-items:center;justify-content:center;padding:2rem}
@@ -57,15 +57,19 @@
   .icon svg,.post-actions svg,#pv-like-btn svg,.post-view-actions svg,.reel-side svg{width:25px;height:25px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
   .top-plus{font-size:3rem;font-weight:300;line-height:1;margin-top:-5px}
 
-  .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:var(--navH);display:flex;align-items:center;background:rgba(0,0,0,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid rgba(255,255,255,.11);z-index:90}
-  .nav-item{flex:1;height:100%;position:relative;cursor:pointer;font-size:25px;color:#fff;display:inline-flex;align-items:center;justify-content:center;transition:transform .16s ease, opacity .16s ease;opacity:.78}
+  .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:var(--navH);display:flex;align-items:center;background:rgba(0,0,0,.965);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-top:1px solid rgba(255,255,255,.12);z-index:90;padding:0 5px}
+  .nav-item{flex:1;height:100%;position:relative;cursor:pointer;color:#fff;display:inline-flex;align-items:center;justify-content:center;transition:transform .16s ease, opacity .16s ease;opacity:.86}
   .nav-item:active{transform:scale(.92)}
   .nav-item.active{opacity:1}
-  .nav-item svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.95;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px rgba(0,0,0,.28))}
-  .nav-item.active svg{stroke-width:2.35}
-  .nav-dot{width:4px;height:4px;border-radius:50%;background:#fff;position:absolute;bottom:7px;opacity:0;transform:scale(.65);transition:.18s ease;box-shadow:0 0 8px rgba(255,255,255,.55)}
+  .nav-glyph{width:40px;height:40px;border-radius:15px;display:inline-flex;align-items:center;justify-content:center;transition:background .18s ease, transform .18s ease, box-shadow .18s ease}
+  .nav-item.active .nav-glyph{background:rgba(255,255,255,.105);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.32);transform:translateY(-1px)}
+  .nav-item svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45));shape-rendering:geometricPrecision;overflow:visible}
+  .nav-item svg .fill{fill:currentColor;stroke:none}
+  .nav-item svg .thin{stroke-width:1.8}
+  .nav-item.active svg{stroke-width:2.55}
+  .nav-dot{width:4.5px;height:4.5px;border-radius:50%;background:#fff;position:absolute;bottom:5px;opacity:0;transform:scale(.55);transition:.18s ease;box-shadow:0 0 10px rgba(255,255,255,.75)}
   .nav-item.active .nav-dot{opacity:1;transform:scale(1)}
-  .nav-profile{width:29px;height:29px;border-radius:50%;object-fit:cover;border:1.7px solid rgba(255,255,255,.92);box-shadow:0 0 0 1px rgba(0,0,0,.75),0 2px 9px rgba(0,0,0,.35);filter:none}
+  .nav-profile{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.96);box-shadow:0 0 0 1px rgba(0,0,0,.85),0 4px 13px rgba(0,0,0,.42);filter:none}
 
   .feed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--navH) + 8px)}
   .feed::-webkit-scrollbar,.stories::-webkit-scrollbar,.profile-scroll::-webkit-scrollbar,.post-view-wrap::-webkit-scrollbar,.highlights-row::-webkit-scrollbar{display:none}
@@ -152,6 +156,7 @@
   @keyframes reelHeart{0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}72%{opacity:1;transform:translate(-50%,-50%) scale(.95)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
   .reel-sound-btn{position:absolute;top:68px;left:50%;transform:translateX(-50%);z-index:12;border:1px solid rgba(255,255,255,.24);background:rgba(0,0,0,.62);color:#fff;border-radius:999px;padding:.58rem .9rem;font-size:.78rem;font-weight:800;font-family:var(--font);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 28px rgba(0,0,0,.35);cursor:pointer}
   .reel-sound-btn.hidden{display:none!important}
+  #reels>.topbar{display:none!important}
 
 
   .profile-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--navH) + 12px)}
@@ -427,18 +432,18 @@ const navItems = [
   {id:'cig-game', type:'cig'}, {id:'badminton-game', type:'bad'}, {id:'profile', type:'profile'}
 ];
 function navIcon(type){
-  if (type === 'beer') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 9.2h8.2v7.35a3.25 3.25 0 0 1-3.25 3.25h-1.7a3.25 3.25 0 0 1-3.25-3.25V9.2z"/><path d="M15.5 10.7h2.15a2.35 2.35 0 0 1 0 4.7H15.5"/><path d="M8.25 9.2c.08-2.5 1.15-4.05 2.45-4.05.78 0 1.08.48 1.72.48s.93-.48 1.7-.48c1.3 0 2.25 1.55 2.25 4.05"/><path d="M9.25 12h4.05M9.25 14.75h4.05"/><path d="M9.4 17.35h3.75"/></svg>`;
-  if (type === 'reels') return `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.3" y="4" width="17.4" height="16.2" rx="4.2"/><path d="M3.9 9.2h16.2M8 4.2l3.25 5M14.15 4.2l3.2 5"/><path d="M10.15 13.05v4.25l4.15-2.12-4.15-2.13z"/></svg>`;
-  if (type === 'cig') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.7 15.35h11.35v3.15H3.7z"/><path d="M15.05 15.35h2.85v3.15h-2.85z"/><path d="M17.9 15.35h2.4v3.15h-2.4z"/><path d="M6.4 11.4c.95.7.95 1.65 0 2.45"/><path d="M9.6 9.2c1.35 1.08 1.48 2.6.18 3.78"/><path d="M18.95 12.1c.82.58 1.08 1.25.7 2.05"/></svg>`;
-  if (type === 'bad') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.2c2.45-1.9 5.85-.72 6.92 2.2 1 2.72-.1 5.62-2.52 6.65-2.62 1.1-5.52-.38-6.48-3.25-.68-2.03.08-4.23 2.08-5.6z"/><path d="M11.85 12.2 20.55 21"/><path d="M5.98 5.42l6.65 6.66M4.86 8.02l6.25 5.86M8.58 3.52l5.9 6.15"/><path d="M18.2 18.65l1.35-1.35"/><path d="M6.85 13.25 4.9 16.8M9.35 14.1 7.4 17.75M11.65 13.1l-1.4 3.15"/></svg>`;
+  if (type === 'beer') return `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9.2 12.2h12.2v10.1a4.7 4.7 0 0 1-4.7 4.7h-2.8a4.7 4.7 0 0 1-4.7-4.7V12.2z"/><path d="M21.4 14.3h2.2a3.25 3.25 0 0 1 0 6.5h-2.2"/><path d="M9.6 12.2c.2-3.1 1.65-5.05 3.35-5.05.95 0 1.42.6 2.2.6s1.2-.6 2.12-.6c1.8 0 3.25 1.95 3.45 5.05"/><path class="thin" d="M12.6 15.9h5.3M12.6 19h5.3M12.6 22.1h4.1"/></svg>`;
+  if (type === 'reels') return `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6.6" width="20" height="18.8" rx="5.2"/><path d="M6.8 12.3h18.4M11.2 6.8l3.6 5.5M18 6.8l3.6 5.5"/><path class="fill" d="M14.1 16.1v5.7c0 .52.56.84 1.01.57l5-2.84a.66.66 0 0 0 0-1.14l-5-2.85a.66.66 0 0 0-1.01.57z"/></svg>`;
+  if (type === 'cig') return `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 20.2h15.1v4.25H5z"/><path d="M20.1 20.2h3.75v4.25H20.1z"/><path d="M23.85 20.2H27v4.25h-3.15z"/><path d="M9.1 15.2c1.35.95 1.35 2.25 0 3.25"/><path d="M13.2 12.35c1.85 1.45 2 3.5.25 5"/><path d="M24.8 15.2c1.2.86 1.5 1.9.92 3"/></svg>`;
+  if (type === 'bad') return `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12.2 6.1 20.6 20.5"/><path d="M19.8 20.2 12.3 27"/><path d="M21.3 20.1 23.7 29"/><path d="M18.4 20.2 8.5 23.9"/><path d="M15.7 20.1 6.3 18.3"/><path d="M13.8 18.1 7.6 13.1"/><path d="M13.1 15.5 10 8.4"/><path d="M12.2 6.1c3.95 4.35 7 9.1 9.1 14"/><path d="M12.2 6.1c-.95 5.8.25 10.65 3.5 14"/><path d="M15.6 20.1h5.7"/></svg>`;
   if (type === 'profile') return `<img class="nav-profile" src="${PROFILE_IMG}" alt="profile">`;
-  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 10.2 12 3.35l8.6 6.85"/><path d="M5.3 9.6v9.1a2 2 0 0 0 2 2h9.4a2 2 0 0 0 2-2V9.6"/><path d="M9.15 20.7v-6.15a1.1 1.1 0 0 1 1.1-1.1h3.5a1.1 1.1 0 0 1 1.1 1.1v6.15"/></svg>`;
+  return `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5.2 14.6 16 6.2l10.8 8.4"/><path d="M7.9 13.1v11.1a2.5 2.5 0 0 0 2.5 2.5h11.2a2.5 2.5 0 0 0 2.5-2.5V13.1"/><path d="M12.7 26.7v-7.25a1.55 1.55 0 0 1 1.55-1.55h3.5a1.55 1.55 0 0 1 1.55 1.55v7.25"/></svg>`;
 }
 function buildNav(containerId){
   const el = document.getElementById(containerId); if(!el) return; el.innerHTML = '';
   navItems.forEach(item => {
     const d = document.createElement('div'); d.className='nav-item'; d.dataset.id=item.id;
-    d.innerHTML = navIcon(item.type) + `<div class="nav-dot"></div>`;
+    d.innerHTML = `<span class="nav-glyph">${navIcon(item.type)}</span><div class="nav-dot"></div>`;
     d.addEventListener('click', () => activateScreen(item.id));
     el.appendChild(d);
   });
@@ -581,7 +586,7 @@ function reelActionHTML(r,i){
   </div>`;
 }
 let reelsAudioUnlocked=false;
-let reelFiveToastShown=false;
+let reelFourToastShown=false;
 function enableReelsAudio(){
   if(reelsAudioUnlocked)return;
   reelsAudioUnlocked=true;
@@ -622,7 +627,7 @@ function goToReel(i){
   window.currentReel=Math.max(0,Math.min(reels.length-1,i));
   $$('.reel').forEach((el,idx)=>el.style.transform=`translateY(${(idx-window.currentReel)*100}%)`);
   refreshReelPlayback();
-  if(window.currentReel===4 && !reelFiveToastShown){reelFiveToastShown=true;setTimeout(()=>showToast('you like it? then keeeeeepp....no just doubleee tap it'),280);}
+  if(window.currentReel===3 && !reelFourToastShown){reelFourToastShown=true;setTimeout(()=>showToast('you like it? then keeeeeepp....no just doubleee tap it'),280);}
 }
 function refreshReelPlayback(){
   $$('.reel video').forEach((v,i)=>{

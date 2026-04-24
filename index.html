@@ -130,7 +130,7 @@
   .reels-wrap{flex:1;position:relative;overflow:hidden;background:#000;touch-action:pan-y}
   .reel{position:absolute;inset:0;background:#000;transition:transform .32s cubic-bezier(.22,.75,.2,1);will-change:transform;overflow:hidden}
   .reel-media{position:absolute;inset:0;background:#000;display:flex;align-items:center;justify-content:center}
-  .reel-media video,.reel-media canvas{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+  .reel-media video,.reel-media canvas{width:100%;height:100%;object-fit:contain;display:block;background:#000}
   .reel-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.42) 22%,rgba(0,0,0,.05) 55%,rgba(0,0,0,.28) 100%);pointer-events:none}
   .reel-info{position:absolute;left:10px;right:72px;bottom:74px;z-index:4;text-shadow:0 1px 8px rgba(0,0,0,.75)}
   .reel-author-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;min-width:0}
@@ -147,9 +147,12 @@
   .reel-side span{font-size:.65rem;letter-spacing:-.02em}
   .reel-side .more svg{width:23px;height:23px;stroke-width:2.7}
   .reel-like.liked svg{fill:var(--red);stroke:var(--red)}
-  .reel-heart-pop{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%) scale(.35);width:112px;height:112px;object-fit:contain;opacity:0;z-index:6;filter:drop-shadow(0 12px 30px rgba(0,0,0,.55));pointer-events:none}
+  .reel-heart-pop{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%) scale(.35);width:112px;height:112px;display:flex;align-items:center;justify-content:center;font-size:86px;line-height:1;opacity:0;z-index:6;filter:drop-shadow(0 12px 30px rgba(0,0,0,.55));pointer-events:none}
   .reel-heart-pop.show{animation:reelHeart .75s ease forwards}
   @keyframes reelHeart{0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}72%{opacity:1;transform:translate(-50%,-50%) scale(.95)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+  .reel-sound-btn{position:absolute;top:68px;left:50%;transform:translateX(-50%);z-index:12;border:1px solid rgba(255,255,255,.24);background:rgba(0,0,0,.62);color:#fff;border-radius:999px;padding:.58rem .9rem;font-size:.78rem;font-weight:800;font-family:var(--font);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 28px rgba(0,0,0,.35);cursor:pointer}
+  .reel-sound-btn.hidden{display:none!important}
+
 
   .profile-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--navH) + 12px)}
   .profile-header{padding:1rem}
@@ -251,6 +254,7 @@
     <div class="topbar-title">Reels</div>
     <span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="4"/><path d="M8 4l3 5M14 4l3 5M3 9h18"/><path d="M10 13.5v4l4-2z"/></svg></span>
   </div>
+  <button id="reel-sound-btn" class="reel-sound-btn">🔊 Tap for sound</button>
   <div class="reels-wrap" id="reels-wrap"></div>
   <div class="bottom-nav" id="bottom-nav-reels"></div>
 </section>
@@ -423,10 +427,10 @@ const navItems = [
   {id:'cig-game', type:'cig'}, {id:'badminton-game', type:'bad'}, {id:'profile', type:'profile'}
 ];
 function navIcon(type){
-  if (type === 'beer') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5h8.5v8.2a3.3 3.3 0 0 1-3.3 3.3H10.3A3.3 3.3 0 0 1 7 16.7V8.5z"/><path d="M15.5 10.5h2.1a2.45 2.45 0 0 1 0 4.9h-2.1"/><path d="M8.1 8.5c.22-2.1 1.28-3.35 2.55-3.35.83 0 1.17.55 1.85.55s1.02-.55 1.84-.55c1.27 0 2.24 1.2 2.36 3.35"/><path d="M9.2 11.3h4.1M9.2 14h4.1"/></svg>`;
+  if (type === 'beer') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 9.2h8.2v7.35a3.25 3.25 0 0 1-3.25 3.25h-1.7a3.25 3.25 0 0 1-3.25-3.25V9.2z"/><path d="M15.5 10.7h2.15a2.35 2.35 0 0 1 0 4.7H15.5"/><path d="M8.25 9.2c.08-2.5 1.15-4.05 2.45-4.05.78 0 1.08.48 1.72.48s.93-.48 1.7-.48c1.3 0 2.25 1.55 2.25 4.05"/><path d="M9.25 12h4.05M9.25 14.75h4.05"/><path d="M9.4 17.35h3.75"/></svg>`;
   if (type === 'reels') return `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.3" y="4" width="17.4" height="16.2" rx="4.2"/><path d="M3.9 9.2h16.2M8 4.2l3.25 5M14.15 4.2l3.2 5"/><path d="M10.15 13.05v4.25l4.15-2.12-4.15-2.13z"/></svg>`;
-  if (type === 'cig') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 15.4h10.7"/><path d="M14.2 15.4h2.8"/><path d="M17 15.4h3.5"/><path d="M5.2 18.2h9.2"/><path d="M17.2 10.9c.95.65 1.28 1.55.72 2.55"/><path d="M14.7 7.5c1.95 1.15 2.62 2.9 1.55 5.05"/></svg>`;
-  if (type === 'bad') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.1 4.4c2.6-2.05 6.15-.72 7.12 2.4.8 2.58-.2 5.28-2.44 6.28-2.44 1.1-5.3-.35-6.28-3.25-.67-1.98-.05-4.1 1.6-5.43z"/><path d="M11.2 12.2 20.4 21"/><path d="M5.45 5.45l6.72 6.7M4.4 8.05l6.38 6.02M8.05 3.4l6.05 6.3"/><path d="M17.95 18.75l1.45-1.45"/></svg>`;
+  if (type === 'cig') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.7 15.35h11.35v3.15H3.7z"/><path d="M15.05 15.35h2.85v3.15h-2.85z"/><path d="M17.9 15.35h2.4v3.15h-2.4z"/><path d="M6.4 11.4c.95.7.95 1.65 0 2.45"/><path d="M9.6 9.2c1.35 1.08 1.48 2.6.18 3.78"/><path d="M18.95 12.1c.82.58 1.08 1.25.7 2.05"/></svg>`;
+  if (type === 'bad') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.2c2.45-1.9 5.85-.72 6.92 2.2 1 2.72-.1 5.62-2.52 6.65-2.62 1.1-5.52-.38-6.48-3.25-.68-2.03.08-4.23 2.08-5.6z"/><path d="M11.85 12.2 20.55 21"/><path d="M5.98 5.42l6.65 6.66M4.86 8.02l6.25 5.86M8.58 3.52l5.9 6.15"/><path d="M18.2 18.65l1.35-1.35"/><path d="M6.85 13.25 4.9 16.8M9.35 14.1 7.4 17.75M11.65 13.1l-1.4 3.15"/></svg>`;
   if (type === 'profile') return `<img class="nav-profile" src="${PROFILE_IMG}" alt="profile">`;
   return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 10.2 12 3.35l8.6 6.85"/><path d="M5.3 9.6v9.1a2 2 0 0 0 2 2h9.4a2 2 0 0 0 2-2V9.6"/><path d="M9.15 20.7v-6.15a1.1 1.1 0 0 1 1.1-1.1h3.5a1.1 1.1 0 0 1 1.1 1.1v6.15"/></svg>`;
 }
@@ -550,13 +554,24 @@ const reels=[
   {src:'r3.mp4', user:'your_dad', caption:'', audio:'Original audio', likes:'683', comments:'72', sends:'214'},
   {src:'r4.mp4', user:'rajeshwari', caption:'50/50', audio:'Original audio', likes:'519', comments:'96', sends:'308'},
   {src:'r5.mp4', bare:true},
-  {src:'r6.mp4', user:'rahilstouchinggrass', caption:"sir, he's coming", audio:'Original audio', likes:'846', comments:'203', sends:'517'},
+  {src:'r6.mp4', user:'rahilstouchinggrass', caption:"sir he's coming", audio:'Original audio', likes:'846', comments:'203', sends:'517'},
   {src:'r7.mp4', user:'jawnwii', caption:'same same but different', audio:'Original audio', likes:'421', comments:'67', sends:'190'},
   {src:'r8.mp4', user:'abhibalesh', caption:'🫦', audio:'Original audio', likes:'934', comments:'151', sends:'602'},
   {src:'r9.mp4', user:'rajath.exe', caption:'', audio:'Original audio', likes:'377', comments:'44', sends:'126'},
   {src:'r10.mp4', user:'gang.gang', caption:'tum ho &lt;3', audio:'Original audio', likes:'781', comments:'231', sends:'493'},
   {src:'r11.mp4', bare:true}
 ];
+const REEL_SCENERY_AVATARS=[
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop stop-color='%2387ceeb'/><stop offset='1' stop-color='%23f7d794'/></linearGradient></defs><rect width='80' height='80' fill='url(%23g)'/><circle cx='60' cy='18' r='9' fill='%23fff3a3'/><path d='M0 62 22 38 39 57 53 35 80 64v16H0z' fill='%232b6b47'/><path d='M0 70 30 50 55 72 80 56v24H0z' fill='%2317432d'/></svg>",
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect width='80' height='80' fill='%230b1730'/><circle cx='19' cy='16' r='2' fill='white'/><circle cx='55' cy='23' r='1.6' fill='white'/><circle cx='69' cy='11' r='1.2' fill='white'/><path d='M0 55c16-13 25-13 40 0s25 13 40 0v25H0z' fill='%231e88e5'/><path d='M0 65c22-8 40-8 80 0v15H0z' fill='%2300649b'/></svg>",
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><linearGradient id='s' x1='0' y1='0' x2='0' y2='1'><stop stop-color='%23ff9a9e'/><stop offset='1' stop-color='%23fad0c4'/></linearGradient><rect width='80' height='80' fill='url(%23s)'/><circle cx='62' cy='20' r='10' fill='%23fff0a8'/><path d='M0 52h80v28H0z' fill='%232e7d32'/><path d='M8 52c8-18 20-18 28 0M40 52c9-22 23-22 32 0' fill='%230f5132'/></svg>",
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect width='80' height='80' fill='%2310141f'/><path d='M0 45h80v35H0z' fill='%231b5e20'/><path d='M10 45 24 23l14 22M35 45 53 18l18 27' fill='%238bc34a'/><path d='M24 23 29 45H19zM53 18l6 27H47z' fill='%23e8f5e9'/></svg>"
+];
+function reelAvatarFor(r,i){
+  const u=(r.user||'').toLowerCase();
+  if(u.includes('rajath')) return PROFILE_IMG;
+  return REEL_SCENERY_AVATARS[i % REEL_SCENERY_AVATARS.length];
+}
 function reelActionHTML(r,i){
   return `<div class="reel-side">
     <div class="item reel-like" data-reel-like="${i}">${reelIconHeart}<span>${r.likes||'0'}</span></div>
@@ -564,6 +579,15 @@ function reelActionHTML(r,i){
     <div class="item">${reelIconSend}<span>${r.sends||'Share'}</span></div>
     <div class="item more">${reelIconMore}</div>
   </div>`;
+}
+let reelsAudioUnlocked=false;
+let reelFiveToastShown=false;
+function enableReelsAudio(){
+  if(reelsAudioUnlocked)return;
+  reelsAudioUnlocked=true;
+  $$('.reel video').forEach(v=>{v.muted=false;v.volume=1;});
+  const b=$('#reel-sound-btn'); if(b)b.classList.add('hidden');
+  refreshReelPlayback();
 }
 function buildReels(){
   const wrap=$('#reels-wrap');wrap.innerHTML=''; window.currentReel=window.currentReel||0;
@@ -573,9 +597,9 @@ function buildReels(){
       ? `<video src="${r.src}" muted playsinline loop preload="metadata"></video>`
       : `<canvas width="400" height="700"></canvas>`;
     const info = r.bare ? '' : `<div class="reel-overlay"></div>
-      <div class="reel-info"><div class="reel-author-row"><img class="reel-author-pic" src="${r.avatar||PROFILE_IMG}" alt=""><div class="reel-user">${r.user||'ryzn_films'}</div><button class="reel-follow">Follow</button></div>${r.caption?`<div class="reel-caption">${r.caption}</div>`:''}<div class="reel-audio">${r.audio||'Original audio'}</div></div>
+      <div class="reel-info"><div class="reel-author-row"><img class="reel-author-pic" src="${r.avatar||reelAvatarFor(r,i)}" alt=""><div class="reel-user">${r.user||'ryzn_films'}</div><button class="reel-follow">Follow</button></div>${r.caption?`<div class="reel-caption">${r.caption}</div>`:''}<div class="reel-audio">${r.audio||'Original audio'}</div></div>
       ${reelActionHTML(r,i)}`;
-    d.innerHTML=`<div class="reel-media">${media}</div>${info}<img class="reel-heart-pop" id="reel-heart-${i}" src="sticker.png" alt="">`;
+    d.innerHTML=`<div class="reel-media">${media}</div>${info}<div class="reel-heart-pop" id="reel-heart-${i}" aria-hidden="true">😝</div>`;
     wrap.appendChild(d);
     if(!r.src) drawReelPlaceholder(d.querySelector('canvas'),r);
   });
@@ -584,27 +608,31 @@ function buildReels(){
   wrap.addEventListener('touchstart',e=>startY=e.touches[0].clientY,{passive:true});
   wrap.addEventListener('touchend',e=>{const dy=startY-e.changedTouches[0].clientY;if(Math.abs(dy)>50)goToReel((window.currentReel||0)+(dy>0?1:-1));},{passive:true});
   wrap.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>25){e.preventDefault();goToReel((window.currentReel||0)+(e.deltaY>0?1:-1));}}, {passive:false});
+  const soundBtn=$('#reel-sound-btn'); if(soundBtn) soundBtn.addEventListener('click',e=>{e.stopPropagation();enableReelsAudio();});
   wrap.addEventListener('click',e=>{
+    enableReelsAudio();
     const like=e.target.closest('[data-reel-like]');
     if(like){toggleReelLike(+like.dataset.reelLike);return;}
     const now=Date.now();
     const idx=window.currentReel||0;
-    if(now-lastTap<300){if(!reels[idx].bare)toggleReelLike(idx,true);lastTap=0;} else lastTap=now;
+    if(now-lastTap<300){toggleReelLike(idx,true);lastTap=0;} else lastTap=now;
   });
-  setTimeout(()=>showToast('you like it? then keeeeeepp....no just doubleee tap it'),1800);
 }
 function goToReel(i){
   window.currentReel=Math.max(0,Math.min(reels.length-1,i));
   $$('.reel').forEach((el,idx)=>el.style.transform=`translateY(${(idx-window.currentReel)*100}%)`);
   refreshReelPlayback();
+  if(window.currentReel===4 && !reelFiveToastShown){reelFiveToastShown=true;setTimeout(()=>showToast('you like it? then keeeeeepp....no just doubleee tap it'),280);}
 }
 function refreshReelPlayback(){
-  $$('.reel video').forEach((v,i)=>{ if(i===(window.currentReel||0)){v.play().catch(()=>{});} else {v.pause();v.currentTime=0;} });
+  $$('.reel video').forEach((v,i)=>{
+    if(i===(window.currentReel||0)){v.muted=!reelsAudioUnlocked;v.volume=1;v.play().catch(()=>{});}
+    else {v.pause();v.currentTime=0;}
+  });
 }
 function toggleReelLike(i,forceLike=false){
-  if(reels[i] && reels[i].bare)return;
-  const btn=document.querySelector(`[data-reel-like="${i}"]`); if(!btn)return;
-  if(forceLike || !btn.classList.contains('liked')) btn.classList.add('liked'); else btn.classList.remove('liked');
+  const btn=document.querySelector(`[data-reel-like="${i}"]`);
+  if(btn){ if(forceLike || !btn.classList.contains('liked')) btn.classList.add('liked'); else btn.classList.remove('liked'); }
   const pop=document.getElementById(`reel-heart-${i}`); if(pop){pop.classList.remove('show');void pop.offsetWidth;pop.classList.add('show');}
 }
 function drawReelPlaceholder(canvas,reel){

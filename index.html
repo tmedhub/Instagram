@@ -78,6 +78,8 @@
   .stories{display:flex;gap:1.05rem;padding:1rem 1rem .9rem;overflow-x:auto;border-bottom:1px solid var(--border)}
   .story{flex-shrink:0;width:82px;text-align:center;cursor:pointer}
   .story-ring{width:76px;height:76px;border-radius:50%;padding:4px;background:var(--grad);margin:0 auto .45rem}
+  .story-ring.viewed{background:#2a2a2a}
+  .story-ring.my-story-ring{background:transparent;padding:0;position:relative}
   .story-inner{width:100%;height:100%;border-radius:50%;background:var(--surface);border:3px solid #000;display:flex;align-items:center;justify-content:center;font-size:1.4rem;overflow:hidden}
   .story-inner img{width:100%;height:100%;object-fit:cover}
   .story-name{font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -216,8 +218,10 @@
   .hl-ring{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:var(--surface);margin:0 auto .35rem;font-size:1.4rem}
   .hl-name{font-size:.7rem}
   .posts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;padding-top:1px}
-  .grid-post{aspect-ratio:1;background:#111;overflow:hidden;cursor:pointer}
+  .grid-post{aspect-ratio:1;background:#111;overflow:hidden;cursor:pointer;position:relative}
   .grid-post canvas{width:100%;height:100%;display:block}
+  .grid-post.multi::after{content:'▣';position:absolute;right:6px;top:5px;color:#fff;font-size:1rem;text-shadow:0 1px 6px #000}
+  .post-view-image{position:relative;overflow:hidden}
 
   .game-screen{flex:1;padding:1rem 1rem calc(var(--navH) + 12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem}
   .game-btn{border:none;background:var(--blue);color:#fff;border-radius:999px;padding:.8rem 1.2rem;font-weight:800;font-family:var(--font);cursor:pointer}
@@ -334,18 +338,14 @@
       <div class="profile-top">
         <div class="profile-pic"><div class="profile-pic-inner"><img id="profile-main-img" alt="profile"></div></div>
         <div class="profile-stats">
-          <div class="stat"><span class="stat-num">21</span><span class="stat-label">posts</span></div>
-          <div class="stat"><span class="stat-num">365</span><span class="stat-label">nights up</span></div>
-          <div class="stat"><span class="stat-num">∞</span><span class="stat-label">takes</span></div>
+          <div class="stat"><span class="stat-num" id="profile-post-count">4</span><span class="stat-label">posts</span></div>
+          <div class="stat"><span class="stat-num">too many</span><span class="stat-label">friends</span></div>
+          <div class="stat"><span class="stat-num">he no follower</span><span class="stat-label">following</span></div>
         </div>
       </div>
       <div class="profile-name">Rajath 🎉</div>
-      <div class="profile-bio">professional bad decisions consultant 🍺
-strategy expert. sleep hater.
-badminton god (self-declared)
-last sober sighting: unavailable</div>
-      <div class="profile-link">🏎️ f1 enthusiast · 🏸 "plays daily" · 🌙 insomniac</div>
-      <div class="profile-actions"><button class="profile-btn follow">Follow</button><button class="profile-btn">Message</button><button class="profile-btn" style="flex:0;padding:.58rem .8rem">👤</button></div>
+      <div class="profile-bio">thundestruck - whatever the fuck that means</div>
+      <div class="profile-link">⚡ fuck_it_we_ball archive</div>
     </div>
     <div class="highlights"><div class="highlights-row" id="hl-row"></div></div>
     <div class="posts-grid" id="posts-grid"></div>
@@ -478,7 +478,7 @@ const navItems = [
 function navIcon(type){
   if (type === 'beer') return `<svg viewBox="0 0 32 32" aria-hidden="true"><path class="solid" d="M10.2 10.6h11.2c1 0 1.8.8 1.8 1.8v9.1c0 4.05-2.9 6.7-6.75 6.7h-1.3c-3.85 0-6.75-2.65-6.75-6.7v-9.1c0-1 .8-1.8 1.8-1.8z"/><path class="solid" d="M22.2 14.1h2.1c2.1 0 3.8 1.7 3.8 3.8s-1.7 3.8-3.8 3.8h-2.1v-2.3h2.05c.82 0 1.5-.68 1.5-1.5s-.68-1.5-1.5-1.5H22.2z"/><path class="solid" d="M10 10.9c.35-3.05 2.15-5.25 4.25-5.25.95 0 1.35.55 2.03.55.72 0 1.08-.55 2.05-.55 2.25 0 4.15 2.25 4.45 5.25z"/><rect class="cut" x="12" y="14.1" width="1.55" height="10.35" rx=".75" opacity=".82"/><rect class="cut" x="15.15" y="14.1" width="1.55" height="10.35" rx=".75" opacity=".82"/><rect class="cut" x="18.3" y="14.1" width="1.55" height="10.35" rx=".75" opacity=".82"/></svg>`;
   if (type === 'reels') return `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6.6" width="20" height="18.8" rx="5.2"/><path d="M6.8 12.3h18.4M11.2 6.8l3.6 5.5M18 6.8l3.6 5.5"/><path class="fill" d="M14.1 16.1v5.7c0 .52.56.84 1.01.57l5-2.84a.66.66 0 0 0 0-1.14l-5-2.85a.66.66 0 0 0-1.01.57z"/></svg>`;
-  if (type === 'cig') return `<svg viewBox="0 0 32 32" aria-hidden="true"><rect class="solid" x="4.2" y="18.9" width="17.2" height="5.15" rx="1.15"/><rect class="solid" x="21.55" y="18.9" width="3.85" height="5.15" rx=".45" opacity=".76"/><rect class="solid" x="25.85" y="18.9" width="2.25" height="5.15" rx=".55" opacity=".95"/><path d="M8.2 15.3c1.25-1.05 1.25-2.45.05-3.55"/><path d="M12.6 16c1.9-1.55 1.9-3.95.05-5.55"/></svg>`;
+  if (type === 'cig') return `<svg viewBox="0 0 36 32" aria-hidden="true"><rect class="solid" x="4.2" y="18.9" width="18" height="5.15" rx="1.15"/><rect class="solid" x="22.55" y="18.9" width="3.85" height="5.15" rx=".45" opacity=".76"/><rect class="solid" x="26.85" y="18.9" width="2.25" height="5.15" rx=".55" opacity=".95"/><path d="M30.8 17.1c1.3-1.1 1.25-2.6.05-3.75"/><path d="M33.6 16.4c1.55-1.4 1.55-3.5.05-4.9"/></svg>`;
   if (type === 'bad') return `<svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="13.2" cy="10.6" rx="6.15" ry="7.25" transform="rotate(-34 13.2 10.6)"/><path d="M9 5.4c3.05 4.05 5.1 7.85 6.15 11.4"/><path d="M15.25 3.9c-1.15 5.05-.8 9.35 1.05 12.9"/><path d="M7.6 10.5h11.2"/><path d="M10.7 15.4 17.9 7"/><path d="M18.05 16.5 27.3 27.5"/><path class="solid" d="M26.4 26.1l2.25 2.7c.37.45.3 1.1-.14 1.48-.45.37-1.11.31-1.48-.14l-2.25-2.7z"/></svg>`;
   if (type === 'profile') return `<img class="nav-profile" src="${PROFILE_IMG}" alt="profile">`;
   return `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5.2 14.6 16 6.2l10.8 8.4"/><path d="M7.9 13.1v11.1a2.5 2.5 0 0 0 2.5 2.5h11.2a2.5 2.5 0 0 0 2.5-2.5V13.1"/><path d="M12.7 26.7v-7.25a1.55 1.55 0 0 1 1.55-1.55h3.5a1.55 1.55 0 0 1 1.55 1.55v7.25"/></svg>`;
@@ -501,29 +501,42 @@ const stories = [
   {name:'abdevilliers17', img:'abs.jpeg', avatar:'ab.jpeg', verified:true},
   {name:'your_fan', img:'fans.jpeg', avatar:null, verified:false}
 ];
+const viewedStories = new Set();
 let activeStoryIndex = 0;
-let storyStartedAt = 0;
 let storyTouchX = 0;
 function storyAvatarHTML(s){
   return s.avatar ? `<img src="${s.avatar}" alt="${s.name}">` : DEFAULT_STORY_AVATAR;
 }
 function buildStories(){
   const row = $('#stories-row'); row.innerHTML = '';
+
+  const mine = document.createElement('div');
+  mine.className='story my-story';
+  mine.innerHTML = `<div class="my-story-wrap"><img class="my-story-img" src="${PROFILE_IMG}" alt="your story"><div class="my-story-plus">+</div></div><div class="story-name">Your story</div>`;
+  mine.addEventListener('click', () => showToast('add your story? not today bro'));
+  row.appendChild(mine);
+
   stories.forEach((s, i) => {
     const d = document.createElement('div'); d.className='story';
-    d.innerHTML = `<div class="story-ring"><div class="story-inner">${storyAvatarHTML(s)}</div></div><div class="story-name">${s.name}</div>`;
+    const viewed = viewedStories.has(i) ? ' viewed' : '';
+    d.innerHTML = `<div class="story-ring${viewed}" id="story-ring-${i}"><div class="story-inner">${storyAvatarHTML(s)}</div></div><div class="story-name">${s.name}</div>`;
     d.addEventListener('click', () => openStory(i)); row.appendChild(d);
   });
 }
 function openStory(i){
   activeStoryIndex = Math.max(0, Math.min(stories.length - 1, i));
+  viewedStories.add(activeStoryIndex);
+  const ring = document.getElementById(`story-ring-${activeStoryIndex}`);
+  if(ring) ring.classList.add('viewed');
   const s = stories[activeStoryIndex];
   $('#sv-avatar').innerHTML = storyAvatarHTML(s);
   $('#sv-username').textContent = s.name;
   const verified = document.querySelector('.story-verified');
   if (verified) verified.style.display = s.verified ? 'inline-flex' : 'none';
-  $('#story-progress').innerHTML = stories.map((_, idx)=>`<div class="story-prog-bar"><div class="story-prog-fill" id="spf-${idx}"></div></div>`).join('');
-  stories.forEach((_, idx)=>{ const f=document.getElementById(`spf-${idx}`); if(f && idx < activeStoryIndex) f.style.width='100%'; });
+
+  // Each story gets its own single progress line, not a grouped multi-story bar.
+  $('#story-progress').innerHTML = `<div class="story-prog-bar"><div class="story-prog-fill" id="story-progress-current"></div></div>`;
+
   const media = $('#story-media');
   media.src = s.img;
   media.alt = s.name + ' story';
@@ -533,8 +546,7 @@ function openStory(i){
 }
 function startStoryTimer(){
   clearTimeout(window.storyTimer);
-  storyStartedAt = Date.now();
-  const fill=document.getElementById(`spf-${activeStoryIndex}`);
+  const fill=document.getElementById('story-progress-current');
   if(fill){
     fill.style.transition='none'; fill.style.width='0%';
     requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.transition='width 5s linear';fill.style.width='100%';}));
@@ -552,6 +564,7 @@ function prevStory(){
 function closeStory(goHome=false){
   clearTimeout(window.storyTimer);
   $('#story-viewer').classList.remove('active');
+  buildStories();
   if(goHome) activateScreen('home', false);
 }
 $('#story-close').addEventListener('click', () => { closeStory(true); history.replaceState({screen:'home'}, '', '#home'); });
@@ -574,6 +587,14 @@ const posts = [
   { img:'p8.jpeg', user:'who.dass_', caption:'mixed doubles dream team', loc:'Court side', likes:'843', comments:66, time:'10h' },
   { imgs:['sv1.jpeg','sv2.jpeg','sv3.jpeg'], user:'_vroon.vroon_', caption:'Good vibes only', loc:'Swipe dump', likes:'921', comments:88, time:'12h' }
 ];
+const profilePosts = [
+  { img:'po1.jpeg', user:'parsonrajath_25', caption:'coolie no1', loc:'', likes:'742', comments:39, time:'now' },
+  { img:'po2.jpeg', user:'parsonrajath_25', caption:'some inspirational quote about friendship', loc:'', likes:'681', comments:24, time:'now' },
+  { img:'po3.jpeg', user:'parsonrajath_25', caption:'fool', loc:'', likes:'829', comments:51, time:'now' },
+  { img:'po4.jpeg', user:'parsonrajath_25', caption:'happy holi', loc:'', likes:'863', comments:44, time:'now' },
+  { imgs:['po5.jpeg','po6.jpeg'], user:'parsonrajath_25', caption:'pookie', loc:'', likes:'914', comments:67, time:'now' }
+];
+let currentOpenedProfilePost=null; const likedProfilePosts={};
 let currentOpenedPost=null; const likedPosts={}; const postCarouselIndex={};
 
 const POST_PROFILE_AVATARS={
@@ -682,7 +703,7 @@ function openPost(i){
   }
   $('#post-viewer').classList.add('active'); history.pushState({screen:'post'}, '', '#post');
 }
-function closePost(){ $('#post-viewer').classList.remove('active'); currentOpenedPost=null; }
+function closePost(){ $('#post-viewer').classList.remove('active'); currentOpenedPost=null; currentOpenedProfilePost=null; }
 $('#post-view-close').addEventListener('click',()=>{closePost();activateScreen('home');});
 $('#pv-like-btn').addEventListener('click',()=>{if(currentOpenedPost!==null)triggerLike(currentOpenedPost,true);});
 
@@ -827,10 +848,55 @@ $('#bad-external-btn').addEventListener('click',()=>window.open('https://poki.co
 
 function buildProfile(){
   $('#profile-main-img').src = PROFILE_IMG;
-  const highlights=[{name:'Rajath',e:'📸'},{name:'NightMode',e:'🌙'},{name:'Gridlock',e:'🏎️'},{name:'WeBall',e:'🍺'},{name:'Badminton',e:'🏸'},{name:'3AM',e:'😴'}];
-  $('#hl-row').innerHTML=highlights.map(h=>`<div class="highlight"><div class="hl-ring">${h.e}</div><div class="hl-name">${h.name}</div></div>`).join('');
-  const gridPosts=[0,1,2,3,4,5,6,7,8]; const grid=$('#posts-grid');grid.innerHTML='';
-  gridPosts.forEach(idx=>{const p=posts[idx];const d=document.createElement('div');d.className='grid-post';const src=p.imgs?p.imgs[0]:p.img;d.innerHTML=`<img src="${src}" alt="grid post" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.opacity=.18">`;grid.appendChild(d);d.addEventListener('click',()=>openPost(idx));});
+  $('#profile-post-count').textContent = profilePosts.length;
+  $('#hl-row').innerHTML=`<div class="highlight"><div class="hl-ring">😈</div><div class="hl-name">fuck_it_we_ball</div></div>`;
+  const grid=$('#posts-grid'); grid.innerHTML='';
+  profilePosts.forEach((p,idx)=>{
+    const d=document.createElement('div');
+    d.className='grid-post'+(p.imgs?' multi':'');
+    const src=p.imgs?p.imgs[0]:p.img;
+    d.innerHTML=`<img src="${src}" alt="profile post" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.opacity=.18">`;
+    grid.appendChild(d);
+    d.addEventListener('click',()=>openProfilePost(idx));
+  });
+}
+function profileViewerMediaHTML(p,i){
+  if(p.imgs){
+    return `<div class="post-view-image post-carousel" data-profile-viewer="${i}"><div class="post-carousel-track" id="profile-post-view-track">${p.imgs.map(src=>`<img src="${src}" alt="profile post image" onerror="this.style.opacity=.18">`).join('')}</div><button class="post-carousel-arrow post-carousel-prev" id="profile-pv-prev" aria-label="previous">‹</button><button class="post-carousel-arrow post-carousel-next" id="profile-pv-next" aria-label="next">›</button><div class="post-carousel-count" id="profile-pv-count">1/${p.imgs.length}</div><div class="sticker-anim" id="profile-sticker-${i}"><img src="sticker.png" alt="like"></div></div>`;
+  }
+  return `<div class="post-view-image" data-profile-viewer="${i}"><img src="${p.img}" alt="profile post image" onerror="this.style.opacity=.18"><div class="sticker-anim" id="profile-sticker-${i}"><img src="sticker.png" alt="like"></div></div>`;
+}
+function triggerProfileLike(i,forceLike=false){
+  const sticker=document.getElementById(`profile-sticker-${i}`);
+  if(forceLike || !likedProfilePosts[i]){
+    likedProfilePosts[i]=true;
+    $('#pv-like-btn').classList.add('liked');
+    if(sticker){sticker.classList.remove('show','hide');void sticker.offsetWidth;sticker.classList.add('show');setTimeout(()=>{sticker.classList.remove('show');sticker.classList.add('hide');},760);setTimeout(()=>sticker.classList.remove('hide'),1250);}
+  } else { likedProfilePosts[i]=false; $('#pv-like-btn').classList.remove('liked'); }
+}
+function openProfilePost(i){
+  const p=profilePosts[i]; currentOpenedProfilePost=i; currentOpenedPost=null;
+  $('#pv-avatar').outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${PROFILE_IMG}" alt="${p.user}">`;
+  $('#pv-username').textContent=p.user; $('#pv-location').textContent=p.loc||''; $('#pv-likes').textContent=p.likes+' likes';
+  $('#pv-caption').innerHTML=`<b>${p.user}</b> ${p.caption}`;
+  $('#pv-comments').textContent=`View all ${p.comments} comments`; $('#pv-time').textContent=`${p.time}`; $('#pv-like-btn').classList.toggle('liked',!!likedProfilePosts[i]);
+  const wrap=document.querySelector('.post-view-wrap');
+  const oldMedia=wrap.querySelector('.post-view-image'); if(oldMedia) oldMedia.outerHTML=profileViewerMediaHTML(p,i);
+  if(p.imgs){
+    let idx=0; const track=$('#profile-post-view-track'), count=$('#profile-pv-count');
+    const upd=()=>{track.style.transform=`translateX(-${idx*100}%)`;count.textContent=`${idx+1}/${p.imgs.length}`;};
+    $('#profile-pv-prev').addEventListener('click',()=>{idx=clamp(idx-1,0,p.imgs.length-1);upd();});
+    $('#profile-pv-next').addEventListener('click',()=>{idx=clamp(idx+1,0,p.imgs.length-1);upd();});
+    let sx=0,sy=0; const media=document.querySelector('.post-view-image');
+    media.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;},{passive:true});
+    media.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){idx=clamp(idx+(dx<0?1:-1),0,p.imgs.length-1);upd();return;} if(Math.abs(dx)<12&&Math.abs(dy)<12) handleProfileViewerTap(i);},{passive:true});
+  }
+  let last=0;
+  function handleProfileViewerTap(idx){const now=Date.now(); if(now-last<300){triggerProfileLike(idx,true);last=0;} else last=now;}
+  window.handleProfileViewerTap=handleProfileViewerTap;
+  const media=document.querySelector('.post-view-image');
+  media.addEventListener('click',()=>handleProfileViewerTap(i));
+  $('#post-viewer').classList.add('active'); history.pushState({screen:'post'}, '', '#post');
 }
 
 window.addEventListener('popstate', () => {

@@ -212,6 +212,10 @@
   .profile-actions{display:flex;gap:.5rem;margin-top:.75rem}
   .profile-btn{flex:1;background:var(--surface);color:#fff;border:none;padding:.58rem;border-radius:8px;font-weight:800;font-family:var(--font);cursor:pointer}
   .profile-btn.follow{background:var(--blue)}
+
+  .profile-stats .stat{min-width:0;flex:1;padding:0 2px}
+  .profile-stats .stat:nth-child(2) .stat-num,.profile-stats .stat:nth-child(3) .stat-num{font-size:.68rem;line-height:1.05;letter-spacing:-.04em;white-space:nowrap}
+  [id^="profile-sticker-"] img{width:72px!important;height:72px!important}
   .highlights{padding:.8rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
   .highlights-row{display:flex;gap:1rem;overflow-x:auto;padding:0 1rem}
   .highlight{flex-shrink:0;text-align:center}
@@ -343,7 +347,7 @@
           <div class="stat"><span class="stat-num">he no follower</span><span class="stat-label">following</span></div>
         </div>
       </div>
-      <div class="profile-name">Rajath 🎉</div>
+      <div class="profile-name">Rajath</div>
       <div class="profile-bio">thundestruck - whatever the fuck that means</div>
       <div class="profile-link">⚡ fuck_it_we_ball archive</div>
     </div>
@@ -407,9 +411,11 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 function activateScreen(id, push=true){
+  if (id !== 'reels') stopAllReels();
   $$('.screen').forEach(s => { if (!s.classList.contains('overlay')) s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
   updateNavs(id);
+  if (id === 'reels') setTimeout(refreshReelPlayback, 40);
   if(push && appLaunched) history.pushState({screen:id}, '', '#'+id);
 }
 function updateNavs(activeId){ $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.id === activeId)); }
@@ -687,6 +693,7 @@ function postViewerMediaHTML(p){
   return `<div class="post-view-image"><img src="${p.img}" alt="post image" onerror="this.style.opacity=.18"></div>`;
 }
 function openPost(i){
+  const pvTitle=document.querySelector('.post-view-top > div:first-child'); if(pvTitle) pvTitle.textContent='Post';
   const p=posts[i]; currentOpenedPost=i;
   const avatarSrc=postAvatarFor(p.user);
   $('#pv-avatar').outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${avatarSrc}" alt="${p.user}" onerror="this.onerror=null;this.src=PROFILE_IMG">`;
@@ -805,7 +812,14 @@ function goToReel(i){
   $$('.reel').forEach((el,idx)=>el.style.transform=`translateY(${(idx-window.currentReel)*100}%)`);
   refreshReelPlayback();
 }
+function stopAllReels(){
+  $$('.reel video').forEach(v=>{
+    try{ v.pause(); v.muted=true; }catch(e){}
+  });
+}
 function refreshReelPlayback(){
+  const reelsScreen = document.getElementById('reels');
+  if(!reelsScreen || !reelsScreen.classList.contains('active')){ stopAllReels(); return; }
   $$('.reel video').forEach((v,i)=>{
     if(i===(window.currentReel||0)){v.muted=!reelsAudioUnlocked;v.volume=1;v.play().catch(()=>{});}
     else {v.pause();v.currentTime=0;}
@@ -876,6 +890,7 @@ function triggerProfileLike(i,forceLike=false){
 }
 function openProfilePost(i){
   const p=profilePosts[i]; currentOpenedProfilePost=i; currentOpenedPost=null;
+  const pvTitle=document.querySelector('.post-view-top > div:first-child'); if(pvTitle) pvTitle.textContent='parsonrajath_25';
   $('#pv-avatar').outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${PROFILE_IMG}" alt="${p.user}">`;
   $('#pv-username').textContent=p.user; $('#pv-location').textContent=p.loc||''; $('#pv-likes').textContent=p.likes+' likes';
   $('#pv-caption').innerHTML=`<b>${p.user}</b> ${p.caption}`;

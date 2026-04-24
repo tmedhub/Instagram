@@ -127,17 +127,29 @@
   .post-view-comments{font-size:.8rem;color:var(--muted);margin-bottom:.45rem}
   .post-view-time{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 
-  .reels-wrap{flex:1;position:relative;overflow:hidden;background:#05080c}
-  .reel{position:absolute;inset:0;transition:transform .28s cubic-bezier(.2,.7,.2,1)}
-  .reel canvas{width:100%;height:100%;display:block}
-  .reel-overlay{position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.72) 18%, rgba(0,0,0,.12) 65%, rgba(0,0,0,.28))}
-  .reel-info{position:absolute;left:1rem;right:76px;bottom:1.2rem}
-  .reel-user{font-size:.95rem;font-weight:800;margin-bottom:.3rem}
-  .reel-caption{font-size:.83rem;line-height:1.45;color:rgba(255,255,255,.95)}
-  .reel-side{position:absolute;right:12px;bottom:1rem;display:flex;flex-direction:column;gap:1.15rem;align-items:center}
-  .reel-side .item{display:flex;flex-direction:column;align-items:center;gap:.25rem}
-  .reel-side span{font-size:.72rem}
-  .reel-pfp{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #fff}
+  .reels-wrap{flex:1;position:relative;overflow:hidden;background:#000;touch-action:pan-y}
+  .reel{position:absolute;inset:0;background:#000;transition:transform .32s cubic-bezier(.22,.75,.2,1);will-change:transform;overflow:hidden}
+  .reel-media{position:absolute;inset:0;background:#000;display:flex;align-items:center;justify-content:center}
+  .reel-media video,.reel-media canvas{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+  .reel-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.42) 22%,rgba(0,0,0,.05) 55%,rgba(0,0,0,.28) 100%);pointer-events:none}
+  .reel-info{position:absolute;left:10px;right:72px;bottom:74px;z-index:4;text-shadow:0 1px 8px rgba(0,0,0,.75)}
+  .reel-author-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;min-width:0}
+  .reel-author-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#8b8f98;flex-shrink:0}
+  .reel-user{font-size:.78rem;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:132px}
+  .reel-follow{height:25px;border:1px solid rgba(255,255,255,.9);background:rgba(0,0,0,.18);color:#fff;border-radius:6px;padding:0 10px;font-size:.7rem;font-weight:800;font-family:var(--font);line-height:23px}
+  .reel-caption{font-size:.76rem;line-height:1.35;color:#fff;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:240px}
+  .reel-audio{margin-top:10px;font-size:.73rem;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px}
+  .reel-audio:before{content:'♫';font-size:.95rem;margin-right:7px}
+  .reel.bare .reel-overlay,.reel.bare .reel-info,.reel.bare .reel-side{display:none!important}
+  .reel-side{position:absolute;right:9px;bottom:79px;z-index:5;display:flex;flex-direction:column;gap:15px;align-items:center;text-shadow:0 1px 7px rgba(0,0,0,.78)}
+  .reel-side .item{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:44px;color:#fff;font-weight:800;cursor:pointer;user-select:none}
+  .reel-side svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 4px rgba(0,0,0,.75))}
+  .reel-side span{font-size:.65rem;letter-spacing:-.02em}
+  .reel-side .more svg{width:23px;height:23px;stroke-width:2.7}
+  .reel-like.liked svg{fill:var(--red);stroke:var(--red)}
+  .reel-heart-pop{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%) scale(.35);width:112px;height:112px;object-fit:contain;opacity:0;z-index:6;filter:drop-shadow(0 12px 30px rgba(0,0,0,.55));pointer-events:none}
+  .reel-heart-pop.show{animation:reelHeart .75s ease forwards}
+  @keyframes reelHeart{0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}72%{opacity:1;transform:translate(-50%,-50%) scale(.95)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
 
   .profile-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--navH) + 12px)}
   .profile-header{padding:1rem}
@@ -525,28 +537,83 @@ function drawPostArt(canvas,type,color,W=400,H=400){
   else if(type==='beer'){ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,W,H);ctx.fillStyle='rgba(255,255,255,.08)';ctx.beginPath();ctx.moveTo(W*.35,H*.2);ctx.lineTo(W*.65,H*.2);ctx.lineTo(W*.7,H*.88);ctx.lineTo(W*.3,H*.88);ctx.closePath();ctx.fill();const grad=ctx.createLinearGradient(0,H*.38,0,H*.88);grad.addColorStop(0,'#f5c842');grad.addColorStop(1,'#c8860a');ctx.fillStyle=grad;ctx.beginPath();ctx.moveTo(W*.37,H*.39);ctx.lineTo(W*.63,H*.39);ctx.lineTo(W*.69,H*.86);ctx.lineTo(W*.31,H*.86);ctx.closePath();ctx.fill();ctx.fillStyle='#fffde7';for(let i=0;i<8;i++){ctx.beginPath();ctx.arc(W*.37+i*(W*.04),H*.39,W*.03,Math.PI,0);ctx.fill();}}
 }
 
+const reelIconHeart=`<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+const reelIconComment=`<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 1 1 17 0z"/></svg>`;
+const reelIconSend=`<svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9 22 2z"/></svg>`;
+const reelIconMore=`<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg>`;
+
+/* Add your real videos here. For each specific video, set src and caption.
+   Example: {src:'assets/reels/video1.mp4', user:'ryzn_films', caption:'Guess the resolution....', likes:'7,602', comments:'506', sends:'3,258'} */
 const reels=[
-  {user:'rajath.weball',caption:'"last one" he said. 45 mins ago. 🍺',emoji:'🍺',bg:'#1a0d00',glow:'#f5c842'},
-  {user:'f1strategy',caption:'spent 40 mins explaining DRS 😭🏎️',emoji:'🏎️',bg:'#1a0000',glow:'#ff4444'},
-  {user:'badmintonking',caption:'plays everyday. loses to a 50 year old uncle 🏸',emoji:'🏸',bg:'#001a00',glow:'#44ff44'}
+  {src:'r1.mp4', bare:true},
+  {src:'r2.mp4', user:'pranesh_hod', caption:'58 , 59', audio:'Original audio', likes:'742', comments:'118', sends:'394'},
+  {src:'r3.mp4', user:'your_dad', caption:'', audio:'Original audio', likes:'683', comments:'72', sends:'214'},
+  {src:'r4.mp4', user:'rajeshwari', caption:'50/50', audio:'Original audio', likes:'519', comments:'96', sends:'308'},
+  {src:'r5.mp4', bare:true},
+  {src:'r6.mp4', user:'rahilstouchinggrass', caption:"sir, he's coming", audio:'Original audio', likes:'846', comments:'203', sends:'517'},
+  {src:'r7.mp4', user:'jawnwii', caption:'same same but different', audio:'Original audio', likes:'421', comments:'67', sends:'190'},
+  {src:'r8.mp4', user:'abhibalesh', caption:'🫦', audio:'Original audio', likes:'934', comments:'151', sends:'602'},
+  {src:'r9.mp4', user:'rajath.exe', caption:'', audio:'Original audio', likes:'377', comments:'44', sends:'126'},
+  {src:'r10.mp4', user:'gang.gang', caption:'tum ho &lt;3', audio:'Original audio', likes:'781', comments:'231', sends:'493'},
+  {src:'r11.mp4', bare:true}
 ];
+function reelActionHTML(r,i){
+  return `<div class="reel-side">
+    <div class="item reel-like" data-reel-like="${i}">${reelIconHeart}<span>${r.likes||'0'}</span></div>
+    <div class="item">${reelIconComment}<span>${r.comments||'0'}</span></div>
+    <div class="item">${reelIconSend}<span>${r.sends||'Share'}</span></div>
+    <div class="item more">${reelIconMore}</div>
+  </div>`;
+}
 function buildReels(){
-  const wrap=$('#reels-wrap');wrap.innerHTML='';
+  const wrap=$('#reels-wrap');wrap.innerHTML=''; window.currentReel=window.currentReel||0;
   reels.forEach((r,i)=>{
-    const d=document.createElement('div');d.className='reel';d.style.transform=`translateY(${i*100}%)`;
-    d.innerHTML=`<canvas width="400" height="700"></canvas><div class="reel-overlay"></div><div class="reel-info"><div class="reel-user">@${r.user}</div><div class="reel-caption">${r.caption}</div></div><div class="reel-side"><img class="reel-pfp" src="${PROFILE_IMG}" alt=""><div class="item"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span>${Math.floor(Math.random()*900+100)}</span></div><div class="item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>${Math.floor(Math.random()*40+6)}</span></div><div class="item"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>Share</span></div></div>`;
-    wrap.appendChild(d); drawReel(d.querySelector('canvas'),r);
+    const d=document.createElement('div');d.className='reel'+(r.bare?' bare':'');d.style.transform=`translateY(${(i-window.currentReel)*100}%)`;
+    const media = r.src
+      ? `<video src="${r.src}" muted playsinline loop preload="metadata"></video>`
+      : `<canvas width="400" height="700"></canvas>`;
+    const info = r.bare ? '' : `<div class="reel-overlay"></div>
+      <div class="reel-info"><div class="reel-author-row"><img class="reel-author-pic" src="${r.avatar||PROFILE_IMG}" alt=""><div class="reel-user">${r.user||'ryzn_films'}</div><button class="reel-follow">Follow</button></div>${r.caption?`<div class="reel-caption">${r.caption}</div>`:''}<div class="reel-audio">${r.audio||'Original audio'}</div></div>
+      ${reelActionHTML(r,i)}`;
+    d.innerHTML=`<div class="reel-media">${media}</div>${info}<img class="reel-heart-pop" id="reel-heart-${i}" src="sticker.png" alt="">`;
+    wrap.appendChild(d);
+    if(!r.src) drawReelPlaceholder(d.querySelector('canvas'),r);
   });
-  let startY=0;wrap.addEventListener('touchstart',e=>startY=e.touches[0].clientY,{passive:true});
-  wrap.addEventListener('touchend',e=>{const dy=startY-e.changedTouches[0].clientY;if(Math.abs(dy)>50){window.currentReel=Math.max(0,Math.min(reels.length-1,(window.currentReel||0)+(dy>0?1:-1)));$$('.reel').forEach((el,i)=>el.style.transform=`translateY(${(i-(window.currentReel||0))*100}%)`);}}, {passive:true});
+  refreshReelPlayback();
+  let startY=0,lastTap=0;
+  wrap.addEventListener('touchstart',e=>startY=e.touches[0].clientY,{passive:true});
+  wrap.addEventListener('touchend',e=>{const dy=startY-e.changedTouches[0].clientY;if(Math.abs(dy)>50)goToReel((window.currentReel||0)+(dy>0?1:-1));},{passive:true});
+  wrap.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>25){e.preventDefault();goToReel((window.currentReel||0)+(e.deltaY>0?1:-1));}}, {passive:false});
+  wrap.addEventListener('click',e=>{
+    const like=e.target.closest('[data-reel-like]');
+    if(like){toggleReelLike(+like.dataset.reelLike);return;}
+    const now=Date.now();
+    const idx=window.currentReel||0;
+    if(now-lastTap<300){if(!reels[idx].bare)toggleReelLike(idx,true);lastTap=0;} else lastTap=now;
+  });
+  setTimeout(()=>showToast('you like it? then keeeeeepp....no just doubleee tap it'),1800);
 }
-function drawReel(canvas,reel){
-  const ctx=canvas.getContext('2d'),W=400,H=700;canvas.width=W;canvas.height=H;ctx.fillStyle=reel.bg;ctx.fillRect(0,0,W,H);
-  ctx.fillStyle=reel.glow+'33';ctx.beginPath();ctx.arc(W/2,H*.38,150,0,Math.PI*2);ctx.fill();
-  if(reel.profile){const img=new Image();img.onload=()=>{ctx.save();ctx.beginPath();ctx.arc(W/2,H*.36,150,0,Math.PI*2);ctx.clip();ctx.drawImage(img,35,105,330,330);ctx.restore();};img.src=PROFILE_IMG;}
-  else{ctx.font='130px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText(reel.emoji,W/2,H*.38);}
-  for(let i=0;i<12;i++){ctx.strokeStyle=reel.glow+'22';ctx.beginPath();ctx.moveTo(0,i*60);ctx.lineTo(W,i*60);ctx.stroke();}
+function goToReel(i){
+  window.currentReel=Math.max(0,Math.min(reels.length-1,i));
+  $$('.reel').forEach((el,idx)=>el.style.transform=`translateY(${(idx-window.currentReel)*100}%)`);
+  refreshReelPlayback();
 }
+function refreshReelPlayback(){
+  $$('.reel video').forEach((v,i)=>{ if(i===(window.currentReel||0)){v.play().catch(()=>{});} else {v.pause();v.currentTime=0;} });
+}
+function toggleReelLike(i,forceLike=false){
+  if(reels[i] && reels[i].bare)return;
+  const btn=document.querySelector(`[data-reel-like="${i}"]`); if(!btn)return;
+  if(forceLike || !btn.classList.contains('liked')) btn.classList.add('liked'); else btn.classList.remove('liked');
+  const pop=document.getElementById(`reel-heart-${i}`); if(pop){pop.classList.remove('show');void pop.offsetWidth;pop.classList.add('show');}
+}
+function drawReelPlaceholder(canvas,reel){
+  const ctx=canvas.getContext('2d'),W=400,H=700;canvas.width=W;canvas.height=H;ctx.fillStyle=reel.bg||'#000';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,255,255,.035)';ctx.font='bold 34px sans-serif';ctx.textAlign='center';ctx.translate(W/2,H/2);ctx.rotate(-Math.PI/4);
+  for(let y=-360;y<380;y+=160){for(let x=-360;x<380;x+=220){ctx.fillText('INSTARaj',x,y);}}
+  ctx.setTransform(1,0,0,1,0,0);
+}
+
 
 let reflexRunning=false,reflexScore=0,reflexLives=3,reflexSpeed=980,reflexTimer=null,reflexSlots=[],reflexActiveIndex=-1,reflexActiveType=null;
 const reflexTypes=[{key:'beer',emoji:'🍺',good:true},{key:'whiskey',emoji:'🥃',good:true},{key:'water',emoji:'💧',good:false},{key:'juice',emoji:'🧃',good:false},{key:'milk',emoji:'🥛',good:false}];

@@ -98,7 +98,9 @@
   .sticker-anim.show{opacity:1;transform:scale(1)}
   .sticker-anim.hide{opacity:0;transform:scale(1.45);transition:.28s ease}
   .sticker-emoji{font-size:7rem;line-height:1;color:transparent;-webkit-text-stroke:3px #fff;filter:drop-shadow(0 14px 32px rgba(0,0,0,.45))}
-  .post-actions{display:flex;align-items:center;gap:1rem;padding:.75rem 1rem .45rem}
+  .post-actions{display:flex;align-items:center;gap:1.05rem;padding:.7rem 1rem .42rem;font-size:1.02rem}
+  .post-action-unit{display:inline-flex;align-items:center;gap:.38rem;color:#fff;font-weight:800;font-size:.9rem;line-height:1}
+  .post-action-unit svg{width:30px;height:30px;stroke-width:2.25}
   .post-actions .save,.post-view-actions .save{margin-left:auto}
   .like-btn.liked svg,#pv-like-btn.liked svg{stroke:var(--red);fill:var(--red)}
   .post-likes,.post-caption,.post-comments,.post-time{padding:0 1rem}
@@ -109,23 +111,46 @@
   .post-time{font-size:.72rem;color:var(--muted);padding-bottom:.8rem;text-transform:uppercase;letter-spacing:.04em}
 
   .post-img img{width:100%;height:100%;object-fit:cover;display:block;background:#111}
+  .post-img.p7-photo img{object-position:center 30%}
+  .post-liked-row{padding:0 1rem .35rem;display:flex;align-items:center;gap:.5rem;font-size:.88rem;color:#fff}
+  .liked-stack{display:flex;align-items:center}
+  .liked-stack img{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid #000;margin-left:-7px;background:#333}
+  .liked-stack img:first-child{margin-left:0}
+  .post-liked-row b{font-weight:800}
+  .post-comments.clean{color:var(--muted)}
   .post-carousel{position:relative;overflow:hidden;background:#000;touch-action:pan-y}
   .post-carousel-track{height:100%;display:flex;transition:transform .28s cubic-bezier(.22,.75,.2,1)}
   .post-carousel-track img{width:100%;height:100%;object-fit:cover;flex:0 0 100%;display:block;background:#111}
   .post-carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border:none;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:30px;line-height:26px;display:flex;align-items:center;justify-content:center;z-index:3;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;font-family:Arial,sans-serif}
   .post-carousel-prev{left:10px}.post-carousel-next{right:10px}
   .post-carousel-count{position:absolute;right:10px;top:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:.24rem .54rem;font-size:.72rem;font-weight:800;z-index:3;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-  .sticker-anim img{width:116px;height:116px;object-fit:contain;filter:drop-shadow(0 14px 32px rgba(0,0,0,.55))}
+  .sticker-anim img{width:116px;height:116px;object-fit:contain;background:transparent!important;border:none!important;box-shadow:none!important;filter:drop-shadow(0 14px 32px rgba(0,0,0,.55))}
   .post-view-image img{width:100%;height:100%;object-fit:cover;display:block;background:#111}
 
-  #story-viewer{z-index:300;background:#000}
-  .story-progress{display:flex;gap:3px;padding:.75rem 1rem .4rem}
-  .story-prog-bar{flex:1;height:2px;background:rgba(255,255,255,.25);border-radius:1px;overflow:hidden}
-  .story-prog-fill{height:100%;width:0;background:#fff}
-  .story-header{display:flex;align-items:center;justify-content:space-between;padding:.35rem 1rem .6rem}
-  .story-user{display:flex;align-items:center;gap:.65rem}
-  .story-close,.post-view-close{font-size:1.55rem;cursor:pointer;line-height:1}
-  #story-canvas{flex:1;width:100%;display:block}
+  #story-viewer{z-index:300;background:#111;overflow:hidden}
+  .story-progress{position:absolute;left:10px;right:10px;top:10px;display:flex;gap:4px;z-index:6}
+  .story-prog-bar{flex:1;height:3px;background:rgba(255,255,255,.26);border-radius:999px;overflow:hidden}
+  .story-prog-fill{height:100%;width:0;background:#fff;border-radius:999px}
+  .story-header{position:absolute;left:0;right:0;top:22px;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem .6rem;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.75)}
+  .story-user{display:flex;align-items:center;gap:.65rem;min-width:0}
+  .story-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;background:#d9d9d9;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,.25)}
+  .story-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .story-default-avatar svg{width:22px;height:22px;stroke:#8d8d8d;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .story-name-wrap{display:flex;align-items:center;gap:5px;font-size:.84rem;font-weight:800;min-width:0}
+  .story-name-wrap #sv-username{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+  .story-verified{display:inline-flex;width:13px;height:13px;border-radius:50%;background:#1da1f2;color:#fff;align-items:center;justify-content:center;font-size:8px;font-weight:900;line-height:1}
+  .story-top-actions{display:flex;align-items:center;gap:18px;color:#fff;font-size:1rem;font-weight:800}
+  .story-more{letter-spacing:2px;line-height:1;transform:translateY(-2px)}
+  .story-close,.post-view-close{font-size:1.55rem;cursor:pointer;line-height:1;background:none;border:none;color:#fff;font-family:var(--font);padding:0}
+  .story-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#242424;z-index:1}
+  .story-stage img{width:100%;height:100%;object-fit:contain;background:#242424;display:block}
+  .story-tap-zone{position:absolute;top:74px;bottom:78px;z-index:4;background:transparent;border:0;padding:0}
+  .story-prev{left:0;width:34%}.story-next{right:0;width:66%}
+  .story-reply-bar{position:absolute;left:0;right:0;bottom:18px;z-index:6;display:flex;align-items:center;gap:14px;padding:0 1rem;color:#fff}
+  .story-message-pill{height:42px;flex:1;border:2px solid rgba(255,255,255,.9);border-radius:999px;display:flex;align-items:center;padding:0 18px;font-size:.82rem;font-weight:800;background:rgba(0,0,0,.12);box-shadow:0 1px 8px rgba(0,0,0,.25)}
+  .story-heart{background:none;border:0;color:#ff1f66;font-size:2rem;line-height:1;padding:0 1px;filter:drop-shadow(0 1px 5px rgba(0,0,0,.6))}
+  .story-send{background:none;border:0;padding:0;color:#fff;display:flex;align-items:center;justify-content:center}
+  .story-send svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 5px rgba(0,0,0,.6))}
 
   #post-viewer{z-index:320;background:#000}
   .post-view-top{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;border-bottom:1px solid var(--border)}
@@ -333,12 +358,19 @@ last sober sighting: unavailable</div>
   <div class="story-progress" id="story-progress"></div>
   <div class="story-header">
     <div class="story-user">
-      <div class="post-avatar" id="sv-avatar" style="width:34px;height:34px">🌙</div>
-      <div><div style="font-size:.84rem;font-weight:800" id="sv-username">nightmode</div><div style="font-size:.72rem;color:var(--muted)" id="sv-time">3:17 AM</div></div>
+      <div class="story-avatar" id="sv-avatar"></div>
+      <div class="story-name-wrap"><span id="sv-username">username</span><span class="story-verified">✓</span></div>
     </div>
-    <div class="story-close" id="story-close">✕</div>
+    <div class="story-top-actions"><span class="story-more">•••</span><button type="button" class="story-close" id="story-close">✕</button></div>
   </div>
-  <canvas id="story-canvas"></canvas>
+  <div class="story-stage" id="story-stage"><img id="story-media" alt="story"></div>
+  <button type="button" class="story-tap-zone story-prev" id="story-prev" aria-label="Previous story"></button>
+  <button type="button" class="story-tap-zone story-next" id="story-next" aria-label="Next story"></button>
+  <div class="story-reply-bar">
+    <div class="story-message-pill">Send Message</div>
+    <button type="button" class="story-heart" aria-label="Like story">♥</button>
+    <button type="button" class="story-send" aria-label="Send story"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
 </section>
 
 <section class="screen overlay" id="post-viewer">
@@ -446,7 +478,7 @@ const navItems = [
 function navIcon(type){
   if (type === 'beer') return `<svg viewBox="0 0 32 32" aria-hidden="true"><path class="solid" d="M10.2 10.6h11.2c1 0 1.8.8 1.8 1.8v9.1c0 4.05-2.9 6.7-6.75 6.7h-1.3c-3.85 0-6.75-2.65-6.75-6.7v-9.1c0-1 .8-1.8 1.8-1.8z"/><path class="solid" d="M22.2 14.1h2.1c2.1 0 3.8 1.7 3.8 3.8s-1.7 3.8-3.8 3.8h-2.1v-2.3h2.05c.82 0 1.5-.68 1.5-1.5s-.68-1.5-1.5-1.5H22.2z"/><path class="solid" d="M10 10.9c.35-3.05 2.15-5.25 4.25-5.25.95 0 1.35.55 2.03.55.72 0 1.08-.55 2.05-.55 2.25 0 4.15 2.25 4.45 5.25z"/><rect class="cut" x="12" y="14.1" width="1.55" height="10.35" rx=".75" opacity=".82"/><rect class="cut" x="15.15" y="14.1" width="1.55" height="10.35" rx=".75" opacity=".82"/><rect class="cut" x="18.3" y="14.1" width="1.55" height="10.35" rx=".75" opacity=".82"/></svg>`;
   if (type === 'reels') return `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6.6" width="20" height="18.8" rx="5.2"/><path d="M6.8 12.3h18.4M11.2 6.8l3.6 5.5M18 6.8l3.6 5.5"/><path class="fill" d="M14.1 16.1v5.7c0 .52.56.84 1.01.57l5-2.84a.66.66 0 0 0 0-1.14l-5-2.85a.66.66 0 0 0-1.01.57z"/></svg>`;
-  if (type === 'cig') return `<svg viewBox="0 0 32 32" aria-hidden="true"><rect class="solid" x="4.2" y="18.7" width="17.2" height="5.15" rx="1.15"/><rect class="solid" x="21.55" y="18.7" width="3.85" height="5.15" rx=".45" opacity=".76"/><rect class="solid" x="25.85" y="18.7" width="2.25" height="5.15" rx=".55" opacity=".95"/><path d="M9.6 15.3c1.15-.9 1.15-2.2 0-3.25"/><path d="M14.2 16.1c2.05-1.55 2.05-4.05.05-5.65"/><path d="M24.5 16.2c1.25-.65 1.55-1.75.55-2.9"/></svg>`;
+  if (type === 'cig') return `<svg viewBox="0 0 32 32" aria-hidden="true"><rect class="solid" x="4.2" y="18.9" width="17.2" height="5.15" rx="1.15"/><rect class="solid" x="21.55" y="18.9" width="3.85" height="5.15" rx=".45" opacity=".76"/><rect class="solid" x="25.85" y="18.9" width="2.25" height="5.15" rx=".55" opacity=".95"/><path d="M8.2 15.3c1.25-1.05 1.25-2.45.05-3.55"/><path d="M12.6 16c1.9-1.55 1.9-3.95.05-5.55"/></svg>`;
   if (type === 'bad') return `<svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="13.2" cy="10.6" rx="6.15" ry="7.25" transform="rotate(-34 13.2 10.6)"/><path d="M9 5.4c3.05 4.05 5.1 7.85 6.15 11.4"/><path d="M15.25 3.9c-1.15 5.05-.8 9.35 1.05 12.9"/><path d="M7.6 10.5h11.2"/><path d="M10.7 15.4 17.9 7"/><path d="M18.05 16.5 27.3 27.5"/><path class="solid" d="M26.4 26.1l2.25 2.7c.37.45.3 1.1-.14 1.48-.45.37-1.11.31-1.48-.14l-2.25-2.7z"/></svg>`;
   if (type === 'profile') return `<img class="nav-profile" src="${PROFILE_IMG}" alt="profile">`;
   return `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5.2 14.6 16 6.2l10.8 8.4"/><path d="M7.9 13.1v11.1a2.5 2.5 0 0 0 2.5 2.5h11.2a2.5 2.5 0 0 0 2.5-2.5V13.1"/><path d="M12.7 26.7v-7.25a1.55 1.55 0 0 1 1.55-1.55h3.5a1.55 1.55 0 0 1 1.55 1.55v7.25"/></svg>`;
@@ -462,48 +494,77 @@ function buildNav(containerId){
 }
 function buildAllNavs(){ ['bottom-nav','bottom-nav-beer','bottom-nav-reels','bottom-nav-cig','bottom-nav-bad','bottom-nav-profile'].forEach(buildNav); }
 
+const DEFAULT_STORY_AVATAR = `<span class="story-default-avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21c1.4-4.2 4-6.3 7.5-6.3s6.1 2.1 7.5 6.3"/></svg></span>`;
 const stories = [
-  {name:'badminton…', emoji:'🏸', bg:'#0d1b0d', msg:'court soon?'},
-  {name:'f1brain', emoji:'🏎️', bg:'#1a0d0d', msg:'grid position 1'},
-  {name:'insomnia', emoji:'😴', bg:'#1a1a0d', msg:'sleep missing'},
-  {name:'weball', emoji:'🍺', bg:'#0d0d1a', msg:'fuck it we ball'},
-  {name:'3amvibes', emoji:'🌃', bg:'#0d1a1a', msg:'3am again huh'}
+  {name:'charles_leclerc', img:'chs.jpeg', avatar:'ch.jpeg', verified:true},
+  {name:'dietcoke_india', img:'dcs.jpeg', avatar:'dc.jpeg', verified:true},
+  {name:'abdevilliers17', img:'abs.jpeg', avatar:'ab.jpeg', verified:true},
+  {name:'your_fan', img:'fans.jpeg', avatar:null, verified:false}
 ];
+let activeStoryIndex = 0;
+let storyStartedAt = 0;
+let storyTouchX = 0;
+function storyAvatarHTML(s){
+  return s.avatar ? `<img src="${s.avatar}" alt="${s.name}">` : DEFAULT_STORY_AVATAR;
+}
 function buildStories(){
   const row = $('#stories-row'); row.innerHTML = '';
-  const mine = document.createElement('div');
-  mine.className='story';
-  mine.innerHTML = `<div class="my-story-wrap"><img src="${PROFILE_IMG}" class="my-story-img" alt="Your story"><div class="my-story-plus">+</div></div><div class="story-name">Your story</div>`;
-  row.appendChild(mine);
-  stories.slice(1).forEach((s, idx) => {
-    const i = idx + 1;
+  stories.forEach((s, i) => {
     const d = document.createElement('div'); d.className='story';
-    d.innerHTML = `<div class="story-ring"><div class="story-inner" style="background:${s.bg}">${s.emoji}</div></div><div class="story-name">${s.name}</div>`;
+    d.innerHTML = `<div class="story-ring"><div class="story-inner">${storyAvatarHTML(s)}</div></div><div class="story-name">${s.name}</div>`;
     d.addEventListener('click', () => openStory(i)); row.appendChild(d);
   });
 }
 function openStory(i){
-  const s = stories[i];
-  if (s.img){ $('#sv-avatar').innerHTML = `<img src="${PROFILE_IMG}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
-  else { $('#sv-avatar').innerHTML = s.emoji; $('#sv-avatar').style.background = s.bg; }
-  $('#sv-username').textContent = s.name; $('#sv-time').textContent = ['now','2:47 AM','12:01 AM','3:17 AM','9:45 PM','4:02 AM'][i];
+  activeStoryIndex = Math.max(0, Math.min(stories.length - 1, i));
+  const s = stories[activeStoryIndex];
+  $('#sv-avatar').innerHTML = storyAvatarHTML(s);
+  $('#sv-username').textContent = s.name;
+  const verified = document.querySelector('.story-verified');
+  if (verified) verified.style.display = s.verified ? 'inline-flex' : 'none';
   $('#story-progress').innerHTML = stories.map((_, idx)=>`<div class="story-prog-bar"><div class="story-prog-fill" id="spf-${idx}"></div></div>`).join('');
-  const canvas = $('#story-canvas'), ctx=canvas.getContext('2d'); canvas.width=innerWidth; canvas.height=Math.max(innerHeight-110,520);
-  const W=canvas.width,H=canvas.height; ctx.fillStyle=s.bg || '#111'; ctx.fillRect(0,0,W,H);
-  if(s.img){
-    const img = new Image(); img.onload=()=>{ctx.save();ctx.beginPath();ctx.arc(W/2,H/2-30,Math.min(W*.38,180),0,Math.PI*2);ctx.clip();ctx.drawImage(img,W/2-190,H/2-220,380,380);ctx.restore();storyText(ctx,W,H,s.msg);}; img.src=PROFILE_IMG;
-  } else { ctx.font='92px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(s.emoji,W/2,H/2-40); storyText(ctx,W,H,s.msg); }
-  $('#story-viewer').classList.add('active'); history.pushState({screen:'story'}, '', '#story');
-  clearTimeout(window.storyTimer); const fill=document.getElementById(`spf-${i}`);
-  requestAnimationFrame(()=>{fill.style.transition='width 5s linear';fill.style.width='100%';});
-  window.storyTimer=setTimeout(closeStory,5000);
+  stories.forEach((_, idx)=>{ const f=document.getElementById(`spf-${idx}`); if(f && idx < activeStoryIndex) f.style.width='100%'; });
+  const media = $('#story-media');
+  media.src = s.img;
+  media.alt = s.name + ' story';
+  $('#story-viewer').classList.add('active');
+  if (!history.state || history.state.screen !== 'story') history.pushState({screen:'story'}, '', '#story');
+  startStoryTimer();
 }
-function storyText(ctx,W,H,msg){ctx.fillStyle='#fff';ctx.font='bold 24px sans-serif';ctx.textAlign='center';ctx.fillText(msg,W/2,H/2+88);}
-function closeStory(){clearTimeout(window.storyTimer);$('#story-viewer').classList.remove('active');}
-$('#story-close').addEventListener('click', () => { closeStory(); activateScreen('home'); });
+function startStoryTimer(){
+  clearTimeout(window.storyTimer);
+  storyStartedAt = Date.now();
+  const fill=document.getElementById(`spf-${activeStoryIndex}`);
+  if(fill){
+    fill.style.transition='none'; fill.style.width='0%';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.transition='width 5s linear';fill.style.width='100%';}));
+  }
+  window.storyTimer=setTimeout(nextStory,5000);
+}
+function nextStory(){
+  if(activeStoryIndex < stories.length - 1) openStory(activeStoryIndex + 1);
+  else closeStory(true);
+}
+function prevStory(){
+  if(activeStoryIndex > 0) openStory(activeStoryIndex - 1);
+  else startStoryTimer();
+}
+function closeStory(goHome=false){
+  clearTimeout(window.storyTimer);
+  $('#story-viewer').classList.remove('active');
+  if(goHome) activateScreen('home', false);
+}
+$('#story-close').addEventListener('click', () => { closeStory(true); history.replaceState({screen:'home'}, '', '#home'); });
+$('#story-next').addEventListener('click', nextStory);
+$('#story-prev').addEventListener('click', prevStory);
+$('#story-viewer').addEventListener('touchstart', e => { storyTouchX = e.touches[0].clientX; }, {passive:true});
+$('#story-viewer').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - storyTouchX;
+  if(Math.abs(dx) > 45){ dx < 0 ? nextStory() : prevStory(); }
+}, {passive:true});
 
 const posts = [
-  { img:'p1.jpeg', user:'rahilstouchinggrass', caption:"yea after so I'll also adopt what it - fuck it we ball", loc:'InstaRaj', likes:'736', comments:42, time:'1h' },
+  { img:'p1.jpeg', user:'rahilstouchinggrass', caption:"yea after so I'll also adopt what it - fuck it we ball", loc:'', likes:'736', comments:42, time:'1h' },
   { img:'p2.jpeg', user:'lipsibutonsnapchat', caption:'👩🏼‍🚀', loc:'Moon mode', likes:'612', comments:28, time:'2h' },
   { img:'p3.jpeg', user:'vansh_khotariii', caption:'The finest', loc:'Somewhere nice', likes:'884', comments:61, time:'3h' },
   { img:'p4.jpeg', user:'abhibalesh', caption:'Gotta stay freaky and keep sucking forever 😝🤙', loc:'Certified freak zone', likes:'957', comments:73, time:'4h' },
@@ -548,7 +609,7 @@ function postMediaHTML(p,i){
       <div class="sticker-anim" id="sticker-${i}"><img src="sticker.png" alt="like"></div>
     </div>`;
   }
-  return `<div class="post-img" data-idx="${i}"><img src="${p.img}" alt="post image" onerror="this.style.opacity=.18"><div class="sticker-anim" id="sticker-${i}"><img src="sticker.png" alt="like"></div></div>`;
+  return `<div class="post-img ${p.img==='p7.jpeg'?'p7-photo':''}" data-idx="${i}"><img src="${p.img}" alt="post image" onerror="this.style.opacity=.18"><div class="sticker-anim" id="sticker-${i}"><img src="sticker.png" alt="like"></div></div>`;
 }
 function updatePostCarousel(i,dir){
   const p=posts[i]; if(!p.imgs)return;
@@ -558,26 +619,32 @@ function updatePostCarousel(i,dir){
   if(track) track.style.transform=`translateX(-${postCarouselIndex[i]*100}%)`;
   if(count) count.textContent=`${postCarouselIndex[i]+1}/${p.imgs.length}`;
 }
-function randomCommentPreview(p,i){
-  const names=['rajath.exe','jawnwii','abhibalesh','who.dass_','rahilstouchinggrass'];
-  return `${names[i%names.length]} and others are typing...`;
+function likedByRow(p,i){
+  if(![0,2,5,8].includes(i)) return '';
+  const names=['ansh255','rajath.exe','jawnwii','abhibalesh'];
+  const imgs=['j.jpeg','rajath.exe.jpeg','abhi.jpeg'];
+  return `<div class="post-liked-row"><span class="liked-stack">${imgs.slice(0,2).map(src=>`<img src="${src}" onerror="this.style.display='none'">`).join('')}</span><span>Liked by <b>${names[i%names.length]}</b> and others</span></div>`;
 }
 function buildPosts(){
   const c=$('#posts-container'); c.innerHTML='';
   posts.forEach((p,i)=>{
     const d=document.createElement('div'); d.className='post';
     d.innerHTML = `
-      <div class="post-header"><div class="post-user">${avatarHTML(p.user)}<div class="post-user-meta"><div class="post-username">${p.user}</div><div class="post-location">${p.loc||'InstaRaj'}</div></div></div><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+      <div class="post-header"><div class="post-user">${avatarHTML(p.user)}<div class="post-user-meta"><div class="post-username">${p.user}</div>${p.loc?`<div class="post-location">${p.loc}</div>`:''}</div></div><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
       ${postMediaHTML(p,i)}
-      <div class="post-actions"><div class="like-btn" data-idx="${i}"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div><div class="save"><svg viewBox="0 0 24 24"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg></div></div>
-      <div class="post-likes">${p.likes} likes</div><div class="post-caption"><b>${p.user}</b> ${p.caption}</div><div class="post-comments">View all ${p.comments} comments · ${randomCommentPreview(p,i)}</div><div class="post-time">${p.time} ago</div>`;
+      <div class="post-actions"><div class="post-action-unit like-btn" data-idx="${i}"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg><span>${p.likes}</span></div><div class="post-action-unit"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 1 1 17 0z"/></svg><span>${p.comments}</span></div><div class="post-action-unit"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9 22 2z"/></svg></div><div class="save"><svg viewBox="0 0 24 24"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg></div></div>
+      ${likedByRow(p,i)}<div class="post-caption"><b>${p.user}</b> ${p.caption}</div><div class="post-comments clean">View all ${p.comments} comments</div><div class="post-time">${p.time} ago</div>`;
     c.appendChild(d);
 
-    const postImg=d.querySelector('.post-img'); let lastTap=0,singleTapTimer=null,startX=0,startY=0,moved=false;
-    postImg.addEventListener('touchstart',e=>{const t=e.touches[0];startX=t.clientX;startY=t.clientY;moved=false;},{passive:true});
-    postImg.addEventListener('touchmove',e=>{const t=e.touches[0];if(Math.abs(t.clientX-startX)>12||Math.abs(t.clientY-startY)>12)moved=true;},{passive:true});
-    postImg.addEventListener('touchend',()=>{if(moved)return;const now=Date.now();if(now-lastTap<280){clearTimeout(singleTapTimer);singleTapTimer=null;triggerLike(i,true);}else{singleTapTimer=setTimeout(()=>openPost(i),230);}lastTap=now;},{passive:true});
-    postImg.addEventListener('click',()=>{const now=Date.now(); if(now-lastTap<280){triggerLike(i,true);lastTap=0;} else {lastTap=now; setTimeout(()=>{if(lastTap)openPost(i);lastTap=0;},230);}});
+    const postImg=d.querySelector('.post-img'); let lastTap=0,startX=0,startY=0;
+    postImg.addEventListener('touchstart',e=>{const t=e.touches[0];startX=t.clientX;startY=t.clientY;},{passive:true});
+    postImg.addEventListener('touchend',e=>{
+      const t=e.changedTouches[0], dx=t.clientX-startX, dy=t.clientY-startY;
+      if(p.imgs && Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)){updatePostCarousel(i,dx<0?1:-1);return;}
+      if(Math.abs(dx)>12||Math.abs(dy)>12)return;
+      const now=Date.now(); if(now-lastTap<300){triggerLike(i,true);lastTap=0;} else lastTap=now;
+    },{passive:true});
+    postImg.addEventListener('click',()=>{const now=Date.now(); if(now-lastTap<300){triggerLike(i,true);lastTap=0;} else lastTap=now;});
     const prev=d.querySelector('[data-post-prev]'), next=d.querySelector('[data-post-next]');
     if(prev)prev.addEventListener('click',e=>{e.stopPropagation();updatePostCarousel(i,-1);});
     if(next)next.addEventListener('click',e=>{e.stopPropagation();updatePostCarousel(i,1);});
@@ -602,7 +669,7 @@ function openPost(i){
   const p=posts[i]; currentOpenedPost=i;
   const avatarSrc=postAvatarFor(p.user);
   $('#pv-avatar').outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${avatarSrc}" alt="${p.user}" onerror="this.onerror=null;this.src=PROFILE_IMG">`;
-  $('#pv-username').textContent=p.user; $('#pv-location').textContent=p.loc||'InstaRaj'; $('#pv-likes').textContent=p.likes+' likes';
+  $('#pv-username').textContent=p.user; $('#pv-location').textContent=p.loc||''; $('#pv-likes').textContent=p.likes+' likes';
   $('#pv-caption').innerHTML=`<b>${p.user}</b> ${p.caption}`;
   $('#pv-comments').textContent=`View all ${p.comments} comments`; $('#pv-time').textContent=`${p.time} ago`; $('#pv-like-btn').classList.toggle('liked',!!likedPosts[i]);
   const wrap=document.querySelector('.post-view-wrap');

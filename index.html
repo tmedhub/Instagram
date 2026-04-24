@@ -175,7 +175,7 @@
   .reel-media{position:absolute;inset:0;background:#000;display:flex;align-items:center;justify-content:center}
   .reel-media video,.reel-media canvas{width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:#000}
   .reel-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.42) 22%,rgba(0,0,0,.05) 55%,rgba(0,0,0,.28) 100%);pointer-events:none}
-  .reel-info{position:absolute;left:10px;right:72px;bottom:74px;z-index:4;text-shadow:0 1px 8px rgba(0,0,0,.75)}
+  .reel-info{position:absolute;left:10px;right:72px;bottom:16px;z-index:4;text-shadow:0 1px 8px rgba(0,0,0,.75)}
   .reel-author-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;min-width:0}
   .reel-author-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#8b8f98;flex-shrink:0}
   .reel-user{font-size:.78rem;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:132px}
@@ -184,7 +184,7 @@
   .reel-audio{margin-top:10px;font-size:.73rem;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px}
   .reel-audio:before{content:'♫';font-size:.95rem;margin-right:7px}
   .reel.bare .reel-overlay,.reel.bare .reel-info,.reel.bare .reel-side{display:none!important}
-  .reel-side{position:absolute;right:9px;bottom:79px;z-index:5;display:flex;flex-direction:column;gap:15px;align-items:center;text-shadow:0 1px 7px rgba(0,0,0,.78)}
+  .reel-side{position:absolute;right:9px;bottom:16px;z-index:5;display:flex;flex-direction:column;gap:15px;align-items:center;text-shadow:0 1px 7px rgba(0,0,0,.78)}
   .reel-side .item{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:44px;color:#fff;font-weight:800;cursor:pointer;user-select:none}
   .reel-side svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 4px rgba(0,0,0,.75))}
   .reel-side span{font-size:.65rem;letter-spacing:-.02em}
@@ -196,6 +196,14 @@
   .reel-sound-btn{position:absolute;top:68px;left:50%;transform:translateX(-50%);z-index:12;border:1px solid rgba(255,255,255,.24);background:rgba(0,0,0,.62);color:#fff;border-radius:999px;padding:.58rem .9rem;font-size:.78rem;font-weight:800;font-family:var(--font);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 28px rgba(0,0,0,.35);cursor:pointer}
   .reel-sound-btn.hidden{display:none!important}
   #reels>.topbar{display:none!important}
+
+  .reel-suggest-box{position:absolute;left:12px;bottom:5cm;z-index:7;max-width:72vw;background:rgba(0,0,0,.46);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:10px;padding:.52rem .72rem;font-size:.76rem;font-weight:800;line-height:1.2;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.24)}
+  .profile-stats{align-items:flex-start;gap:.18rem}
+  .profile-stats .stat{min-width:0;flex:1;padding:0 1px;text-align:center}
+  .profile-stats .stat .stat-num{font-size:.72rem!important;line-height:1.05!important;letter-spacing:-.035em!important;white-space:nowrap;display:block;font-weight:800}
+  .profile-stats .stat .stat-label{font-size:.72rem!important;line-height:1.05!important;letter-spacing:-.035em!important;white-space:nowrap;display:block;color:var(--muted)}
+  [id^="profile-sticker-"]{overflow:visible!important;align-items:center!important;justify-content:center!important}
+  [id^="profile-sticker-"] img{width:64px!important;height:64px!important;object-fit:contain!important;object-position:center center!important;background:transparent!important;border:none!important;box-shadow:none!important;display:block!important}
 
 
   .profile-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--navH) + 12px)}
@@ -213,9 +221,6 @@
   .profile-btn{flex:1;background:var(--surface);color:#fff;border:none;padding:.58rem;border-radius:8px;font-weight:800;font-family:var(--font);cursor:pointer}
   .profile-btn.follow{background:var(--blue)}
 
-  .profile-stats .stat{min-width:0;flex:1;padding:0 2px}
-  .profile-stats .stat:nth-child(2) .stat-num,.profile-stats .stat:nth-child(3) .stat-num{font-size:.68rem;line-height:1.05;letter-spacing:-.04em;white-space:nowrap}
-  [id^="profile-sticker-"] img{width:72px!important;height:72px!important}
   .highlights{padding:.8rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
   .highlights-row{display:flex;gap:1rem;overflow-x:auto;padding:0 1rem}
   .highlight{flex-shrink:0;text-align:center}
@@ -242,6 +247,18 @@
   .lives-row{display:flex;align-items:center;justify-content:center;gap:.3rem;min-height:1.4rem;font-size:1.2rem}
   .game-card{width:min(92vw,360px);background:#111;border:1px solid var(--border);border-radius:18px;padding:1rem;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.35)}
   .bad-card-title{font-size:1.5rem;font-weight:800;text-align:center}
+  /* final profile/reels polish */
+  .post-view-header-user{display:flex;align-items:center;gap:.55rem;font-size:.9rem;font-weight:800;min-width:0}
+  .post-view-header-user img{width:30px;height:30px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.28);flex-shrink:0}
+  .profile-edit-actions{display:flex;gap:.5rem;margin-top:.8rem}
+  .profile-edit-actions .profile-btn{background:#1a1a1a;border:1px solid rgba(255,255,255,.12);padding:.58rem .7rem;font-size:.82rem;border-radius:9px}
+  .profile-stats{align-items:center!important;justify-content:space-around!important;gap:.2rem!important}
+  .profile-stats .stat{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;flex:1;text-align:center}
+  .profile-stats .stat-num,.profile-stats .stat-label{font-size:.7rem!important;line-height:1.05!important;letter-spacing:-.045em!important;white-space:nowrap!important;font-weight:800!important}
+  .profile-stats .stat-label{color:var(--muted)!important;margin-top:.12rem}
+  [id^="profile-sticker-"]{overflow:visible!important;align-items:center!important;justify-content:center!important}
+  [id^="profile-sticker-"] img{width:min(28vw,96px)!important;height:auto!important;max-height:none!important;object-fit:contain!important;object-position:center!important;background:transparent!important}
+  .post-view-image:has([id^="profile-sticker-"]){overflow:visible!important}
 </style>
 </head>
 <body>
@@ -349,7 +366,7 @@
       </div>
       <div class="profile-name">Rajath</div>
       <div class="profile-bio">thundestruck - whatever the fuck that means</div>
-      <div class="profile-link">⚡ fuck_it_we_ball archive</div>
+      <div class="profile-edit-actions"><button class="profile-btn" id="edit-profile-btn" type="button">Edit profile</button><button class="profile-btn" id="share-profile-btn" type="button">Share profile</button></div>
     </div>
     <div class="highlights"><div class="highlights-row" id="hl-row"></div></div>
     <div class="posts-grid" id="posts-grid"></div>
@@ -694,11 +711,12 @@ function postViewerMediaHTML(p){
 }
 function openPost(i){
   const pvTitle=document.querySelector('.post-view-top > div:first-child'); if(pvTitle) pvTitle.textContent='Post';
+  const metaUser=document.querySelector('.post-view-user'); if(metaUser) metaUser.style.display='flex';
   const p=posts[i]; currentOpenedPost=i;
   const avatarSrc=postAvatarFor(p.user);
   $('#pv-avatar').outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${avatarSrc}" alt="${p.user}" onerror="this.onerror=null;this.src=PROFILE_IMG">`;
   $('#pv-username').textContent=p.user; $('#pv-location').textContent=p.loc||''; $('#pv-likes').textContent=p.likes+' likes';
-  $('#pv-caption').innerHTML=`<b>${p.user}</b> ${p.caption}`;
+  $('#pv-caption').textContent=p.caption;
   $('#pv-comments').textContent=`View all ${p.comments} comments`; $('#pv-time').textContent=`${p.time} ago`; $('#pv-like-btn').classList.toggle('liked',!!likedPosts[i]);
   const wrap=document.querySelector('.post-view-wrap');
   const oldMedia=wrap.querySelector('.post-view-image'); if(oldMedia) oldMedia.outerHTML=postViewerMediaHTML(p);
@@ -731,7 +749,7 @@ const reels=[
   {src:'r2.mp4', user:'pranesh_hod', caption:'58 , 59', audio:'Original audio', likes:'742', comments:'118', sends:'394'},
   {src:'r3.mp4', user:'your_dad', caption:'', audio:'Original audio', likes:'683', comments:'72', sends:'214'},
   {src:'r4.mp4', user:'rajeshwari', caption:'50/50', audio:'Original audio', likes:'519', comments:'96', sends:'308'},
-  {src:'r5.mp4', bare:true},
+  {src:'r5.mp4', bare:true, suggest:'suggested from the best blend ever'},
   {src:'r6.mp4', user:'rahilstouchinggrass', caption:"sir he's coming", audio:'Original audio', likes:'846', comments:'203', sends:'517'},
   {src:'r7.mp4', user:'jawnwii', caption:'same same but different', audio:'Original audio', likes:'421', comments:'67', sends:'190'},
   {src:'r8.mp4', user:'abhibalesh', caption:'🫦', audio:'Original audio', likes:'934', comments:'151', sends:'602'},
@@ -747,7 +765,10 @@ const REEL_PROFILE_AVATARS={
   'abhibalesh':'abhi.jpeg',
   'who.dass_':'manya.jpeg',
   'vansh_khotari':'v.jpeg',
-  'gaurav_balesh':'g.jpeg'
+  'vansh_khotariii':'v.jpeg',
+  'gaurav_balesh':'g.jpeg',
+  'pranesh_hod':'p.jpeg',
+  'rajeshwari':'rajeshwari.jpeg'
 };
 const REEL_SCENERY_AVATARS=[
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop stop-color='%2387ceeb'/><stop offset='1' stop-color='%23f7d794'/></linearGradient></defs><rect width='80' height='80' fill='url(%23g)'/><circle cx='60' cy='18' r='9' fill='%23fff3a3'/><path d='M0 62 22 38 39 57 53 35 80 64v16H0z' fill='%232b6b47'/><path d='M0 70 30 50 55 72 80 56v24H0z' fill='%2317432d'/></svg>",
@@ -778,6 +799,12 @@ function enableReelsAudio(){
   const b=$('#reel-sound-btn'); if(b)b.classList.add('hidden');
   refreshReelPlayback();
 }
+function disableReelsAudio(){
+  reelsAudioUnlocked=false;
+  $$('.reel video').forEach(v=>{v.muted=true;});
+  const b=$('#reel-sound-btn'); if(b)b.classList.remove('hidden');
+  refreshReelPlayback();
+}
 function buildReels(){
   const wrap=$('#reels-wrap');wrap.innerHTML=''; window.currentReel=window.currentReel||0;
   reels.forEach((r,i)=>{
@@ -786,9 +813,9 @@ function buildReels(){
       ? `<video src="${r.src}" muted playsinline loop preload="metadata"></video>`
       : `<canvas width="400" height="700"></canvas>`;
     const info = r.bare ? '' : `<div class="reel-overlay"></div>
-      <div class="reel-info"><div class="reel-author-row"><img class="reel-author-pic" src="" alt="" onerror="if(this.src.includes('rajath.exe.jpeg')){this.src='rajath.exe,jpeg'}else{this.onerror=null;this.src=PROFILE_IMG}"><div class="reel-user">${r.user||'ryzn_films'}</div><button class="reel-follow">Follow</button></div>${r.caption?`<div class="reel-caption">${r.caption}</div>`:''}<div class="reel-audio">${r.audio||'Original audio'}</div></div>
+      <div class="reel-info"><div class="reel-author-row"><img class="reel-author-pic" src="${reelAvatarFor(r,i)}" alt="" onerror="if(this.src.includes('rajath.exe.jpeg')){this.src='rajath.exe,jpeg'}else{this.onerror=null;this.src=PROFILE_IMG}"><div class="reel-user">${r.user||'ryzn_films'}</div><button class="reel-follow">Follow</button></div>${r.caption?`<div class="reel-caption">${r.caption}</div>`:''}<div class="reel-audio">${r.audio||'Original audio'}</div></div>
       ${reelActionHTML(r,i)}`;
-    d.innerHTML=`<div class="reel-media">${media}</div>${info}<div class="reel-heart-pop" id="reel-heart-${i}" aria-hidden="true">😝</div>`;
+    d.innerHTML=`<div class="reel-media">${media}</div>${info}${r.suggest?`<div class="reel-suggest-box">${r.suggest}</div>`:''}<div class="reel-heart-pop" id="reel-heart-${i}" aria-hidden="true">😝</div>`;
     wrap.appendChild(d);
     if(!r.src) drawReelPlaceholder(d.querySelector('canvas'),r);
   });
@@ -798,13 +825,30 @@ function buildReels(){
   wrap.addEventListener('touchend',e=>{const dy=startY-e.changedTouches[0].clientY;if(Math.abs(dy)>50)goToReel((window.currentReel||0)+(dy>0?1:-1));},{passive:true});
   wrap.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>25){e.preventDefault();goToReel((window.currentReel||0)+(e.deltaY>0?1:-1));}}, {passive:false});
   const soundBtn=$('#reel-sound-btn'); if(soundBtn) soundBtn.addEventListener('click',e=>{e.stopPropagation();enableReelsAudio();});
+  let singleTapTimer=null;
   wrap.addEventListener('click',e=>{
-    enableReelsAudio();
     const like=e.target.closest('[data-reel-like]');
     if(like){toggleReelLike(+like.dataset.reelLike);return;}
+    const clickedVideo=!!e.target.closest('.reel-media video');
     const now=Date.now();
     const idx=window.currentReel||0;
-    if(now-lastTap<300){toggleReelLike(idx,true);lastTap=0;} else lastTap=now;
+    if(now-lastTap<300){
+      clearTimeout(singleTapTimer);
+      toggleReelLike(idx,true);
+      lastTap=0;
+      return;
+    }
+    lastTap=now;
+    singleTapTimer=setTimeout(()=>{
+      if(clickedVideo){
+        reelsAudioUnlocked=false;
+        $$(".reel video").forEach(v=>{try{v.pause();v.muted=true;}catch(e){}});
+        const b=$("#reel-sound-btn"); if(b)b.classList.remove("hidden");
+      }else{
+        enableReelsAudio();
+      }
+      lastTap=0;
+    },260);
   });
 }
 function goToReel(i){
@@ -890,10 +934,12 @@ function triggerProfileLike(i,forceLike=false){
 }
 function openProfilePost(i){
   const p=profilePosts[i]; currentOpenedProfilePost=i; currentOpenedPost=null;
-  const pvTitle=document.querySelector('.post-view-top > div:first-child'); if(pvTitle) pvTitle.textContent='parsonrajath_25';
-  $('#pv-avatar').outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${PROFILE_IMG}" alt="${p.user}">`;
-  $('#pv-username').textContent=p.user; $('#pv-location').textContent=p.loc||''; $('#pv-likes').textContent=p.likes+' likes';
-  $('#pv-caption').innerHTML=`<b>${p.user}</b> ${p.caption}`;
+  const pvTitle=document.querySelector(".post-view-top > div:first-child");
+  if(pvTitle) pvTitle.innerHTML=`<div class="post-view-header-user"><img src="${PROFILE_IMG}" alt="parsonrajath_25"><span>parsonrajath_25</span></div>`;
+  const metaUser=document.querySelector(".post-view-user"); if(metaUser) metaUser.style.display="none";
+  $("#pv-avatar").outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${PROFILE_IMG}" alt="${p.user}">`;
+  $("#pv-username").textContent=p.user; $("#pv-location").textContent=p.loc||""; $("#pv-likes").textContent=p.likes+" likes";
+  $("#pv-caption").textContent=p.caption;
   $('#pv-comments').textContent=`View all ${p.comments} comments`; $('#pv-time').textContent=`${p.time}`; $('#pv-like-btn').classList.toggle('liked',!!likedProfilePosts[i]);
   const wrap=document.querySelector('.post-view-wrap');
   const oldMedia=wrap.querySelector('.post-view-image'); if(oldMedia) oldMedia.outerHTML=profileViewerMediaHTML(p,i);
@@ -913,6 +959,9 @@ function openProfilePost(i){
   media.addEventListener('click',()=>handleProfileViewerTap(i));
   $('#post-viewer').classList.add('active'); history.pushState({screen:'post'}, '', '#post');
 }
+
+const editProfileBtn = document.getElementById("edit-profile-btn");
+if(editProfileBtn){ editProfileBtn.addEventListener("click",()=>showToast(`too bad you can\`t`)); }
 
 window.addEventListener('popstate', () => {
   if ($('#post-viewer').classList.contains('active')) { closePost(); activateScreen('home', false); history.replaceState({screen:'home'}, '', '#home'); return; }

@@ -339,7 +339,7 @@
 </section>
 
 <section class="screen" id="badminton-game">
-  <div class="topbar"><div class="topbar-title">🏸 </div><div style="font-size:.78rem;color:var(--muted)">SSBA BigBlue?</div></div>
+  <div class="topbar"><div class="topbar-title">🏸 BadminRaj</div><div style="font-size:.78rem;color:var(--muted)">tom morning?</div></div>
   <div class="game-screen">
     <div class="game-card">
       <div class="bad-card-title">Badminton tom morning?</div>
@@ -364,7 +364,7 @@
           <div class="stat"><span class="stat-num">he no follower</span><span class="stat-label">following</span></div>
         </div>
       </div>
-      <div class="profile-bio">thundestruck - whatever the fuck that means</div>
+      <div class="profile-bio">thunderstruck - whatever the fuck that means</div>
       <div class="profile-edit-actions"><button class="profile-btn" id="edit-profile-btn" type="button">Edit profile</button><button class="profile-btn" id="share-profile-btn" type="button">Share profile</button></div>
     </div>
     <div class="highlights"><div class="highlights-row" id="hl-row"></div></div>
@@ -728,7 +728,7 @@ function openPost(i){
   $('#post-viewer').classList.add('active'); history.pushState({screen:'post'}, '', '#post');
 }
 function closePost(){ $('#post-viewer').classList.remove('active'); currentOpenedPost=null; currentOpenedProfilePost=null; }
-$('#post-view-close').addEventListener('click',()=>{closePost();activateScreen('home');});
+$('#post-view-close').addEventListener('click',()=>{const fromProfile=currentOpenedProfilePost!==null; closePost(); activateScreen(fromProfile?'profile':'home');});
 $('#pv-like-btn').addEventListener('click',()=>{if(currentOpenedPost!==null)triggerLike(currentOpenedPost,true);});
 
 function drawPostArt(canvas,type,color,W=400,H=400){
@@ -745,7 +745,7 @@ const reelIconMore=`<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.4"/><ci
    Example: {src:'assets/reels/video1.mp4', user:'ryzn_films', caption:'Guess the resolution....', likes:'7,602', comments:'506', sends:'3,258'} */
 const reels=[
   {src:'r1.mp4', bare:true},
-  {src:'r2.mp4', user:'pranesh_hod', caption:'58,59 meet me tom', audio:'Original audio', likes:'742', comments:'118', sends:'394'},
+  {src:'r2.mp4', user:'pranesh_hod', caption:'58 , 59', audio:'Original audio', likes:'742', comments:'118', sends:'394'},
   {src:'r3.mp4', user:'your_dad', caption:'', audio:'Original audio', likes:'683', comments:'72', sends:'214'},
   {src:'r4.mp4', user:'rajeshwari', caption:'50/50', audio:'Original audio', likes:'519', comments:'96', sends:'308'},
   {src:'r5.mp4', bare:true, suggest:'suggested from the best blend ever'},
@@ -908,7 +908,7 @@ $('#bad-external-btn').addEventListener('click',()=>window.open('https://poki.co
 function buildProfile(){
   $('#profile-main-img').src = PROFILE_IMG;
   $('#profile-post-count').textContent = profilePosts.length;
-  $('#hl-row').innerHTML=`<div class="highlight"><div class="hl-ring">😈</div><div class="hl-name">fuck_it_we_ball</div></div>`;
+  $('#hl-row').innerHTML=`<div class="highlight"><div class="hl-ring">🤙🏻</div><div class="hl-name">fuck_it_we_ball</div></div>`;
   const grid=$('#posts-grid'); grid.innerHTML='';
   profilePosts.forEach((p,idx)=>{
     const d=document.createElement('div');
@@ -940,7 +940,7 @@ function openProfilePost(i){
   const metaUser=document.querySelector(".post-view-user"); if(metaUser) metaUser.style.display="none";
   $("#pv-avatar").outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${PROFILE_IMG}" alt="${p.user}">`;
   $("#pv-username").textContent=p.user; $("#pv-location").textContent=p.loc||""; $("#pv-likes").textContent=p.likes+" likes";
-  $("#pv-caption").textContent=p.caption;
+  $("#pv-caption").innerHTML=`<b>parsonrajath_25</b> ${p.caption}`;
   $('#pv-comments').textContent=`View all ${p.comments} comments`; $('#pv-time').textContent=`${p.time}`; $('#pv-like-btn').classList.toggle('liked',!!likedProfilePosts[i]);
   const wrap=document.querySelector('.post-view-wrap');
   const oldMedia=wrap.querySelector('.post-view-image'); if(oldMedia) oldMedia.outerHTML=profileViewerMediaHTML(p,i);
@@ -965,7 +965,7 @@ const editProfileBtn = document.getElementById("edit-profile-btn");
 if(editProfileBtn){ editProfileBtn.addEventListener("click",()=>showToast(`too bad you can\`t`)); }
 
 window.addEventListener('popstate', () => {
-  if ($('#post-viewer').classList.contains('active')) { closePost(); activateScreen('home', false); history.replaceState({screen:'home'}, '', '#home'); return; }
+  if ($('#post-viewer').classList.contains('active')) { const fromProfile=currentOpenedProfilePost!==null; closePost(); activateScreen(fromProfile?'profile':'home', false); history.replaceState({screen:fromProfile?'profile':'home'}, '', fromProfile?'#profile':'#home'); return; }
   if ($('#story-viewer').classList.contains('active')) { closeStory(); activateScreen('home', false); history.replaceState({screen:'home'}, '', '#home'); return; }
   if (appLaunched) { activateScreen('home', false); history.replaceState({screen:'home'}, '', '#home'); }
 });

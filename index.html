@@ -108,6 +108,16 @@
   .post-comments{font-size:.78rem;color:var(--muted);margin-bottom:.3rem}
   .post-time{font-size:.72rem;color:var(--muted);padding-bottom:.8rem;text-transform:uppercase;letter-spacing:.04em}
 
+  .post-img img{width:100%;height:100%;object-fit:cover;display:block;background:#111}
+  .post-carousel{position:relative;overflow:hidden;background:#000;touch-action:pan-y}
+  .post-carousel-track{height:100%;display:flex;transition:transform .28s cubic-bezier(.22,.75,.2,1)}
+  .post-carousel-track img{width:100%;height:100%;object-fit:cover;flex:0 0 100%;display:block;background:#111}
+  .post-carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border:none;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:30px;line-height:26px;display:flex;align-items:center;justify-content:center;z-index:3;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;font-family:Arial,sans-serif}
+  .post-carousel-prev{left:10px}.post-carousel-next{right:10px}
+  .post-carousel-count{position:absolute;right:10px;top:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:.24rem .54rem;font-size:.72rem;font-weight:800;z-index:3;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .sticker-anim img{width:116px;height:116px;object-fit:contain;filter:drop-shadow(0 14px 32px rgba(0,0,0,.55))}
+  .post-view-image img{width:100%;height:100%;object-fit:cover;display:block;background:#111}
+
   #story-viewer{z-index:300;background:#000}
   .story-progress{display:flex;gap:3px;padding:.75rem 1rem .4rem}
   .story-prog-bar{flex:1;height:2px;background:rgba(255,255,255,.25);border-radius:1px;overflow:hidden}
@@ -493,60 +503,126 @@ function closeStory(){clearTimeout(window.storyTimer);$('#story-viewer').classLi
 $('#story-close').addEventListener('click', () => { closeStory(); activateScreen('home'); });
 
 const posts = [
-  { user:'nightmode', avatar:'🌙', loc:'3:41 AM · Still awake', color:'#1a1a2e', likes:'weball and 4 others', caption:'nightmode: 2:41 AM and somehow still not sleeping 🌙', comments:3, time:'1d', art:'night' },
-  { user:'badmintonking', avatar:'🏸', loc:'The Court · Daily', color:'#0d1b0d', likes:'insomnia and 7 others', caption:'rajath.weball: you said you play daily bro 😂', comments:12, time:'2d', art:'court' },
-  { user:'f1strategy', avatar:'🏎️', loc:'Monaco · Paddock Access', color:'#1a0d0d', likes:'gridlock and 22 others', caption:'f1brain: strategy so strong he explained F1 for 40 mins 💀', comments:8, time:'3d', art:'f1' },
-  { user:'rajath.weball', avatar:'🍺', loc:'Somewhere · Last seen: unknown', color:'#0d0d1a', likes:'said last one 4 drinks ago', caption:'rajath.weball: said "last one" 4 drinks ago. still going. fuck it we ball 🍺', comments:19, time:'5d', art:'beer' }
+  { img:'p1.jpeg', user:'rahilstouchinggrass', caption:"yea after so I'll also adopt what it - fuck it we ball", loc:'InstaRaj', likes:'736', comments:42, time:'1h' },
+  { img:'p2.jpeg', user:'lipsibutonsnapchat', caption:'👩🏼‍🚀', loc:'Moon mode', likes:'612', comments:28, time:'2h' },
+  { img:'p3.jpeg', user:'vansh_khotariii', caption:'The finest', loc:'Somewhere nice', likes:'884', comments:61, time:'3h' },
+  { img:'p4.jpeg', user:'abhibalesh', caption:'Gotta stay freaky and keep sucking forever 😝🤙', loc:'Certified freak zone', likes:'957', comments:73, time:'4h' },
+  { img:'p5.jpeg', user:'shreya_.rathod', caption:'undying friendship🤞🏼🤞🏼', loc:'Besties archive', likes:'691', comments:39, time:'5h' },
+  { img:'p6.jpeg', user:'jawnwii', caption:'we pattagobhi and pyaaz gng. we tuff. we good. 💪💪', loc:'Gng headquarters', likes:'809', comments:54, time:'6h' },
+  { img:'p7.jpeg', user:'gaurav_balesh', caption:'Not what I meant by get on top of me', loc:'No context', likes:'774', comments:47, time:'8h' },
+  { img:'p8.jpeg', user:'who.dass_', caption:'mixed doubles dream team', loc:'Court side', likes:'843', comments:66, time:'10h' },
+  { imgs:['sv1.jpeg','sv2.jpeg','sv3.jpeg'], user:'_vroon.vroon_', caption:'Good vibes only', loc:'Swipe dump', likes:'921', comments:88, time:'12h' }
 ];
-let currentOpenedPost=null; const likedPosts={};
+let currentOpenedPost=null; const likedPosts={}; const postCarouselIndex={};
 
+const POST_PROFILE_AVATARS={
+  'rahilstouchinggrass':'rahil.jpeg',
+  'lipsibutonsnapchat':'vig.jpeg',
+  'vansh_khotariii':'v.jpeg',
+  'vansh_khotari':'v.jpeg',
+  'abhibalesh':'abhi.jpeg',
+  'shreya_.rathod':'s.jpeg',
+  'jawnwii':'j.jpeg',
+  'gaurav_balesh':'g.jpeg',
+  'who.dass_':'manya.jpeg',
+  '_vroon.vroon_':'sv.jpeg',
+  'rajath.exe':'rajath.exe.jpeg'
+};
+function postAvatarFor(user){
+  const key=(user||'').toLowerCase().trim();
+  if(POST_PROFILE_AVATARS[key]) return POST_PROFILE_AVATARS[key];
+  if(key.includes('rajath')) return PROFILE_IMG;
+  return PROFILE_IMG;
+}
+function avatarHTML(user,cls='post-avatar'){
+  const src=postAvatarFor(user);
+  return `<img class="${cls}" src="${src}" alt="${user}" onerror="this.onerror=null;this.src=PROFILE_IMG">`;
+}
+function postMediaHTML(p,i){
+  if(p.imgs){
+    return `<div class="post-img post-carousel" data-idx="${i}">
+      <div class="post-carousel-track" id="post-track-${i}">${p.imgs.map(src=>`<img src="${src}" alt="post image" onerror="this.style.opacity=.18">`).join('')}</div>
+      <button class="post-carousel-arrow post-carousel-prev" data-post-prev="${i}" aria-label="previous">‹</button>
+      <button class="post-carousel-arrow post-carousel-next" data-post-next="${i}" aria-label="next">›</button>
+      <div class="post-carousel-count" id="post-count-${i}">1/${p.imgs.length}</div>
+      <div class="sticker-anim" id="sticker-${i}"><img src="sticker.png" alt="like"></div>
+    </div>`;
+  }
+  return `<div class="post-img" data-idx="${i}"><img src="${p.img}" alt="post image" onerror="this.style.opacity=.18"><div class="sticker-anim" id="sticker-${i}"><img src="sticker.png" alt="like"></div></div>`;
+}
+function updatePostCarousel(i,dir){
+  const p=posts[i]; if(!p.imgs)return;
+  const max=p.imgs.length-1;
+  postCarouselIndex[i]=clamp((postCarouselIndex[i]||0)+dir,0,max);
+  const track=document.getElementById(`post-track-${i}`), count=document.getElementById(`post-count-${i}`);
+  if(track) track.style.transform=`translateX(-${postCarouselIndex[i]*100}%)`;
+  if(count) count.textContent=`${postCarouselIndex[i]+1}/${p.imgs.length}`;
+}
+function randomCommentPreview(p,i){
+  const names=['rajath.exe','jawnwii','abhibalesh','who.dass_','rahilstouchinggrass'];
+  return `${names[i%names.length]} and others are typing...`;
+}
 function buildPosts(){
   const c=$('#posts-container'); c.innerHTML='';
   posts.forEach((p,i)=>{
     const d=document.createElement('div'); d.className='post';
-    const av = p.avatarImg ? `<img class="post-avatar" src="${PROFILE_IMG}" alt="">` : `<div class="post-avatar" style="background:${p.color}">${p.avatar}</div>`;
     d.innerHTML = `
-      <div class="post-header"><div class="post-user">${av}<div class="post-user-meta"><div class="post-username">${p.user}</div><div class="post-location">${p.loc}</div></div></div><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
-      <div class="post-img" data-idx="${i}"><canvas width="400" height="400"></canvas><div class="sticker-anim" id="sticker-${i}"><div class="sticker-emoji">😝</div></div></div>
+      <div class="post-header"><div class="post-user">${avatarHTML(p.user)}<div class="post-user-meta"><div class="post-username">${p.user}</div><div class="post-location">${p.loc||'InstaRaj'}</div></div></div><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></span></div>
+      ${postMediaHTML(p,i)}
       <div class="post-actions"><div class="like-btn" data-idx="${i}"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div><div class="save"><svg viewBox="0 0 24 24"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg></div></div>
-      <div class="post-likes">Liked by ${p.likes}</div><div class="post-caption"><b>${p.caption.split(':')[0]}:</b>${p.caption.split(':').slice(1).join(':')}</div><div class="post-comments">View all ${p.comments} comments</div><div class="post-time">${p.time} ago</div>`;
-    c.appendChild(d); drawPostArt(d.querySelector('canvas'), p.art, p.color, 400, 400);
+      <div class="post-likes">${p.likes} likes</div><div class="post-caption"><b>${p.user}</b> ${p.caption}</div><div class="post-comments">View all ${p.comments} comments · ${randomCommentPreview(p,i)}</div><div class="post-time">${p.time} ago</div>`;
+    c.appendChild(d);
+
     const postImg=d.querySelector('.post-img'); let lastTap=0,singleTapTimer=null,startX=0,startY=0,moved=false;
     postImg.addEventListener('touchstart',e=>{const t=e.touches[0];startX=t.clientX;startY=t.clientY;moved=false;},{passive:true});
     postImg.addEventListener('touchmove',e=>{const t=e.touches[0];if(Math.abs(t.clientX-startX)>12||Math.abs(t.clientY-startY)>12)moved=true;},{passive:true});
-    postImg.addEventListener('touchend',()=>{if(moved)return;const now=Date.now();if(now-lastTap<260){clearTimeout(singleTapTimer);singleTapTimer=null;triggerLike(i);}else{singleTapTimer=setTimeout(()=>openPost(i),220);}lastTap=now;},{passive:true});
-    postImg.addEventListener('click',()=>openPost(i));
+    postImg.addEventListener('touchend',()=>{if(moved)return;const now=Date.now();if(now-lastTap<280){clearTimeout(singleTapTimer);singleTapTimer=null;triggerLike(i,true);}else{singleTapTimer=setTimeout(()=>openPost(i),230);}lastTap=now;},{passive:true});
+    postImg.addEventListener('click',()=>{const now=Date.now(); if(now-lastTap<280){triggerLike(i,true);lastTap=0;} else {lastTap=now; setTimeout(()=>{if(lastTap)openPost(i);lastTap=0;},230);}});
+    const prev=d.querySelector('[data-post-prev]'), next=d.querySelector('[data-post-next]');
+    if(prev)prev.addEventListener('click',e=>{e.stopPropagation();updatePostCarousel(i,-1);});
+    if(next)next.addEventListener('click',e=>{e.stopPropagation();updatePostCarousel(i,1);});
     d.querySelector('.like-btn').addEventListener('click',()=>triggerLike(i));
   });
 }
-function triggerLike(i){
+function triggerLike(i,forceLike=false){
   const btn=document.querySelector(`.like-btn[data-idx="${i}"]`), sticker=document.getElementById(`sticker-${i}`);
-  if(!likedPosts[i]){likedPosts[i]=true; if(btn)btn.classList.add('liked'); if(sticker){sticker.classList.add('show');setTimeout(()=>{sticker.classList.remove('show');sticker.classList.add('hide');},700);setTimeout(()=>sticker.classList.remove('hide'),1200);}}
-  else{likedPosts[i]=false; if(btn)btn.classList.remove('liked');}
-  if(currentOpenedPost===i) $('#pv-like-btn').classList.toggle('liked',likedPosts[i]);
+  if(forceLike || !likedPosts[i]){
+    likedPosts[i]=true; if(btn)btn.classList.add('liked');
+    if(sticker){sticker.classList.remove('show','hide');void sticker.offsetWidth;sticker.classList.add('show');setTimeout(()=>{sticker.classList.remove('show');sticker.classList.add('hide');},760);setTimeout(()=>sticker.classList.remove('hide'),1250);}
+  } else {likedPosts[i]=false; if(btn)btn.classList.remove('liked');}
+  if(currentOpenedPost===i) $('#pv-like-btn').classList.toggle('liked',!!likedPosts[i]);
+}
+function postViewerMediaHTML(p){
+  if(p.imgs){
+    return `<div class="post-view-image post-carousel" data-idx="viewer"><div class="post-carousel-track" id="post-view-track">${p.imgs.map(src=>`<img src="${src}" alt="post image" onerror="this.style.opacity=.18">`).join('')}</div><button class="post-carousel-arrow post-carousel-prev" id="pv-prev" aria-label="previous">‹</button><button class="post-carousel-arrow post-carousel-next" id="pv-next" aria-label="next">›</button><div class="post-carousel-count" id="pv-count">1/${p.imgs.length}</div></div>`;
+  }
+  return `<div class="post-view-image"><img src="${p.img}" alt="post image" onerror="this.style.opacity=.18"></div>`;
 }
 function openPost(i){
   const p=posts[i]; currentOpenedPost=i;
-  if(p.avatarImg){ $('#pv-avatar').outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${PROFILE_IMG}" alt="">`; }
-  else { $('#pv-avatar').outerHTML = `<div class="post-view-avatar" id="pv-avatar" style="background:${p.color}">${p.avatar}</div>`; }
-  $('#pv-username').textContent=p.user; $('#pv-location').textContent=p.loc; $('#pv-likes').textContent='Liked by '+p.likes;
-  $('#pv-caption').innerHTML=`<b>${p.caption.split(':')[0]}:</b>${p.caption.split(':').slice(1).join(':')}`;
+  const avatarSrc=postAvatarFor(p.user);
+  $('#pv-avatar').outerHTML = `<img class="post-view-avatar" id="pv-avatar" src="${avatarSrc}" alt="${p.user}" onerror="this.onerror=null;this.src=PROFILE_IMG">`;
+  $('#pv-username').textContent=p.user; $('#pv-location').textContent=p.loc||'InstaRaj'; $('#pv-likes').textContent=p.likes+' likes';
+  $('#pv-caption').innerHTML=`<b>${p.user}</b> ${p.caption}`;
   $('#pv-comments').textContent=`View all ${p.comments} comments`; $('#pv-time').textContent=`${p.time} ago`; $('#pv-like-btn').classList.toggle('liked',!!likedPosts[i]);
-  drawPostArt($('#post-view-canvas'),p.art,p.color,600,600); $('#post-viewer').classList.add('active'); history.pushState({screen:'post'}, '', '#post');
+  const wrap=document.querySelector('.post-view-wrap');
+  const oldMedia=wrap.querySelector('.post-view-image'); if(oldMedia) oldMedia.outerHTML=postViewerMediaHTML(p);
+  if(p.imgs){
+    let idx=0; const track=$('#post-view-track'), count=$('#pv-count');
+    const upd=()=>{track.style.transform=`translateX(-${idx*100}%)`;count.textContent=`${idx+1}/${p.imgs.length}`;};
+    $('#pv-prev').addEventListener('click',()=>{idx=clamp(idx-1,0,p.imgs.length-1);upd();});
+    $('#pv-next').addEventListener('click',()=>{idx=clamp(idx+1,0,p.imgs.length-1);upd();});
+  }
+  $('#post-viewer').classList.add('active'); history.pushState({screen:'post'}, '', '#post');
 }
 function closePost(){ $('#post-viewer').classList.remove('active'); currentOpenedPost=null; }
 $('#post-view-close').addEventListener('click',()=>{closePost();activateScreen('home');});
-$('#pv-like-btn').addEventListener('click',()=>{if(currentOpenedPost!==null)triggerLike(currentOpenedPost);});
+$('#pv-like-btn').addEventListener('click',()=>{if(currentOpenedPost!==null)triggerLike(currentOpenedPost,true);});
 
 function drawPostArt(canvas,type,color,W=400,H=400){
-  const ctx=canvas.getContext('2d'); canvas.width=W;canvas.height=H;ctx.clearRect(0,0,W,H);ctx.fillStyle=color;ctx.fillRect(0,0,W,H);
-  if(type==='profile'){
-    const img=new Image(); img.onload=()=>{ctx.fillStyle='#111';ctx.fillRect(0,0,W,H);ctx.save();ctx.beginPath();ctx.arc(W/2,H/2,Math.min(W,H)*.42,0,Math.PI*2);ctx.clip();ctx.drawImage(img,W*.05,H*.05,W*.9,H*.9);ctx.restore();}; img.src=PROFILE_IMG;
-  } else if(type==='night'){ctx.fillStyle='#0a0a1e';ctx.fillRect(0,0,W,H);for(let i=0;i<80;i++){ctx.fillStyle=`rgba(255,255,255,${Math.random()*.8+.2})`;ctx.beginPath();ctx.arc(Math.random()*W,Math.random()*H*.8,Math.random()*2+.5,0,Math.PI*2);ctx.fill();}ctx.fillStyle='#fffde7';ctx.beginPath();ctx.arc(W*.75,H*.2,W*.1,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0a0a1e';ctx.beginPath();ctx.arc(W*.79,H*.18,W*.085,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(255,255,255,.55)';ctx.font=`bold ${Math.round(W*.12)}px sans-serif`;ctx.textAlign='center';ctx.fillText('3:17 AM',W/2,H/2+30);}
-  else if(type==='court'){ctx.fillStyle='#1a5c1a';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.strokeRect(W*.1,H*.1,W*.8,H*.8);ctx.beginPath();ctx.moveTo(W*.1,H*.5);ctx.lineTo(W*.9,H*.5);ctx.stroke();ctx.beginPath();ctx.moveTo(W*.5,H*.1);ctx.lineTo(W*.5,H*.9);ctx.stroke();ctx.strokeRect(W*.2,H*.2,W*.6,H*.6);ctx.fillStyle='rgba(255,255,255,.6)';ctx.font=`bold ${Math.round(W*.055)}px sans-serif`;ctx.textAlign='center';ctx.fillText('you said daily bro',W/2,H-18);}
-  else if(type==='f1'){ctx.fillStyle='#1a0d0d';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#ff3333';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(W*.12,H*.5);ctx.bezierCurveTo(W*.12,H*.12,W*.88,H*.12,W*.88,H*.5);ctx.bezierCurveTo(W*.88,H*.88,W*.12,H*.88,W*.12,H*.5);ctx.stroke();ctx.fillStyle='#ff3333';ctx.font=`bold ${Math.round(W*.09)}px sans-serif`;ctx.textAlign='center';ctx.fillText('FORMULA 1',W/2,H/2);}
-  else if(type==='beer'){ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,W,H);ctx.fillStyle='rgba(255,255,255,.08)';ctx.beginPath();ctx.moveTo(W*.35,H*.2);ctx.lineTo(W*.65,H*.2);ctx.lineTo(W*.7,H*.88);ctx.lineTo(W*.3,H*.88);ctx.closePath();ctx.fill();const grad=ctx.createLinearGradient(0,H*.38,0,H*.88);grad.addColorStop(0,'#f5c842');grad.addColorStop(1,'#c8860a');ctx.fillStyle=grad;ctx.beginPath();ctx.moveTo(W*.37,H*.39);ctx.lineTo(W*.63,H*.39);ctx.lineTo(W*.69,H*.86);ctx.lineTo(W*.31,H*.86);ctx.closePath();ctx.fill();ctx.fillStyle='#fffde7';for(let i=0;i<8;i++){ctx.beginPath();ctx.arc(W*.37+i*(W*.04),H*.39,W*.03,Math.PI,0);ctx.fill();}}
+  const ctx=canvas.getContext('2d'); canvas.width=W;canvas.height=H;ctx.clearRect(0,0,W,H);ctx.fillStyle=color||'#111';ctx.fillRect(0,0,W,H);
 }
+
 
 const reelIconHeart=`<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
 const reelIconComment=`<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 1 1 17 0z"/></svg>`;
@@ -568,6 +644,16 @@ const reels=[
   {src:'r10.mp4', user:'gang.gang', caption:'tum ho &lt;3', audio:'Original audio', likes:'781', comments:'231', sends:'493'},
   {src:'r11.mp4', bare:true}
 ];
+const REEL_PROFILE_AVATARS={
+  'jawnwii':'j.jpeg',
+  'rajath.exe':'rajath.exe.jpeg',
+  'lipsibutonsnapchat':'vig.jpeg',
+  'rahilstouchinggrass':'rahil.jpeg',
+  'abhibalesh':'abhi.jpeg',
+  'who.dass_':'manya.jpeg',
+  'vansh_khotari':'v.jpeg',
+  'gaurav_balesh':'g.jpeg'
+};
 const REEL_SCENERY_AVATARS=[
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop stop-color='%2387ceeb'/><stop offset='1' stop-color='%23f7d794'/></linearGradient></defs><rect width='80' height='80' fill='url(%23g)'/><circle cx='60' cy='18' r='9' fill='%23fff3a3'/><path d='M0 62 22 38 39 57 53 35 80 64v16H0z' fill='%232b6b47'/><path d='M0 70 30 50 55 72 80 56v24H0z' fill='%2317432d'/></svg>",
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect width='80' height='80' fill='%230b1730'/><circle cx='19' cy='16' r='2' fill='white'/><circle cx='55' cy='23' r='1.6' fill='white'/><circle cx='69' cy='11' r='1.2' fill='white'/><path d='M0 55c16-13 25-13 40 0s25 13 40 0v25H0z' fill='%231e88e5'/><path d='M0 65c22-8 40-8 80 0v15H0z' fill='%2300649b'/></svg>",
@@ -575,10 +661,12 @@ const REEL_SCENERY_AVATARS=[
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><rect width='80' height='80' fill='%2310141f'/><path d='M0 45h80v35H0z' fill='%231b5e20'/><path d='M10 45 24 23l14 22M35 45 53 18l18 27' fill='%238bc34a'/><path d='M24 23 29 45H19zM53 18l6 27H47z' fill='%23e8f5e9'/></svg>"
 ];
 function reelAvatarFor(r,i){
-  const u=(r.user||'').toLowerCase();
+  const u=(r.user||'').toLowerCase().trim();
+  if(REEL_PROFILE_AVATARS[u]) return REEL_PROFILE_AVATARS[u];
   if(u.includes('rajath')) return PROFILE_IMG;
   return REEL_SCENERY_AVATARS[i % REEL_SCENERY_AVATARS.length];
 }
+
 function reelActionHTML(r,i){
   return `<div class="reel-side">
     <div class="item reel-like" data-reel-like="${i}">${reelIconHeart}<span>${r.likes||'0'}</span></div>
@@ -603,7 +691,7 @@ function buildReels(){
       ? `<video src="${r.src}" muted playsinline loop preload="metadata"></video>`
       : `<canvas width="400" height="700"></canvas>`;
     const info = r.bare ? '' : `<div class="reel-overlay"></div>
-      <div class="reel-info"><div class="reel-author-row"><img class="reel-author-pic" src="${r.avatar||reelAvatarFor(r,i)}" alt=""><div class="reel-user">${r.user||'ryzn_films'}</div><button class="reel-follow">Follow</button></div>${r.caption?`<div class="reel-caption">${r.caption}</div>`:''}<div class="reel-audio">${r.audio||'Original audio'}</div></div>
+      <div class="reel-info"><div class="reel-author-row"><img class="reel-author-pic" src="" alt="" onerror="if(this.src.includes('rajath.exe.jpeg')){this.src='rajath.exe,jpeg'}else{this.onerror=null;this.src=PROFILE_IMG}"><div class="reel-user">${r.user||'ryzn_films'}</div><button class="reel-follow">Follow</button></div>${r.caption?`<div class="reel-caption">${r.caption}</div>`:''}<div class="reel-audio">${r.audio||'Original audio'}</div></div>
       ${reelActionHTML(r,i)}`;
     d.innerHTML=`<div class="reel-media">${media}</div>${info}<div class="reel-heart-pop" id="reel-heart-${i}" aria-hidden="true">😝</div>`;
     wrap.appendChild(d);
@@ -674,8 +762,8 @@ function buildProfile(){
   $('#profile-main-img').src = PROFILE_IMG;
   const highlights=[{name:'Rajath',e:'📸'},{name:'NightMode',e:'🌙'},{name:'Gridlock',e:'🏎️'},{name:'WeBall',e:'🍺'},{name:'Badminton',e:'🏸'},{name:'3AM',e:'😴'}];
   $('#hl-row').innerHTML=highlights.map(h=>`<div class="highlight"><div class="hl-ring">${h.e}</div><div class="hl-name">${h.name}</div></div>`).join('');
-  const gridPosts=[0,1,2,3,4,0,1,2,3]; const grid=$('#posts-grid');grid.innerHTML='';
-  gridPosts.forEach(idx=>{const d=document.createElement('div');d.className='grid-post';d.innerHTML=`<canvas width="120" height="120"></canvas>`;grid.appendChild(d);drawPostArt(d.querySelector('canvas'),posts[idx].art,posts[idx].color,120,120);d.addEventListener('click',()=>openPost(idx));});
+  const gridPosts=[0,1,2,3,4,5,6,7,8]; const grid=$('#posts-grid');grid.innerHTML='';
+  gridPosts.forEach(idx=>{const p=posts[idx];const d=document.createElement('div');d.className='grid-post';const src=p.imgs?p.imgs[0]:p.img;d.innerHTML=`<img src="${src}" alt="grid post" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.opacity=.18">`;grid.appendChild(d);d.addEventListener('click',()=>openPost(idx));});
 }
 
 window.addEventListener('popstate', () => {

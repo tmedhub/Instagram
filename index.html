@@ -273,21 +273,15 @@
   </div>
 </div>
 
-<section class="screen active" id="login">
-  <div class="logo-wrap"><div class="logo-text">Instagram</div></div>
-  <div class="login-card">
-    <div class="inp-wrap"><input id="username-inp" type="text" placeholder="Username, phone or email" autocomplete="username" /></div>
-    <div class="inp-wrap">
-      <input id="password-inp" type="password" placeholder="Password" autocomplete="current-password" />
-      <span class="eye" id="eye-toggle" aria-label="toggle password"></span>
-    </div>
-    <div class="err-msg" id="err-msg">Incorrect password.</div>
-    <button class="btn-primary" id="login-btn">Log in</button>
-    <div class="divider">or</div>
-    <div class="forgot">Forgot password?</div>
-    <button type="button" class="secret-link" id="secret-link">Continue with <span>InstaRaj</span> →</button>
-  </div>
-  <div class="login-footer">Don't have an account? <b>Sign up</b></div>
+<section class="screen active" id="login" style="display:flex;align-items:center;justify-content:center;padding:2rem;">
+  <input id="username-inp" type="text" autocomplete="username" class="hidden" />
+  <input id="password-inp" type="password" autocomplete="current-password" class="hidden" />
+  <span class="eye hidden" id="eye-toggle" aria-label="toggle password"></span>
+  <div class="err-msg hidden" id="err-msg"></div>
+  <button class="btn-primary hidden" id="login-btn" type="button">Log in</button>
+  <button type="button" class="btn-primary" id="secret-link" style="width:auto;min-width:220px;padding:16px 28px;font-size:18px;font-weight:800;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;">
+    Login to InstaRaj
+  </button>
 </section>
 
 <section class="screen" id="home">
